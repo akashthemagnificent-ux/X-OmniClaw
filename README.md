@@ -56,7 +56,7 @@
 <p>Link long-term multimodal memories from device galleries with professional editing automation (CapCut): the system bypasses unauditable chat histories or vector databases, enabling agents to operate on inspectable, diff-friendly Markdown artifacts while bridging semantic retrieval to deterministic media handles for precise screen interactions in third-party apps.</p>
 
 
-<h3 id="demo-4-trace-capture-claw-recall"><strong>【DEMO4：TraceCapture (轨迹捕捉) + ClawRecall (经验执行)】</strong></h3>
+<h3 id="demo-4-trace-capture-claw-recall"><strong>【DEMO3：TraceCapture (轨迹捕捉) + ClawRecall (经验执行)】</strong></h3>
 
 <p>启动轨迹捕捉 → 用户执行 → 沉淀经验 → 复现执行</p>
 
