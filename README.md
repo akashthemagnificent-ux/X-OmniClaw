@@ -12,12 +12,22 @@
 
 ## Key Features of omniclaw
 
+## Demo
+
+<h3 id="demo-1-camera-informed-execution"><strong>【DEMO1：Camera-informed execution】</strong></h3>
+
+Agent planning and actions conditioned on camera observations.
+
+<video src="videos/VID_camera.mp4" controls muted playsinline style="max-width:360px;width:100%;height:auto;"></video>
+
 ## Architecture
 
 ## Table of Contents
 
 - [News](#news)
 - [Key Features of omniclaw](#key-features-of-omniclaw)
+- [Demo](#demo)
+  - [DEMO1：Camera-informed execution](#demo-1-camera-informed-execution)
 - [Architecture](#architecture)
 - [Table of Contents](#table-of-contents)
 - [Features](#features)

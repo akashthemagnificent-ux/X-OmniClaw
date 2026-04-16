@@ -20,3 +20,5 @@ rad.json
 *.flf
 #Test results file
 TestResults.xml
+render_readme_preview.*
+README_preview.html
