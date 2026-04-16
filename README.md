@@ -19,8 +19,7 @@
 Agent planning and actions conditioned on camera observations.
 
 <!-- 若 GitHub 页面仍不显示：在 github.com 用「编辑」本 README，把 videos/VID_camera.mp4 拖进编辑器，用生成链接替换下方 src（常为 user-images.githubusercontent.com 或 github.com/eggplant95/X-OmniClaw/assets/...）。 -->
-<video src="https://raw.githubusercontent.com/eggplant95/X-OmniClaw/main/videos/VID_camera.mp4" controls muted autoplay loop playsinline style="max-width:360px;width:100%;height:auto;"></video>
-
+<video src="https://raw.githubusercontent.com/eggplant95/X-OmniClaw/main/videos/VID_camera.mp4" controls="controls" style="max-width: 100%;"></video>
 ## Architecture
 
 ## Table of Contents
