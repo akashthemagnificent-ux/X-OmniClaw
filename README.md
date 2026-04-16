@@ -14,12 +14,18 @@
 
 ## Demo
 
-<h3 id="demo-1-camera-informed-execution"><strong>【DEMO1：Camera-informed execution】</strong></h3>
+<h3 id="demo-1-camera-informed-execution"><strong>【DEMO1.1：Camera-informed execution】</strong></h3>
 
 Agent planning and actions conditioned on camera observations.
 
 
-<img src="videos/VID_camera.gif" alt="DEMO1 Camera-informed execution" width="240" />
+<img src="videos/VID_camera.gif" alt="DEMO1.1 Camera-informed execution" width="240" />
+
+<h3 id="demo-2-1-memory-based-one-click-video"><strong>【DEMO2.1：Memory-based one-click video】</strong></h3>
+
+基于记忆的素材组织与编排，一键生成成片（memory-based one-click video）。
+
+<img src="videos/VID_memory2video.gif" alt="DEMO2.1 Memory-based one-click video" width="240" />
 
 ## Architecture
 
@@ -28,7 +34,8 @@ Agent planning and actions conditioned on camera observations.
 - [News](#news)
 - [Key Features of omniclaw](#key-features-of-omniclaw)
 - [Demo](#demo)
-  - [DEMO1：Camera-informed execution](#demo-1-camera-informed-execution)
+  - [DEMO1.1：Camera-informed execution](#demo-1-camera-informed-execution)
+  - [DEMO2.1：Memory-based one-click video](#demo-2-1-memory-based-one-click-video)
 - [Architecture](#architecture)
 - [Table of Contents](#table-of-contents)
 - [Features](#features)
