@@ -18,9 +18,8 @@
 
 Agent planning and actions conditioned on camera observations.
 
-GitHub README 对 `<video>` 支持不稳定，此处使用 **GIF**（由 `videos/VID_camera.mp4` 生成）。重新生成：`python scripts/videos_to_gif.py`（需本机 [ffmpeg](https://ffmpeg.org/)）。
 
-<img src="videos/VID_camera.gif" alt="DEMO1 Camera-informed execution" width="480" />
+<img src="videos/VID_camera.gif" alt="DEMO1 Camera-informed execution" width="240" />
 
 ## Architecture
 
