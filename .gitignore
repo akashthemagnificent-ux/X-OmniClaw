@@ -22,5 +22,7 @@ rad.json
 TestResults.xml
 render_readme_preview.*
 README_preview.html
+# 本机下载的 Prince 可执行包（勿提交）
+.tools/
 scripts_report/*
 videos/*.mp4
