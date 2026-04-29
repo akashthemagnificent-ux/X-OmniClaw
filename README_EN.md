@@ -131,6 +131,7 @@ Beyond typical agents, X-OmniClaw strengthens **perception depth, memory breadth
 
 ### Four scenarios
 
+<!-- Two rows × two columns; video src uses raw.githubusercontent.com for reliable embedding on GitHub README -->
 <table width="100%">
 <colgroup>
 <col width="50%">
@@ -143,10 +144,36 @@ Beyond typical agents, X-OmniClaw strengthens **perception depth, memory breadth
 </tr>
 </thead>
 <tbody>
-<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px;"><strong>User</strong><br>“How much is this bottle of water on Taobao?”</td><td style="padding:8px 12px;"><strong>User</strong><br>“Let’s start the exercises.”</td></tr>
-<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px;"><strong>Behavior</strong><br>• Camera + voice to infer intent<br>• Jump to target app search (e.g. Taobao)<br>• Scroll results, capture prices/volumes</td><td style="padding:8px 12px;"><strong>Behavior</strong><br>• Follow cast/main screen<br>• Push-to-talk + screen understanding<br>• Multi-step execution with live feedback</td></tr>
-<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px;"><strong>Object ID</strong> → <strong>e-commerce lookup</strong>.</td><td style="padding:8px 12px;"><strong>Companion follow</strong> → <strong>multi-step screen QA</strong>.</td></tr>
-<tr style="vertical-align:top;"><td style="padding:8px 12px;"><video src="videos/demo1.1_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video></td><td style="padding:8px 12px;"><video src="videos/demo1.2_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video></td></tr>
+<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
+    <td style="padding:8px 12px;"><strong>User</strong><br>“How much is this bottle of water on Taobao?”</td>
+    <td style="padding:8px 12px;"><strong>User</strong><br>“Let’s start the exercises.”</td>
+</tr>
+<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
+    <td style="padding:8px 12px;">
+        <strong>Behavior</strong><br>
+        • Camera + voice to infer intent<br>
+        • Jump to target app search (e.g. Taobao)<br>
+        • Scroll results, capture prices/volumes
+    </td>
+    <td style="padding:8px 12px;">
+        <strong>Behavior</strong><br>
+        • Follow cast/main screen<br>
+        • Push-to-talk + screen understanding<br>
+        • Multi-step execution with live feedback
+    </td>
+</tr>
+<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
+    <td style="padding:8px 12px;"><strong>Object ID</strong> → <strong>e-commerce lookup</strong>.</td>
+    <td style="padding:8px 12px;"><strong>Companion follow</strong> → <strong>multi-step screen QA</strong>.</td>
+</tr>
+<tr style="vertical-align:top;">
+    <td style="padding:8px 12px;">
+        <video src="https://raw.githubusercontent.com/OPPO-Mente-Lab/X-OmniClaw/main/videos/demo1.1_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+    </td>
+    <td style="padding:8px 12px;">
+        <video src="https://raw.githubusercontent.com/OPPO-Mente-Lab/X-OmniClaw/main/videos/demo1.2_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+    </td>
+</tr>
 </tbody>
 </table>
 
@@ -162,10 +189,36 @@ Beyond typical agents, X-OmniClaw strengthens **perception depth, memory breadth
 </tr>
 </thead>
 <tbody>
-<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px;"><strong>User</strong><br>“Find parrot-themed photos and make a one-tap video.”</td><td style="padding:8px 12px;"><strong>User</strong><br>“Open Meituan flash deals.”</td></tr>
-<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px;"><strong>Behavior</strong><br>• Build a searchable memory index; filter by “parrot”<br>• Stage picks into a temp album (e.g. <code>A_latest</code>)<br>• Jump to CapCut one-tap flow, batch select, export/share</td><td style="padding:8px 12px;"><strong>Behavior</strong><br>• Record once → reusable bookmark/skill<br>• Later: one sentence to target page<br>• Fallback if launch fails</td></tr>
-<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px;"><strong>Theme search</strong> → <strong>one-tap video</strong>.</td><td style="padding:8px 12px;"><strong>Record once</strong> → <strong>one-shot navigation</strong>.</td></tr>
-<tr style="vertical-align:top;"><td style="padding:8px 12px;"><video src="videos/demo2_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video></td><td style="padding:8px 12px;"><video src="videos/demo3_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video></td></tr>
+<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
+    <td style="padding:8px 12px;"><strong>User</strong><br>“Find parrot-themed photos and make a one-tap video.”</td>
+    <td style="padding:8px 12px;"><strong>User</strong><br>“Open Meituan flash deals.”</td>
+</tr>
+<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
+    <td style="padding:8px 12px;">
+        <strong>Behavior</strong><br>
+        • Build a searchable memory index; filter by “parrot”<br>
+        • Stage picks into a temp album (e.g. <code>A_latest</code>)<br>
+        • Jump to CapCut one-tap flow, batch select, export/share
+    </td>
+    <td style="padding:8px 12px;">
+        <strong>Behavior</strong><br>
+        • Record once → reusable bookmark/skill<br>
+        • Later: one sentence to target page<br>
+        • Fallback if launch fails
+    </td>
+</tr>
+<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
+    <td style="padding:8px 12px;"><strong>Theme search</strong> → <strong>one-tap video</strong>.</td>
+    <td style="padding:8px 12px;"><strong>Record once</strong> → <strong>one-shot navigation</strong>.</td>
+</tr>
+<tr style="vertical-align:top;">
+    <td style="padding:8px 12px;">
+        <video src="https://raw.githubusercontent.com/OPPO-Mente-Lab/X-OmniClaw/main/videos/demo2_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+    </td>
+    <td style="padding:8px 12px;">
+        <video src="https://raw.githubusercontent.com/OPPO-Mente-Lab/X-OmniClaw/main/videos/demo3_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+    </td>
+</tr>
 </tbody>
 </table>
 

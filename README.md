@@ -132,7 +132,7 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 
 ### 四组场景对照表
 
-<!-- 每排 2 列（各占 50%），两张 GIF 并排；共两排展示 4 个 demo -->
+<!-- 每排 2 列（各占 50%），共两排展示 4 个 demo；视频使用 raw.githubusercontent.com 绝对路径，便于 GitHub README 内嵌播放 -->
 <table width="100%">
 <colgroup>
 <col width="50%">
@@ -145,10 +145,36 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 </tr>
 </thead>
 <tbody>
-<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px;"><strong>用户指令</strong><br>「这瓶水在淘宝上卖多少钱」</td><td style="padding:8px 12px;"><strong>用户指令</strong><br>「开始做题吧。」</td></tr>
-<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px;"><strong>执行特征</strong><br>• 看相机画面 + 听语音，先判断“这是啥、要查什么”<br>• 自动一键进入目标 App 的搜索页（如淘宝）<br>• 结果页自动滚动截图并提取价格/销量，给出带数字结论</td><td style="padding:8px 12px;"><strong>执行特征</strong><br>• 跟随当前投屏/界面作为主视角，切哪页跟哪页<br>• 用户按住语音后启动执行，结合屏幕内容理解任务<br>• 长任务按步骤连续推进，边执行边看反馈并动态调整</td></tr>
-<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px;"><strong>相机识物</strong> → <strong>电商询价</strong>闭环。</td><td style="padding:8px 12px;"><strong>屏幕伴侣跟随</strong> → <strong>多步读屏作答</strong>。</td></tr>
-<tr style="vertical-align:top;"><td style="padding:8px 12px;"><video src="videos/demo1.1_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video></td><td style="padding:8px 12px;"><video src="videos/demo1.2_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video></td></tr>
+<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
+    <td style="padding:8px 12px;"><strong>用户指令</strong><br>「这瓶水在淘宝上卖多少钱」</td>
+    <td style="padding:8px 12px;"><strong>用户指令</strong><br>「开始做题吧。」</td>
+</tr>
+<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
+    <td style="padding:8px 12px;">
+        <strong>执行特征</strong><br>
+        • 看相机画面 + 听语音，先判断“这是啥、要查什么”<br>
+        • 自动一键进入目标 App 的搜索页（如淘宝）<br>
+        • 结果页自动滚动截图并提取价格/销量，给出带数字结论
+    </td>
+    <td style="padding:8px 12px;">
+        <strong>执行特征</strong><br>
+        • 跟随当前投屏/界面作为主视角，切哪页跟哪页<br>
+        • 用户按住语音后启动执行，结合屏幕内容理解任务<br>
+        • 长任务按步骤连续推进，边执行边看反馈并动态调整
+    </td>
+</tr>
+<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
+    <td style="padding:8px 12px;"><strong>相机识物</strong> → <strong>电商询价</strong>闭环。</td>
+    <td style="padding:8px 12px;"><strong>屏幕伴侣跟随</strong> → <strong>多步读屏作答</strong>。</td>
+</tr>
+<tr style="vertical-align:top;">
+    <td style="padding:8px 12px;">
+        <video src="https://raw.githubusercontent.com/OPPO-Mente-Lab/X-OmniClaw/main/videos/demo1.1_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+    </td>
+    <td style="padding:8px 12px;">
+        <video src="https://raw.githubusercontent.com/OPPO-Mente-Lab/X-OmniClaw/main/videos/demo1.2_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+    </td>
+</tr>
 </tbody>
 </table>
 
@@ -164,10 +190,36 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 </tr>
 </thead>
 <tbody>
-<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px;"><strong>用户指令</strong><br>「帮我找到与鹦鹉主题相关的照片并一键成片。」</td><td style="padding:8px 12px;"><strong>用户指令</strong><br>「打开美团秒杀」</td></tr>
-<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px;"><strong>执行特征</strong><br>• 先在后台把相册内容整理成“可按主题检索”的记忆清单，再按你说的“鹦鹉”挑出候选照片<br>• 把选中的图先集中到一个临时相册（如 <code>A_latest</code>），避免在全相册里一张张翻找<br>• 自动跳到剪映一键成片页，批量勾选这些照片，必要时点“跳过分析”，最后进入导出/分享</td><td style="padding:8px 12px;"><strong>执行特征</strong><br>• 录一次轨迹，沉淀成可复用书签/技能（含页面启动信息）<br>• 之后一句话即可直达目标页（如“打开美团秒杀”）<br>• 拉起失败会自动降级兜底，尽量回到上次具体页面</td></tr>
-<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px;"><strong>主题找图</strong> → <strong>一键成片</strong>。</td><td style="padding:8px 12px;"><strong>录制一次轨迹</strong> → <strong>一句话直达目标页</strong>。</td></tr>
-<tr style="vertical-align:top;"><td style="padding:8px 12px;"><video src="videos/demo2_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video></td><td style="padding:8px 12px;"><video src="videos/demo3_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video></td></tr>
+<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
+    <td style="padding:8px 12px;"><strong>用户指令</strong><br>「帮我找到与鹦鹉主题相关的照片并一键成片。」</td>
+    <td style="padding:8px 12px;"><strong>用户指令</strong><br>「打开美团秒杀」</td>
+</tr>
+<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
+    <td style="padding:8px 12px;">
+        <strong>执行特征</strong><br>
+        • 先在后台把相册内容整理成“可按主题检索”的记忆清单，再按你说的“鹦鹉”挑出候选照片<br>
+        • 把选中的图先集中到一个临时相册（如 <code>A_latest</code>），避免在全相册里一张张翻找<br>
+        • 自动跳到剪映一键成片页，批量勾选这些照片，必要时点“跳过分析”，最后进入导出/分享
+    </td>
+    <td style="padding:8px 12px;">
+        <strong>执行特征</strong><br>
+        • 录一次轨迹，沉淀成可复用书签/技能（含页面启动信息）<br>
+        • 之后一句话即可直达目标页（如“打开美团秒杀”）<br>
+        • 拉起失败会自动降级兜底，尽量回到上次具体页面
+    </td>
+</tr>
+<tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
+    <td style="padding:8px 12px;"><strong>主题找图</strong> → <strong>一键成片</strong>。</td>
+    <td style="padding:8px 12px;"><strong>录制一次轨迹</strong> → <strong>一句话直达目标页</strong>。</td>
+</tr>
+<tr style="vertical-align:top;">
+    <td style="padding:8px 12px;">
+        <video src="https://raw.githubusercontent.com/OPPO-Mente-Lab/X-OmniClaw/main/videos/demo2_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+    </td>
+    <td style="padding:8px 12px;">
+        <video src="https://raw.githubusercontent.com/OPPO-Mente-Lab/X-OmniClaw/main/videos/demo3_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+    </td>
+</tr>
 </tbody>
 </table>
 
