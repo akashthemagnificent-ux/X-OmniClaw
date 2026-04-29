@@ -460,4 +460,10 @@ releases/X-OmniClaw-v<version>-debug.apk
 
 ## Star History
 
-[在 Star History 查看](https://www.star-history.com/?type=date&repos=OPPO-Mente-Lab%2FX-OmniClaw)
+<a href="https://www.star-history.com/?type=date&repos=OPPO-Mente-Lab%2FX-OmniClaw">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=OPPO-Mente-Lab/X-OmniClaw&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=OPPO-Mente-Lab/X-OmniClaw&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=OPPO-Mente-Lab/X-OmniClaw&type=date&legend=top-left" />
+ </picture>
+</a>
