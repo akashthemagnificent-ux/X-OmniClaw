@@ -131,7 +131,7 @@ Beyond typical agents, X-OmniClaw strengthens **perception depth, memory breadth
 
 ### Four scenarios
 
-<!-- Two rows × two columns; video src uses raw.githubusercontent.com for reliable embedding on GitHub README -->
+<!-- Two rows × two columns; video src uses github.com/.../blob/main/... repository file URLs -->
 <table width="100%">
 <colgroup>
 <col width="50%">
@@ -168,10 +168,10 @@ Beyond typical agents, X-OmniClaw strengthens **perception depth, memory breadth
 </tr>
 <tr style="vertical-align:top;">
     <td style="padding:8px 12px;">
-        <video src="https://raw.githubusercontent.com/OPPO-Mente-Lab/X-OmniClaw/main/videos/demo1.1_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+        <video src="https://github.com/OPPO-Mente-Lab/X-OmniClaw/blob/main/videos/demo1.1_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
     </td>
     <td style="padding:8px 12px;">
-        <video src="https://raw.githubusercontent.com/OPPO-Mente-Lab/X-OmniClaw/main/videos/demo1.2_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+        <video src="https://github.com/OPPO-Mente-Lab/X-OmniClaw/blob/main/videos/demo1.2_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
     </td>
 </tr>
 </tbody>
@@ -213,10 +213,10 @@ Beyond typical agents, X-OmniClaw strengthens **perception depth, memory breadth
 </tr>
 <tr style="vertical-align:top;">
     <td style="padding:8px 12px;">
-        <video src="https://raw.githubusercontent.com/OPPO-Mente-Lab/X-OmniClaw/main/videos/demo2_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+        <video src="https://github.com/OPPO-Mente-Lab/X-OmniClaw/blob/main/videos/demo2_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
     </td>
     <td style="padding:8px 12px;">
-        <video src="https://raw.githubusercontent.com/OPPO-Mente-Lab/X-OmniClaw/main/videos/demo3_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+        <video src="https://github.com/OPPO-Mente-Lab/X-OmniClaw/blob/main/videos/demo3_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
     </td>
 </tr>
 </tbody>

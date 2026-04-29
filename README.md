@@ -132,7 +132,7 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 
 ### 四组场景对照表
 
-<!-- 每排 2 列（各占 50%），共两排展示 4 个 demo；视频使用 raw.githubusercontent.com 绝对路径，便于 GitHub README 内嵌播放 -->
+<!-- 每排 2 列（各占 50%），共两排展示 4 个 demo；视频 src 使用 github.com/.../blob/main/... 仓库文件页链接 -->
 <table width="100%">
 <colgroup>
 <col width="50%">
@@ -169,10 +169,10 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 </tr>
 <tr style="vertical-align:top;">
     <td style="padding:8px 12px;">
-        <video src="https://raw.githubusercontent.com/OPPO-Mente-Lab/X-OmniClaw/main/videos/demo1.1_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+        <video src="https://github.com/OPPO-Mente-Lab/X-OmniClaw/blob/main/videos/demo1.1_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
     </td>
     <td style="padding:8px 12px;">
-        <video src="https://raw.githubusercontent.com/OPPO-Mente-Lab/X-OmniClaw/main/videos/demo1.2_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+        <video src="https://github.com/OPPO-Mente-Lab/X-OmniClaw/blob/main/videos/demo1.2_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
     </td>
 </tr>
 </tbody>
@@ -214,10 +214,10 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 </tr>
 <tr style="vertical-align:top;">
     <td style="padding:8px 12px;">
-        <video src="https://raw.githubusercontent.com/OPPO-Mente-Lab/X-OmniClaw/main/videos/demo2_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+        <video src="https://github.com/OPPO-Mente-Lab/X-OmniClaw/blob/main/videos/demo2_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
     </td>
     <td style="padding:8px 12px;">
-        <video src="https://raw.githubusercontent.com/OPPO-Mente-Lab/X-OmniClaw/main/videos/demo3_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+        <video src="https://github.com/OPPO-Mente-Lab/X-OmniClaw/blob/main/videos/demo3_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
     </td>
 </tr>
 </tbody>
