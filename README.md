@@ -456,3 +456,13 @@ Observer extension:
 **[HermesApp](https://github.com/SelectXn00b/HermesApp)**: This project’s engineering started from and evolved atop that open-source codebase. Thanks to the HermesApp maintainers and community.
 
 ---
+
+## Star History
+
+<a href="https://www.star-history.com/?type=date&repos=OPPO-Mente-Lab%2FX-OmniClaw">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=OPPO-Mente-Lab/X-OmniClaw&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=OPPO-Mente-Lab/X-OmniClaw&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=OPPO-Mente-Lab/X-OmniClaw&type=date&legend=top-left" />
+ </picture>
+</a>

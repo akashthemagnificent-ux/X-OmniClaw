@@ -457,3 +457,13 @@ releases/X-OmniClaw-v<version>-debug.apk
 **[HermesApp](https://github.com/SelectXn00b/HermesApp)** ：本项目的工程实现最初基于此开源代码库进行初始化与演进，在此向 HermesApp 维护者与社区致以谢意。
 
 ---
+
+## Star History
+
+<a href="https://www.star-history.com/?type=date&repos=OPPO-Mente-Lab%2FX-OmniClaw">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=OPPO-Mente-Lab/X-OmniClaw&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=OPPO-Mente-Lab/X-OmniClaw&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=OPPO-Mente-Lab/X-OmniClaw&type=date&legend=top-left" />
+ </picture>
+</a>
