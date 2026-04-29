@@ -1,45 +1,44 @@
 <div align="center">
   <img src="figure/logo1_whitebg.png" alt="X-OmniClaw" width="500">
   <p>
-    <a href="https://github.com/OPPO-Mente-Lab/X-OmniClaw/releases/latest"><img src="https://img.shields.io/badge/Release-latest-blue.svg" alt="当前版本" /></a>
-    <a href="https://www.android.com/"><img src="https://img.shields.io/badge/Android-8.0%2B-green.svg" alt="支持安卓" /></a>
-    <a href="https://github.com/OPPO-Mente-Lab/X-OmniClaw/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="开源许可证" /></a>
-    <a href="assets/main.pdf"><img src="https://img.shields.io/badge/Paper-PDF-orange.svg" alt="技术论文" /></a>
+    <a href="https://github.com/OPPO-Mente-Lab/X-OmniClaw/releases/latest"><img src="https://img.shields.io/badge/Release-latest-blue.svg" alt="Latest release" /></a>
+    <a href="https://www.android.com/"><img src="https://img.shields.io/badge/Android-8.0%2B-green.svg" alt="Android 8.0+" /></a>
+    <a href="https://github.com/OPPO-Mente-Lab/X-OmniClaw/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License Apache 2.0" /></a>
+    <a href="assets/main.pdf"><img src="https://img.shields.io/badge/Paper-PDF-orange.svg" alt="Paper PDF" /></a>
   </p>
 </div>
 
-作为一个集语音、视觉与动作于一体的 **安卓原生智能体**，**X-OmniClaw** 的定位是「可执行的图形界面引擎」。它不依赖虚拟环境，而是直接在真机上沿「感知-执行-优化」的逻辑循环推进。
+**X-OmniClaw** is a **native Android agent** that combines speech, vision, and action. It works as an **executable graphical-interface engine**: no virtual environment—it runs on real devices and follows a **perceive → act → refine** loop.
 
-**Omni** 意味着全方位的感知能力——系统不仅关注屏幕内的像素，还关注屏幕外的物理上下文；而 **X-** 则赋予系统跨模态的整合能力。这种架构将碎片化的数据整合为统一的意志，确保智能体能够像人类一样，在真实的移动端生态中自主、可靠地完成任务闭环。
+**Omni** stands for holistic perception—the system cares about pixels on screen *and* physical context beyond the display; **X-** adds cross-modal fusion so fragmented signals become a coherent plan. The agent can complete task closures autonomously and reliably in real mobile ecosystems.
 
-本文（中文） · [English 英文](README_EN.md)
+**English** · [简体中文 Chinese](README_zh.md)
 
-**[🧭 概览](#overview) | [💡 核心特性](#key-features) | [🎬 使用场景与录屏](#use-cases-demo) | [🔧 技能与工具](#skills-tools) | [🤖 模型](#models) | [🚀 快速开始](#quick-start) | [🛠️ 源码构建](#build-from-source) | [📄 许可证](#license) | [🙏 致谢](#acknowledgments)**
+**[🧭 Overview](#overview) | [💡 Key features](#key-features) | [🎬 Demos](#use-cases-demo) | [🔧 Skills & tools](#skills-tools) | [🤖 Models](#models) | [🚀 Quick start](#quick-start) | [🛠️ Build from source](#build-from-source) | [📄 License](#license) | [🙏 Acknowledgments](#acknowledgments)**
 
 ---
 
-## 📢 动态
+## 📢 Updates
 
-- **2026-04-22** 🧠 执行策略收敛：确立「纯文本可本地直返、凡设备操作统一走智能体」的主路径，并增强跨包 `ref` 安全重绑定与错误定位日志。
-- **2026-04-20** 🧵 多会话并行落地：会话级独立智能体主循环、跨会话运行态隔离与精确停止链路上线，显著提升长任务稳定性。
-- **2026-03-31** ⏰ 定时自动化可用：支持按间隔、工作日或周计划执行任务，覆盖息屏与亮屏场景。
-- **2026-03-25** 🎙️ 语音视觉主链路成型：本地语音视觉闭环（录音、视觉帧、决策与执行）打通，语音与文本进入统一执行核心。
-- **2026-03-14** 🛠️ 核心运行时重构：统一设备工具落地（快照、操作、打开应用、截图等），并对齐 OpenClaw 关键运行时能力。
+- **2026-04-22** 🧠 Execution policy tightened: plain-text replies can return locally; device actions uniformly go through the agent; stronger cross-package `ref` rebinding and error-location logging.
+- **2026-04-20** 🧵 Multi-session parallelism: per-session agent loops, isolated runtime across sessions, precise stop chains—better stability on long tasks.
+- **2026-03-31** ⏰ Scheduled automation: intervals, weekdays, or weekly plans; works screen-on or screen-off.
+- **2026-03-25** 🎙️ Speech–vision spine: local speech–vision loop (recording, frames, decision, execution); speech and text share one execution core.
+- **2026-03-14** 🛠️ Core runtime refactor: unified device tools (snapshot, actions, launch app, screenshots, etc.) aligned with key OpenClaw runtime capabilities.
 
 ---
 
 <a id="overview"></a>
-## 🧭 概览
+## 🧭 Overview
 
-![X-OmniClaw 本地引擎架构示意](figure/x-omniclaw-local-engine2.png)
+![X-OmniClaw local engine architecture](figure/x-omniclaw-local-engine2.png)
 
-**X-OmniClaw** 定位为面向智能手机的 **全模态移动 Agent**：不依赖虚拟环境，在真机上沿 **感知 → 策略 → 执行 → 验收** 闭环推进。下文用表格归纳其 **执行型方法论**、**四层架构** 与 **三大全模态支柱**。
+**X-OmniClaw** is a **full-modal mobile agent** for smartphones: no virtual environment; on-device **perceive → plan → act → verify** loop. The sections below summarize **execution methodology**, **four-layer architecture**, and **three omni-modal pillars**.
 
-### 1. 核心方法论：从「对话」转向「执行」
+### 1. Core methodology: from “chat” to “execution”
 
-X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI 环境下的任务达成。
+X-OmniClaw follows **iterative recursive reasoning** so tasks can finish in complex mobile GUIs.
 
-<!-- 概览三张表：均为 3 列，列宽 14% / 24% / 62%，table 样式与 colgroup 完全一致（GitHub 上纯 Markdown 表无法固定列宽） -->
 <table style="width:100%; border-collapse:collapse; border:1px solid #d0d7de; table-layout:fixed; margin-bottom:12px;">
 <colgroup>
 <col style="width:14%">
@@ -48,23 +47,23 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 </colgroup>
 <thead>
 <tr style="background:#f6f8fa; border-bottom:1px solid #d0d7de;">
-<th align="left" style="padding:8px 12px;">环节</th>
-<th align="left" style="padding:8px 12px;">标识 (Action)</th>
-<th align="left" style="padding:8px 12px;">描述</th>
+<th align="left" style="padding:8px 12px;">Stage</th>
+<th align="left" style="padding:8px 12px;">Action</th>
+<th align="left" style="padding:8px 12px;">Description</th>
 </tr>
 </thead>
 <tbody>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">观察</td><td style="padding:8px 12px; vertical-align:top;"><strong>Observe</strong></td><td style="padding:8px 12px;">通过系统快照、实时截图或无障碍树（Accessibility Tree）获取当前界面状态。</td></tr>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">思考</td><td style="padding:8px 12px; vertical-align:top;"><strong>Think</strong></td><td style="padding:8px 12px;">结合用户目标、当前上下文与历史动作记录，由 LLM/VLM 做出决策。</td></tr>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">执行</td><td style="padding:8px 12px; vertical-align:top;"><strong>Act</strong></td><td style="padding:8px 12px;">调度底层驱动执行点击、滑动、文本输入或应用切换等原子动作。</td></tr>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">验证</td><td style="padding:8px 12px; vertical-align:top;"><strong>Verify</strong></td><td style="padding:8px 12px;">动作完成后重新捕获界面，对比预期结果与实际状态。</td></tr>
-<tr><td style="padding:8px 12px; vertical-align:top;">循环</td><td style="padding:8px 12px; vertical-align:top;"><strong>Loop</strong></td><td style="padding:8px 12px;">若任务未完成，将新状态作为下一轮输入；若已达成，则结束任务。</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">Observe</td><td style="padding:8px 12px; vertical-align:top;"><strong>Observe</strong></td><td style="padding:8px 12px;">Capture UI state via system snapshot, live screenshot, or accessibility tree.</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">Think</td><td style="padding:8px 12px; vertical-align:top;"><strong>Think</strong></td><td style="padding:8px 12px;">LLM/VLM decides using goals, context, and action history.</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">Act</td><td style="padding:8px 12px; vertical-align:top;"><strong>Act</strong></td><td style="padding:8px 12px;">Drive taps, swipes, text input, app switches, etc.</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">Verify</td><td style="padding:8px 12px; vertical-align:top;"><strong>Verify</strong></td><td style="padding:8px 12px;">Re-capture UI and compare expected vs actual.</td></tr>
+<tr><td style="padding:8px 12px; vertical-align:top;">Loop</td><td style="padding:8px 12px; vertical-align:top;"><strong>Loop</strong></td><td style="padding:8px 12px;">Feed new state into the next round until done or stopped.</td></tr>
 </tbody>
 </table>
 
-### 2. 系统技术架构：四层闭环驱动
+### 2. System architecture: four-layer closed loop
 
-系统采用模块化设计，通过「感知 $\rightarrow$ 策略 $\rightarrow$ 执行 $\rightarrow$ 验收」实现全链路闭环。
+Modular design closes the loop along **perceive → plan → act → verify**.
 
 <table style="width:100%; border-collapse:collapse; border:1px solid #d0d7de; table-layout:fixed; margin-bottom:12px;">
 <colgroup>
@@ -74,22 +73,22 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 </colgroup>
 <thead>
 <tr style="background:#f6f8fa; border-bottom:1px solid #d0d7de;">
-<th align="left" style="padding:8px 12px;">架构层</th>
-<th align="left" style="padding:8px 12px;">核心组件</th>
-<th align="left" style="padding:8px 12px;">职责定义</th>
+<th align="left" style="padding:8px 12px;">Layer</th>
+<th align="left" style="padding:8px 12px;">Component</th>
+<th align="left" style="padding:8px 12px;">Role</th>
 </tr>
 </thead>
 <tbody>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">感知层</td><td style="padding:8px 12px; vertical-align:top;"><strong>Multi-modal Input</strong></td><td style="padding:8px 12px;">融合语音识别（ASR）、截图/录屏帧、无障碍树信息，构建统一感知上下文。</td></tr>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">策略层</td><td style="padding:8px 12px; vertical-align:top;"><strong>Agent Logic</strong></td><td style="padding:8px 12px;">智能体主循环中心，负责任务拆解，通过 Kotlin 桥接进行逻辑分发。</td></tr>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">执行层</td><td style="padding:8px 12px; vertical-align:top;"><strong>Device Scheduler</strong></td><td style="padding:8px 12px;">硬件/系统调度器，执行快照抓取、UI 模拟操作及应用生命周期管理。</td></tr>
-<tr><td style="padding:8px 12px; vertical-align:top;">验收层</td><td style="padding:8px 12px; vertical-align:top;"><strong>Success Monitor</strong></td><td style="padding:8px 12px;">执行后的状态回溯与循环检测，判断逻辑是否偏移或任务是否终结。</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">Perception</td><td style="padding:8px 12px; vertical-align:top;"><strong>Multi-modal Input</strong></td><td style="padding:8px 12px;">ASR, screenshot/recording frames, accessibility tree → unified context.</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">Planning</td><td style="padding:8px 12px; vertical-align:top;"><strong>Agent Logic</strong></td><td style="padding:8px 12px;">Main agent loop: task decomposition; Kotlin bridge for dispatch.</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">Execution</td><td style="padding:8px 12px; vertical-align:top;"><strong>Device Scheduler</strong></td><td style="padding:8px 12px;">Snapshots, simulated UI actions, app lifecycle.</td></tr>
+<tr><td style="padding:8px 12px; vertical-align:top;">Verification</td><td style="padding:8px 12px; vertical-align:top;"><strong>Success Monitor</strong></td><td style="padding:8px 12px;">Post-action checks and loop detection for drift or completion.</td></tr>
 </tbody>
 </table>
 
-### 3. X-OmniClaw 核心优化：三大全模态支柱
+### 3. Three omni-modal pillars
 
-相较传统 Agent，X-OmniClaw 在 **感知深度、记忆广度与动作鲁棒性** 上做专项强化；三者协同支撑真实应用任务。
+Beyond typical agents, X-OmniClaw strengthens **perception depth, memory breadth, and action robustness**.
 
 <table style="width:100%; border-collapse:collapse; border:1px solid #d0d7de; table-layout:fixed; margin-bottom:12px;">
 <colgroup>
@@ -99,40 +98,40 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 </colgroup>
 <thead>
 <tr style="background:#f6f8fa; border-bottom:1px solid #d0d7de;">
-<th align="left" style="padding:8px 12px;">特性支柱</th>
-<th align="left" style="padding:8px 12px;">核心优化点</th>
-<th align="left" style="padding:8px 12px;">技术实现</th>
+<th align="left" style="padding:8px 12px;">Pillar</th>
+<th align="left" style="padding:8px 12px;">Focus</th>
+<th align="left" style="padding:8px 12px;">Implementation</th>
 </tr>
 </thead>
 <tbody>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Perception（全感知）</strong></td><td style="padding:8px 12px; vertical-align:top;">多源融合与意图分解</td><td style="padding:8px 12px;">融合界面元数据与真实世界视觉（相机），在决策前将原始输入蒸馏为结构化意图。</td></tr>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Memory（全记忆）</strong></td><td style="padding:8px 12px; vertical-align:top;">跨应用任务连续性</td><td style="padding:8px 12px;">结合多模态工作记忆与个人长期记忆，支持从个人相册等私域数据中获取语义线索。</td></tr>
-<tr><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Action（全行动）</strong></td><td style="padding:8px 12px; vertical-align:top;">异构交互与技能抽象</td><td style="padding:8px 12px;">基于视觉 Grounding 的稳健交互，支持行为克隆（BC）与轨迹回放，实现复杂操作的复用。</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Perception</strong></td><td style="padding:8px 12px; vertical-align:top;">Fusion & intent parsing</td><td style="padding:8px 12px;">UI metadata plus real-world vision (camera); distill raw input into structured intent.</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Memory</strong></td><td style="padding:8px 12px; vertical-align:top;">Cross-app continuity</td><td style="padding:8px 12px;">Working memory + long-term memory; semantic cues from private galleries.</td></tr>
+<tr><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Action</strong></td><td style="padding:8px 12px; vertical-align:top;">Heterogeneous interaction</td><td style="padding:8px 12px;">Vision-grounded robust UI; behavior cloning and trajectory replay for reuse.</td></tr>
 </tbody>
 </table>
 
 ---
 
 <a id="key-features"></a>
-## 💡 核心特性
+## 💡 Key features
 
-- **端侧可执行智能体闭环**：多轮任务不是一次性问答，而是带预算与循环检测的执行循环，会在失败时收敛并继续推进。
-- **过程与成本可观测**：执行过程可实时输出（步骤、思考、工具调用与结果等），并对大模型用量做累计，便于界面侧展示。
-- **统一设备工具入口**：界面理解、点击输入、打开应用、截图与剪贴板等操作走同一套设备工具，并内置稳定性与误触保护。
-- **视觉兜底与双轨决策**：优先结构化理解，同时在复杂页面或弱结构场景下可用视觉兜底降低误操作。
-- **语音到动作的一体链路**：语音识别后结合屏幕画面理解意图，并能把「按下说话那一刻」的画面对齐到决策输入。
-- **相册与媒体向的落地能力**：支持把相册内容纳入「可检索、可总结、可执行」的工作流（例如按问题查图、做记忆整理，并串到剪映类一键成片等场景）。
-- **深度链接与可复现流程（在能力可用时）**：可维护深度链接与收藏，把长路径或反复操作压缩成可复用的一键入口，适合「录一次、下次一句话直达」。
-- **多会话并行与可控停止**：支持并行会话互不干扰，并可按会话中断任务。
+- **On-device executable agent loop**: multi-turn tasks use budgeting and loop detection; failures converge and execution continues.
+- **Observable runs and cost**: stream steps, thoughts, tool calls, and results; accumulate LLM usage for UI display.
+- **Unified device tools**: one surface for UI understanding, tap/type, launch app, screenshots, clipboard—with stability and mis-click guards.
+- **Vision fallback & dual-track decisions**: prefer structured understanding; fall back to vision on messy pages.
+- **Speech-to-action**: ASR plus screen understanding; align “the frame when push-to-talk fired” with decision input.
+- **Gallery & media workflows**: searchable, summarizable, actionable flows (e.g. theme-based photo search, memory tidy, CapCut-style one-tap video).
+- **Deep links & reproducible flows (when available)**: bookmarks and deep links compress long paths into one-shot commands (“record once, next time one sentence”).
+- **Parallel sessions & controlled stop**: isolated sessions; interrupt per session.
 
 ---
 
 <a id="use-cases-demo"></a>
-## 🎬 使用场景与录屏
+## 🎬 Demos
 
-### 四组场景对照表
+### Four scenarios
 
-<!-- 每排 2 列（各占 50%），共两排展示 4 个 demo；动图为 GIF，使用 videos/ 相对路径 -->
+<!-- Two rows × two columns; demos are GIFs under videos/ (relative paths) -->
 <table width="100%">
 <colgroup>
 <col width="50%">
@@ -140,39 +139,39 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 </colgroup>
 <thead>
 <tr style="background:#f6f8fa; border-bottom:1px solid #d0d7de;">
-<th align="left" width="50%">📷 演示 1.1 — 相机感知的操作</th>
-<th align="left" width="50%">📺 演示 1.2 — 投屏或屏幕伴侣</th>
+<th align="left" width="50%">📷 Demo 1.1 — Camera-grounded task</th>
+<th align="left" width="50%">📺 Demo 1.2 — Casting / screen companion</th>
 </tr>
 </thead>
 <tbody>
 <tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
-    <td style="padding:8px 12px;"><strong>用户指令</strong><br>「这瓶水在淘宝上卖多少钱」</td>
-    <td style="padding:8px 12px;"><strong>用户指令</strong><br>「开始做题吧。」</td>
+    <td style="padding:8px 12px;"><strong>User</strong><br>“How much is this bottle of water on Taobao?”</td>
+    <td style="padding:8px 12px;"><strong>User</strong><br>“Let’s start the exercises.”</td>
 </tr>
 <tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
     <td style="padding:8px 12px;">
-        <strong>执行特征</strong><br>
-        • 看相机画面 + 听语音，先判断“这是啥、要查什么”<br>
-        • 自动一键进入目标 App 的搜索页（如淘宝）<br>
-        • 结果页自动滚动截图并提取价格/销量，给出带数字结论
+        <strong>Behavior</strong><br>
+        • Camera + voice to infer intent<br>
+        • Jump to target app search (e.g. Taobao)<br>
+        • Scroll results, capture prices/volumes
     </td>
     <td style="padding:8px 12px;">
-        <strong>执行特征</strong><br>
-        • 跟随当前投屏/界面作为主视角，切哪页跟哪页<br>
-        • 用户按住语音后启动执行，结合屏幕内容理解任务<br>
-        • 长任务按步骤连续推进，边执行边看反馈并动态调整
+        <strong>Behavior</strong><br>
+        • Follow cast/main screen<br>
+        • Push-to-talk + screen understanding<br>
+        • Multi-step execution with live feedback
     </td>
 </tr>
 <tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
-    <td style="padding:8px 12px;"><strong>相机识物</strong> → <strong>电商询价</strong>闭环。</td>
-    <td style="padding:8px 12px;"><strong>屏幕伴侣跟随</strong> → <strong>多步读屏作答</strong>。</td>
+    <td style="padding:8px 12px;"><strong>Object ID</strong> → <strong>e-commerce lookup</strong>.</td>
+    <td style="padding:8px 12px;"><strong>Companion follow</strong> → <strong>multi-step screen QA</strong>.</td>
 </tr>
 <tr style="vertical-align:top;">
     <td style="padding:8px 12px;">
-        <img src="videos/demo1.1_fast.gif" alt="演示 1.1 — 相机感知操作录屏" width="100%" style="display:block; max-width:100%;">
+        <img src="videos/demo1.1_fast.gif" alt="Demo 1.1 — camera-grounded task recording" width="100%" style="display:block; max-width:100%;">
     </td>
     <td style="padding:8px 12px;">
-        <img src="videos/demo1.2_fast.gif" alt="演示 1.2 — 投屏与屏幕伴侣录屏" width="100%" style="display:block; max-width:100%;">
+        <img src="videos/demo1.2_fast.gif" alt="Demo 1.2 — casting / screen companion recording" width="100%" style="display:block; max-width:100%;">
     </td>
 </tr>
 </tbody>
@@ -185,39 +184,39 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 </colgroup>
 <thead>
 <tr style="background:#f6f8fa; border-bottom:1px solid #d0d7de;">
-<th align="left" width="50%">✂️ 演示 2 — 记忆驱动的一键成片</th>
-<th align="left" width="50%">📦 演示 3 — 行为克隆</th>
+<th align="left" width="50%">✂️ Demo 2 — Memory-driven one-tap video</th>
+<th align="left" width="50%">📦 Demo 3 — Behavior cloning</th>
 </tr>
 </thead>
 <tbody>
 <tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
-    <td style="padding:8px 12px;"><strong>用户指令</strong><br>「帮我找到与鹦鹉主题相关的照片并一键成片。」</td>
-    <td style="padding:8px 12px;"><strong>用户指令</strong><br>「打开美团秒杀」</td>
+    <td style="padding:8px 12px;"><strong>User</strong><br>“Find parrot-themed photos and make a one-tap video.”</td>
+    <td style="padding:8px 12px;"><strong>User</strong><br>“Open Meituan flash deals.”</td>
 </tr>
 <tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
     <td style="padding:8px 12px;">
-        <strong>执行特征</strong><br>
-        • 先在后台把相册内容整理成“可按主题检索”的记忆清单，再按你说的“鹦鹉”挑出候选照片<br>
-        • 把选中的图先集中到一个临时相册（如 <code>A_latest</code>），避免在全相册里一张张翻找<br>
-        • 自动跳到剪映一键成片页，批量勾选这些照片，必要时点“跳过分析”，最后进入导出/分享
+        <strong>Behavior</strong><br>
+        • Build a searchable memory index; filter by “parrot”<br>
+        • Stage picks into a temp album (e.g. <code>A_latest</code>)<br>
+        • Jump to CapCut one-tap flow, batch select, export/share
     </td>
     <td style="padding:8px 12px;">
-        <strong>执行特征</strong><br>
-        • 录一次轨迹，沉淀成可复用书签/技能（含页面启动信息）<br>
-        • 之后一句话即可直达目标页（如“打开美团秒杀”）<br>
-        • 拉起失败会自动降级兜底，尽量回到上次具体页面
+        <strong>Behavior</strong><br>
+        • Record once → reusable bookmark/skill<br>
+        • Later: one sentence to target page<br>
+        • Fallback if launch fails
     </td>
 </tr>
 <tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
-    <td style="padding:8px 12px;"><strong>主题找图</strong> → <strong>一键成片</strong>。</td>
-    <td style="padding:8px 12px;"><strong>录制一次轨迹</strong> → <strong>一句话直达目标页</strong>。</td>
+    <td style="padding:8px 12px;"><strong>Theme search</strong> → <strong>one-tap video</strong>.</td>
+    <td style="padding:8px 12px;"><strong>Record once</strong> → <strong>one-shot navigation</strong>.</td>
 </tr>
 <tr style="vertical-align:top;">
     <td style="padding:8px 12px;">
-        <img src="videos/demo2_fast.gif" alt="演示 2 — 记忆驱动一键成片录屏" width="100%" style="display:block; max-width:100%;">
+        <img src="videos/demo2_fast.gif" alt="Demo 2 — memory-driven one-tap video recording" width="100%" style="display:block; max-width:100%;">
     </td>
     <td style="padding:8px 12px;">
-        <img src="videos/demo3_fast.gif" alt="演示 3 — 行为克隆录屏" width="100%" style="display:block; max-width:100%;">
+        <img src="videos/demo3_fast.gif" alt="Demo 3 — behavior cloning recording" width="100%" style="display:block; max-width:100%;">
     </td>
 </tr>
 </tbody>
@@ -226,57 +225,57 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 ---
 
 <a id="skills-tools"></a>
-## 🔧 技能与工具
+## 🔧 Skills & tools
 
-技能通过 `app/src/main/assets/skills/` 按需加载，执行经工具（含 `device`）落到界面。
+Skills load from `app/src/main/assets/skills/`; execution reaches the UI via tools (including `device`).
 
-### 🗂️ 随包技能（共 10 个）
+### 🗂️ Bundled skills (10)
 
-路径：`app/src/main/assets/skills/<技能名>/SKILL.md`。
+Path: `app/src/main/assets/skills/<skill>/SKILL.md`.
 
-| 类别 | 技能标识 |
+| Category | Skill IDs |
 | :--- | :--- |
-| **搜索与应用** | `app-search`, `taobao-search` |
-| **相册与媒体** | `gallery-qa`, `gallery-memory`, `capcut-theme-video`, `clipboard-to-shortcut` |
-| **配置管理** | `model-config`, `channel-config` |
-| **技能管理** | `skill-creator` |
-| **自动化** | `scheduled-automation` |
+| **Search & apps** | `app-search`, `taobao-search` |
+| **Gallery & media** | `gallery-qa`, `gallery-memory`, `capcut-theme-video`, `clipboard-to-shortcut` |
+| **Configuration** | `model-config`, `channel-config` |
+| **Skill management** | `skill-creator` |
+| **Automation** | `scheduled-automation` |
 
-### 🧪 各技能示例指令（可直接对智能体说）
+### 🧪 Example utterances (say to the agent)
 
-| 技能标识 | 示例指令 |
+| Skill ID | Example |
 | :--- | :--- |
-| `app-search` | 「去小红书搜北京旅游攻略发给我。」 |
-| `taobao-search` | 「淘宝搜『男士轻薄防晒衣』，按价格区间和销量给我推荐 3 个。」 |
-| `gallery-qa` | 「我今天拍了什么照片？按时间顺序简单说一下。」 |
-| `gallery-memory` | 「同步一下相册记忆并更新用户画像，先扫最近 20 张。」 |
-| `clipboard-to-shortcut` | 「把剪贴板里的链接做成一个技能，名字叫『淘宝好物直达』。」 |
-| `channel-config` | 「把飞书渠道配置好并启用，应用编号是 xxx，密钥是 xxx。」 |
-| `model-config` | 「新增一个兼容开放式接口的提供商，接口地址是 xxx，默认模型设成 xxx。」 |
-| `scheduled-automation` | 「每周三早上 10 点打开小红书搜索人工智能新闻并总结给我。」 |
-| `capcut-theme-video` | 「把今天拍的风景图做成剪映一键成片，素材放到 A_latest 后开始。」 |
-| `skill-creator` | 「帮我把刚刚执行成功的方法总结成新的技能，并生成对应的 SKILL.md。」 |
+| `app-search` | “Search Xiaohongshu for Beijing travel tips and send me the summary.” |
+| `taobao-search` | “On Taobao, search men’s light sunscreen shirts; recommend 3 by price band and sales.” |
+| `gallery-qa` | “What photos did I take today? Briefly in time order.” |
+| `gallery-memory` | “Sync gallery memory and refresh my profile—scan the latest 20 photos.” |
+| `clipboard-to-shortcut` | “Turn the clipboard URL into a skill named Taobao quick link.” |
+| `channel-config` | “Configure Feishu channel: app id xxx, secret xxx.” |
+| `model-config` | “Add an OpenAI-compatible provider at URL xxx; default model xxx.” |
+| `scheduled-automation` | “Every Wednesday 10:00 open Xiaohongshu, search AI news, summarize.” |
+| `capcut-theme-video` | “Make a one-tap video from today’s landscapes; put assets in A_latest first.” |
+| `skill-creator` | “Summarize what just worked as a new skill and write SKILL.md.” |
 
 ---
 
 <a id="models"></a>
-## 🤖 模型
+## 🤖 Models
 
-**推荐方式：在 APK 内填写各线路 API Key 并保存**，应用会写入 `/sdcard/.xomniclaw/xomniclaw.json`，一般不必手工编辑 JSON。
+**Recommended:** enter API keys in the APK and save; config is written to `/sdcard/.xomniclaw/xomniclaw.json`—usually no manual JSON editing.
 
-### 应用内配置（推荐）
+### In-app setup (recommended)
 
-1. 打开应用，进入 **「模型配置」**（侧栏 / 设置；首次启动也可能出现向导）。
-2. **Agent 主模型**：选择提供商 → 填写 **API Key**（若线路要求则填写 Base URL）→ 选择默认模型 → **保存**。
-3. **语音 STT**：在同一页的 **STT** 入口进入配置页，填写语音转写服务的 **API Key**、接口地址与模型（如硅基流动 **SenseVoice Small**）；可与 Agent **使用不同密钥**。
-4. **视觉 VLM**：进入 **VLM 配置**，填写截图 / 界面理解所用的多模态模型（须支持图像）；可与 Agent 同提供商或单独填写。
-5. 保存成功后配置落盘；修改网关端口等可在 **设置** 或其它对应页面调整。
+1. Open the app → **Model configuration** (drawer / settings; wizard may appear on first launch).
+2. **Agent model**: pick provider → **API Key** (and Base URL if required) → default model → **Save**.
+3. **Speech STT**: open **STT** from the same area; set transcription **API Key**, endpoint, model (e.g. SiliconFlow **SenseVoice Small**); keys may differ from Agent.
+4. **Vision VLM**: **VLM settings** for screenshot/UI understanding (must support images); same or different provider as Agent.
+5. After save, disk persists; gateway port etc. live in **Settings** or related screens.
 
-界面保存的内容与下文 JSON 字段一一对应；仅在做批量迁移、脚本生成或排查时再直接改文件。
+UI fields map to the JSON below; edit the file directly only for bulk migration, scripting, or debugging.
 
-### 内置 Provider 与示例模型 ID
+### Built-in providers & example model IDs
 
-| 提供商 ID | 示例模型 ID |
+| Provider ID | Example model ID |
 | :--- | :--- |
 | `bot-adaptor` | `doubao-seed-2.0-lite` |
 | `openrouter` | `z-ai/glm-4.5-air:free` |
@@ -286,11 +285,11 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 | `moonshot` | `kimi-k2.5` |
 | `xiaomi` | `mimo-v2-flash` |
 | `minimax` | `MiniMax-M2.5` |
-| `ollama` | 无固定 ID（`/api/tags`） |
+| `ollama` | No fixed ID (`/api/tags`) |
 
-### 配置文件参考：Agent 主模型（进阶）
+### Config snippet: Agent model (advanced)
 
-与「模型配置」中选择的提供商 / 默认模型一致；示例：**bot-adaptor** + **doubao-seed-2.0-lite**。
+Matches in-app provider / default model; example combo **bot-adaptor** + **doubao-seed-2.0-lite**.
 
 ```json
 {
@@ -312,10 +311,10 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 }
 ```
 
-### 配置文件参考：语音 STT（进阶）
+### Config snippet: Speech STT (advanced)
 
-对应「STT 配置」页；`models.providers.stt` 与 Agent / VLM **分开**。示例：**硅基流动** + **FunAudioLLM/SenseVoiceSmall**。  
-当前示例语音 STT 线路可免费使用（以服务商当期免费额度/策略为准）。
+Maps to **STT** screen; `models.providers.stt` is separate from Agent / VLM. Example: **SiliconFlow** + **FunAudioLLM/SenseVoiceSmall**.  
+Free tiers depend on the vendor’s current policy.
 
 ```json
 {
@@ -324,7 +323,7 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
       "stt": {
         "baseUrl": "https://api.siliconflow.cn/v1/audio/transcriptions",
         "api": "openai-completions",
-        "apiKey": "<硅基流动 API Key>",
+        "apiKey": "<SiliconFlow API Key>",
         "models": [
           {
             "id": "FunAudioLLM/SenseVoiceSmall",
@@ -339,9 +338,9 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 }
 ```
 
-### 配置文件参考：视觉 VLM（进阶）
+### Config snippet: Vision VLM (advanced)
 
-对应「VLM 配置」页；`models.providers.vlm` 用于截图 / UI 理解。示例：**doubao-seed-2.0-lite**。
+Maps to **VLM**; `models.providers.vlm` for screenshots/UI. Example model **doubao-seed-2.0-lite**.
 
 ```json
 {
@@ -350,11 +349,11 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
       "vlm": {
         "baseUrl": "https://api.example.com/v1/chat/completions",
         "api": "bot-adaptor",
-        "apiKey": "<密钥>",
+        "apiKey": "<secret>",
         "models": [
           {
             "id": "doubao-seed-2.0-lite",
-            "name": "豆包 Seed 2.0 Lite",
+            "name": "Doubao Seed 2.0 Lite",
             "contextWindow": 32768,
             "maxTokens": 65536
           }
@@ -368,58 +367,58 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 ---
 
 <a id="quick-start"></a>
-## 🚀 快速开始
+## 🚀 Quick start
 
-### 📥 1）下载与安装
+### 📥 1) Download & install
 
-从发行版页面获取安装包：  
+Latest APK:  
 [https://github.com/OPPO-Mente-Lab/X-OmniClaw/releases/latest](https://github.com/OPPO-Mente-Lab/X-OmniClaw/releases/latest)
 
-### ⚙️ 2）首次配置（优先用应用内表单）
+### ⚙️ 2) First-time setup (prefer in-app forms)
 
-1. 打开应用，完成 **「模型配置」**：填写 **Agent** 的 API Key 并选择支持**多模态（图像）**的默认模型；再按需进入 **STT**、**VLM** 分别填写密钥（可与 Agent 不同）。  
-2. 授予权限（与应用内检测一致，共 **7** 项）：**无障碍**，**悬浮窗**，**录屏**，**相册**，**全部文件访问**，**摄像头**，**麦克风**。  
-3. 可选：在应用内配置 **飞书 / Discord** 等渠道，而非只改 JSON。
+1. **Model configuration**: set Agent **API Key** and a default model with **multimodal (image)** support; optionally configure **STT** and **VLM** separately.  
+2. Grant permissions (seven, same as in-app checks): **Accessibility**, **Overlay**, **Screen capture**, **Photos**, **All files access**, **Camera**, **Microphone**.  
+3. Optional: configure **Feishu / Discord** (and similar) in-app instead of editing JSON only.
 
-### 📄 3）配置文件位置（自动生成）
+### 📄 3) Config file location (auto-generated)
 
-保存上述界面选项后会生成或更新：
+After saving from the UI:
 
 ```text
 /sdcard/.xomniclaw/xomniclaw.json
 ```
 
-仅在备份、迁移或调试时需要直接查看该文件。
+Open this file directly mainly for backup, migration, or debugging.
 
 ---
 
 <a id="build-from-source"></a>
-## 🛠️ 源码构建
+## 🛠️ Build from source
 
-### 📋 环境要求
+### 📋 Requirements
 
-- 不低于 JDK 17  
-- 安卓软件开发工具包  
-- Gradle 封装脚本（推荐）  
+- JDK 17 or newer  
+- Android SDK  
+- Gradle Wrapper (recommended)
 
-### 🔨 克隆与构建（示例）
+### 🔨 Clone & build (example)
 
 ```bash
-git clone <你的 GitLab 仓库 URL>
+git clone <your GitLab repo URL>
 cd X-OmniClaw
 cp local.properties.example local.properties
-# 编辑 local.properties，设置 sdk.dir 指向本机 Android SDK
+# Edit local.properties: set sdk.dir to your Android SDK
 ./gradlew :app:assembleDebug
 ```
 
-上游 GitHub 镜像（可选）：
+Upstream GitHub mirror (optional):
 
 ```bash
 git clone https://github.com/OPPO-Mente-Lab/X-OmniClaw.git
 cd X-OmniClaw
 ```
 
-Windows PowerShell 示例：
+Windows PowerShell example:
 
 ```powershell
 $env:JAVA_HOME = "D:\path\to\jdk-17"
@@ -430,13 +429,13 @@ notepad local.properties
 .\gradlew.bat :app:assembleDebug
 ```
 
-输出安装包（示例路径）：
+Example output path:
 
 ```text
 releases/X-OmniClaw-v<version>-debug.apk
 ```
 
-构建观察者组件：
+Observer extension:
 
 ```bash
 ./gradlew :extensions:observer:assembleDebug
@@ -445,15 +444,15 @@ releases/X-OmniClaw-v<version>-debug.apk
 ---
 
 <a id="license"></a>
-## 📄 许可证
+## 📄 License
 
-采用 [Apache License 2.0](LICENSE)：商用与修改允许；须保留声明并标注改动。
+[Apache License 2.0](LICENSE): commercial use and modifications allowed; retain notices and describe changes.
 
 ---
 
 <a id="acknowledgments"></a>
-## 🙏 致谢
+## 🙏 Acknowledgments
 
-**[HermesApp](https://github.com/SelectXn00b/HermesApp)** ：本项目的工程实现最初基于此开源代码库进行初始化与演进，在此向 HermesApp 维护者与社区致以谢意。
+**[HermesApp](https://github.com/SelectXn00b/HermesApp)**: This project’s engineering started from and evolved atop that open-source codebase. Thanks to the HermesApp maintainers and community.
 
 ---
