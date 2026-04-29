@@ -132,7 +132,7 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 
 ### 四组场景对照表
 
-<!-- 每排 2 列（各占 50%），共两排展示 4 个 demo；视频 src 使用 github.com/.../blob/main/... 仓库文件页链接 -->
+<!-- 每排 2 列（各占 50%），共两排展示 4 个 demo；动图为 GIF，使用 videos/ 相对路径 -->
 <table width="100%">
 <colgroup>
 <col width="50%">
@@ -169,10 +169,10 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 </tr>
 <tr style="vertical-align:top;">
     <td style="padding:8px 12px;">
-        <video src="https://github.com/OPPO-Mente-Lab/X-OmniClaw/blob/main/videos/demo1.1_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+        <img src="videos/demo1.1_fast.gif" alt="演示 1.1 — 相机感知操作录屏" width="100%" style="display:block; max-width:100%;">
     </td>
     <td style="padding:8px 12px;">
-        <video src="https://github.com/OPPO-Mente-Lab/X-OmniClaw/blob/main/videos/demo1.2_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+        <img src="videos/demo1.2_fast.gif" alt="演示 1.2 — 投屏与屏幕伴侣录屏" width="100%" style="display:block; max-width:100%;">
     </td>
 </tr>
 </tbody>
@@ -214,10 +214,10 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 </tr>
 <tr style="vertical-align:top;">
     <td style="padding:8px 12px;">
-        <video src="https://github.com/OPPO-Mente-Lab/X-OmniClaw/blob/main/videos/demo2_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+        <img src="videos/demo2_fast.gif" alt="演示 2 — 记忆驱动一键成片录屏" width="100%" style="display:block; max-width:100%;">
     </td>
     <td style="padding:8px 12px;">
-        <video src="https://github.com/OPPO-Mente-Lab/X-OmniClaw/blob/main/videos/demo3_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+        <img src="videos/demo3_fast.gif" alt="演示 3 — 行为克隆录屏" width="100%" style="display:block; max-width:100%;">
     </td>
 </tr>
 </tbody>

@@ -131,7 +131,7 @@ Beyond typical agents, X-OmniClaw strengthens **perception depth, memory breadth
 
 ### Four scenarios
 
-<!-- Two rows × two columns; video src uses github.com/.../blob/main/... repository file URLs -->
+<!-- Two rows × two columns; demos are GIFs under videos/ (relative paths) -->
 <table width="100%">
 <colgroup>
 <col width="50%">
@@ -168,10 +168,10 @@ Beyond typical agents, X-OmniClaw strengthens **perception depth, memory breadth
 </tr>
 <tr style="vertical-align:top;">
     <td style="padding:8px 12px;">
-        <video src="https://github.com/OPPO-Mente-Lab/X-OmniClaw/blob/main/videos/demo1.1_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+        <img src="videos/demo1.1_fast.gif" alt="Demo 1.1 — camera-grounded task recording" width="100%" style="display:block; max-width:100%;">
     </td>
     <td style="padding:8px 12px;">
-        <video src="https://github.com/OPPO-Mente-Lab/X-OmniClaw/blob/main/videos/demo1.2_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+        <img src="videos/demo1.2_fast.gif" alt="Demo 1.2 — casting / screen companion recording" width="100%" style="display:block; max-width:100%;">
     </td>
 </tr>
 </tbody>
@@ -213,10 +213,10 @@ Beyond typical agents, X-OmniClaw strengthens **perception depth, memory breadth
 </tr>
 <tr style="vertical-align:top;">
     <td style="padding:8px 12px;">
-        <video src="https://github.com/OPPO-Mente-Lab/X-OmniClaw/blob/main/videos/demo2_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+        <img src="videos/demo2_fast.gif" alt="Demo 2 — memory-driven one-tap video recording" width="100%" style="display:block; max-width:100%;">
     </td>
     <td style="padding:8px 12px;">
-        <video src="https://github.com/OPPO-Mente-Lab/X-OmniClaw/blob/main/videos/demo3_fast.mp4" controls width="100%" autoplay muted playsinline loop preload="auto" style="display:block; max-width:100%;"></video>
+        <img src="videos/demo3_fast.gif" alt="Demo 3 — behavior cloning recording" width="100%" style="display:block; max-width:100%;">
     </td>
 </tr>
 </tbody>
