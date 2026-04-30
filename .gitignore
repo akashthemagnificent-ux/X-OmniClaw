@@ -29,3 +29,5 @@ videos/*.mp4
 
 # 本地/CI 放入的 Android 安装包（体积大，勿进 Git；正式下载以 GitHub Releases 为准）
 releases/*.apk
+*.backup
+scripts_rm

@@ -4,13 +4,15 @@
     <a href="https://github.com/OPPO-Mente-Lab/X-OmniClaw/releases/latest"><img src="https://img.shields.io/badge/Release-latest-blue.svg" alt="当前版本" /></a>
     <a href="https://www.android.com/"><img src="https://img.shields.io/badge/Android-8.0%2B-green.svg" alt="支持安卓" /></a>
     <a href="https://github.com/OPPO-Mente-Lab/X-OmniClaw/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="开源许可证" /></a>
-    <a href="assets/main.pdf"><img src="https://img.shields.io/badge/Paper-PDF-orange.svg" alt="技术论文" /></a>
+    <a href="assets/X_OmniClaw_Technical_Report__1_.pdf"><img src="https://img.shields.io/badge/Paper-PDF-orange.svg" alt="技术论文" /></a>
   </p>
 </div>
 
-作为一个集语音、视觉与动作于一体的 **安卓原生智能体**，**X-OmniClaw** 的定位是「可执行的图形界面引擎」。它不依赖虚拟环境，而是直接在真机上沿「感知-执行-优化」的逻辑循环推进。
+<!-- **X-OmniClaw** 是一个集语音、视觉与执行于一体的 **多模态安卓端Agent**。它脱离了虚拟环境，能够直接部署在真实的安卓物理终端上，实时获取物理屏幕的视觉流并模拟原生触控交互，直接在真机上沿「感知-执行-优化」的逻辑循环推进。 -->
 
-**Omni** 意味着全方位的感知能力——系统不仅关注屏幕内的像素，还关注屏幕外的物理上下文；而 **X-** 则赋予系统跨模态的整合能力。这种架构将碎片化的数据整合为统一的意志，确保智能体能够像人类一样，在真实的移动端生态中自主、可靠地完成任务闭环。
+**X-OmniClaw** 是一个集多模态感知，记忆与执行于一体的 **多模态安卓端Agent**。它不依赖虚拟环境，而是直接运行在真实手机上，将屏幕界面、真实世界视觉和语音输入等转化为可执行任务，并通过端侧工具完成跨应用操作。
+
+**Omni** 意味着全方位的感知能力——系统不仅关注屏幕内的画面，还关注屏幕外的真实世界；而 **X-** 则赋予系统跨模态的整合能力。这种架构将碎片化的数据整合为统一的输入，确保智能体能够在真实的移动端生态中自主、可靠地完成任务闭环。
 
 **简体中文** · [English](README.md)
 
@@ -33,38 +35,33 @@
 
 ![X-OmniClaw 本地引擎架构示意](figure/x-omniclaw-local-engine2.png)
 
-**X-OmniClaw** 定位为面向智能手机的 **全模态移动 Agent**：不依赖虚拟环境，在真机上沿 **感知 → 策略 → 执行 → 验收** 闭环推进。下文用表格归纳其 **执行型方法论**、**四层架构** 与 **三大全模态支柱**。
+**X-OmniClaw** 定位为手机端侧的 **多模态安卓端 Agent**。下文用表格归纳其 **执行型方法论**、**四层架构** 与 **三大全模态支柱**。
 
-### 1. 核心方法论：从「对话」转向「执行」
+### 1. 执行方法论：从「对话」转向「执行」
 
-X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI 环境下的任务达成。
+为确保在复杂移动端 GUI 环境下的任务达成。在具体设备操作中，X-OmniClaw 将每一步界面交互组织为「观察 → 推理 → 执行」的最小循环：先观察当前页面和上一动作结果，再推理下一步动作，最后调度 Android 原子操作完成执行。该循环会不断重复，直到任务完成或被停止。
 
-<!-- 概览三张表：均为 3 列，列宽 14% / 24% / 62%，table 样式与 colgroup 完全一致（GitHub 上纯 Markdown 表无法固定列宽） -->
 <table style="width:100%; border-collapse:collapse; border:1px solid #d0d7de; table-layout:fixed; margin-bottom:12px;">
 <colgroup>
-<col style="width:14%">
-<col style="width:24%">
-<col style="width:62%">
+<col style="width:18%">
+<col style="width:82%">
 </colgroup>
 <thead>
 <tr style="background:#f6f8fa; border-bottom:1px solid #d0d7de;">
-<th align="left" style="padding:8px 12px;">环节</th>
-<th align="left" style="padding:8px 12px;">标识 (Action)</th>
+<th align="left" style="padding:8px 12px;">阶段</th>
 <th align="left" style="padding:8px 12px;">描述</th>
 </tr>
 </thead>
 <tbody>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">观察</td><td style="padding:8px 12px; vertical-align:top;"><strong>Observe</strong></td><td style="padding:8px 12px;">通过系统快照、实时截图或无障碍树（Accessibility Tree）获取当前界面状态。</td></tr>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">思考</td><td style="padding:8px 12px; vertical-align:top;"><strong>Think</strong></td><td style="padding:8px 12px;">结合用户目标、当前上下文与历史动作记录，由 LLM/VLM 做出决策。</td></tr>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">执行</td><td style="padding:8px 12px; vertical-align:top;"><strong>Act</strong></td><td style="padding:8px 12px;">调度底层驱动执行点击、滑动、文本输入或应用切换等原子动作。</td></tr>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">验证</td><td style="padding:8px 12px; vertical-align:top;"><strong>Verify</strong></td><td style="padding:8px 12px;">动作完成后重新捕获界面，对比预期结果与实际状态。</td></tr>
-<tr><td style="padding:8px 12px; vertical-align:top;">循环</td><td style="padding:8px 12px; vertical-align:top;"><strong>Loop</strong></td><td style="padding:8px 12px;">若任务未完成，将新状态作为下一轮输入；若已达成，则结束任务。</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>观察</strong></td><td style="padding:8px 12px;">通过系统快照、实时截图或无障碍树（Accessibility Tree）获取当前界面状态。该观察判断上一执行步骤的结果，并为后续执行提供决策证据。</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>推理</strong></td><td style="padding:8px 12px;">LLM/VLM 理解当前页面，检查上一动作状态，按需检索相关记忆，选择合适的技能或工具，并决定直接回答还是继续执行。</td></tr>
+<tr><td style="padding:8px 12px; vertical-align:top;"><strong>执行</strong></td><td style="padding:8px 12px;">通过 Android 原子动作调度具体操作，包括点击、滑动、文本输入和应用切换等。</td></tr>
 </tbody>
 </table>
 
 ### 2. 系统技术架构：四层闭环驱动
 
-系统采用模块化设计，通过「感知 $\rightarrow$ 策略 $\rightarrow$ 执行 $\rightarrow$ 验收」实现全链路闭环。
+在系统级生命周期中，通过「感知 → 策略 → 执行 → 验收」实现全链路闭环。感知层汇聚多模态输入，策略层形成任务计划，执行层调度设备动作，验收层检查结果并判断是否继续。
 
 <table style="width:100%; border-collapse:collapse; border:1px solid #d0d7de; table-layout:fixed; margin-bottom:12px;">
 <colgroup>
@@ -81,9 +78,9 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 </thead>
 <tbody>
 <tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">感知层</td><td style="padding:8px 12px; vertical-align:top;"><strong>Multi-modal Input</strong></td><td style="padding:8px 12px;">融合语音识别（ASR）、截图/录屏帧、无障碍树信息，构建统一感知上下文。</td></tr>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">策略层</td><td style="padding:8px 12px; vertical-align:top;"><strong>Agent Logic</strong></td><td style="padding:8px 12px;">智能体主循环中心，负责任务拆解，通过 Kotlin 桥接进行逻辑分发。</td></tr>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">执行层</td><td style="padding:8px 12px; vertical-align:top;"><strong>Device Scheduler</strong></td><td style="padding:8px 12px;">硬件/系统调度器，执行快照抓取、UI 模拟操作及应用生命周期管理。</td></tr>
-<tr><td style="padding:8px 12px; vertical-align:top;">验收层</td><td style="padding:8px 12px; vertical-align:top;"><strong>Success Monitor</strong></td><td style="padding:8px 12px;">执行后的状态回溯与循环检测，判断逻辑是否偏移或任务是否终结。</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">策略层</td><td style="padding:8px 12px; vertical-align:top;"><strong>Agent Loop</strong></td><td style="padding:8px 12px;">智能体主循环：任务拆解；通过 Kotlin 桥接进行分发。</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">执行层</td><td style="padding:8px 12px; vertical-align:top;"><strong>Device Scheduler</strong></td><td style="padding:8px 12px;">快照、模拟 UI 操作和应用生命周期管理。</td></tr>
+<tr><td style="padding:8px 12px; vertical-align:top;">验收层</td><td style="padding:8px 12px; vertical-align:top;"><strong>Success Monitor</strong></td><td style="padding:8px 12px;">执行后的检查与循环检测，用于判断偏移或完成。</td></tr>
 </tbody>
 </table>
 
@@ -105,9 +102,9 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 </tr>
 </thead>
 <tbody>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Perception（全感知）</strong></td><td style="padding:8px 12px; vertical-align:top;">多源融合与意图分解</td><td style="padding:8px 12px;">融合界面元数据与真实世界视觉（相机），在决策前将原始输入蒸馏为结构化意图。</td></tr>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Memory（全记忆）</strong></td><td style="padding:8px 12px; vertical-align:top;">跨应用任务连续性</td><td style="padding:8px 12px;">结合多模态工作记忆与个人长期记忆，支持从个人相册等私域数据中获取语义线索。</td></tr>
-<tr><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Action（全行动）</strong></td><td style="padding:8px 12px; vertical-align:top;">异构交互与技能抽象</td><td style="padding:8px 12px;">基于视觉 Grounding 的稳健交互，支持行为克隆（BC）与轨迹回放，实现复杂操作的复用。</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Perception（全感知）</strong></td><td style="padding:8px 12px; vertical-align:top;">统一多模态入口与意图理解</td><td style="padding:8px 12px;">整合 UI 状态、真实世界视觉上下文、语音输入、定时触发、悬浮组件和外部渠道；通过时间对齐与场景化 VLM 理解，将原始输入流转化为结构化意图。</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Memory（全记忆）</strong></td><td style="padding:8px 12px; vertical-align:top;">多模态个性化记忆</td><td style="padding:8px 12px;">结合用于任务连续性的工作记忆，以及从本地多模态数据中蒸馏出的长期个人记忆，支持个性化多轮交互和记忆驱动的自动化执行。</td></tr>
+<tr><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Action（全行动）</strong></td><td style="padding:8px 12px; vertical-align:top;">稳健执行与可复用技能</td><td style="padding:8px 12px;">围绕混合 UI 证据运行观察-推理-执行循环，并通过行为克隆和轨迹回放将用户导航转化为可复用的 deeplink/intent 技能。</td></tr>
 </tbody>
 </table>
 
@@ -121,7 +118,7 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 - **统一设备工具入口**：界面理解、点击输入、打开应用、截图与剪贴板等操作走同一套设备工具，并内置稳定性与误触保护。
 - **视觉兜底与双轨决策**：优先结构化理解，同时在复杂页面或弱结构场景下可用视觉兜底降低误操作。
 - **语音到动作的一体链路**：语音识别后结合屏幕画面理解意图，并能把「按下说话那一刻」的画面对齐到决策输入。
-- **相册与媒体向的落地能力**：支持把相册内容纳入「可检索、可总结、可执行」的工作流（例如按问题查图、做记忆整理，并串到剪映类一键成片等场景）。
+- **相册与媒体场景能力**：支持把相册内容纳入「可检索、可总结、可执行」的工作流（例如按问题查图、做记忆整理，并串到剪映类一键成片等场景）。
 - **深度链接与可复现流程（在能力可用时）**：可维护深度链接与收藏，把长路径或反复操作压缩成可复用的一键入口，适合「录一次、下次一句话直达」。
 - **多会话并行与可控停止**：支持并行会话互不干扰，并可按会话中断任务。
 
@@ -130,7 +127,7 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 <a id="use-cases-demo"></a>
 ## 🎬 使用场景与录屏
 
-### 四组场景对照表
+### 三条演示主线 / 四个演示
 
 <!-- 每排 2 列（各占 50%），共两排展示 4 个 demo；动图为 GIF，使用 videos/ 相对路径 -->
 <table width="100%">
@@ -140,8 +137,8 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 </colgroup>
 <thead>
 <tr style="background:#f6f8fa; border-bottom:1px solid #d0d7de;">
-<th align="left" width="50%">📷 演示 1.1 — 相机感知的操作</th>
-<th align="left" width="50%">📺 演示 1.2 — 投屏或屏幕伴侣</th>
+<th align="left" width="50%">📷 Demo A1 — 相机感知执行</th>
+<th align="left" width="50%">📺 Demo A2 — 屏幕替身 / 屏幕伴随</th>
 </tr>
 </thead>
 <tbody>
@@ -169,10 +166,10 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 </tr>
 <tr style="vertical-align:top;">
     <td style="padding:8px 12px;">
-        <img src="videos/demo1.1_fast.gif" alt="演示 1.1 — 相机感知操作录屏" width="100%" style="display:block; max-width:100%;">
+        <img src="videos/demo1.1_fast.gif" alt="Demo A1 — 基于相机感知的执行录屏" width="100%" style="display:block; max-width:100%;">
     </td>
     <td style="padding:8px 12px;">
-        <img src="videos/demo1.2_fast.gif" alt="演示 1.2 — 投屏与屏幕伴侣录屏" width="100%" style="display:block; max-width:100%;">
+        <img src="videos/demo1.2_fast.gif" alt="Demo A2 — 屏幕替身录屏" width="100%" style="display:block; max-width:100%;">
     </td>
 </tr>
 </tbody>
@@ -185,8 +182,8 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 </colgroup>
 <thead>
 <tr style="background:#f6f8fa; border-bottom:1px solid #d0d7de;">
-<th align="left" width="50%">✂️ 演示 2 — 记忆驱动的一键成片</th>
-<th align="left" width="50%">📦 演示 3 — 行为克隆</th>
+<th align="left" width="50%">✂️ Demo B — 记忆驱动的一键成片</th>
+<th align="left" width="50%">📦 Demo C — 行为克隆/直达美团秒杀页</th>
 </tr>
 </thead>
 <tbody>
@@ -205,7 +202,7 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
         <strong>执行特征</strong><br>
         • 录一次轨迹，沉淀成可复用书签/技能（含页面启动信息）<br>
         • 之后一句话即可直达目标页（如“打开美团秒杀”）<br>
-        • 拉起失败会自动降级兜底，尽量回到上次具体页面
+        • 启动失败时自动降级兜底，尽量回到上次具体页面
     </td>
 </tr>
 <tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
@@ -214,10 +211,10 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 </tr>
 <tr style="vertical-align:top;">
     <td style="padding:8px 12px;">
-        <img src="videos/demo2_fast.gif" alt="演示 2 — 记忆驱动一键成片录屏" width="100%" style="display:block; max-width:100%;">
+        <img src="videos/demo2_fast.gif" alt="Demo B — 记忆驱动一键成片录屏" width="100%" style="display:block; max-width:100%;">
     </td>
     <td style="padding:8px 12px;">
-        <img src="videos/demo3_fast.gif" alt="演示 3 — 行为克隆录屏" width="100%" style="display:block; max-width:100%;">
+        <img src="videos/demo3_fast.gif" alt="Demo C 行为克隆 / 直达美团秒杀页录屏" width="100%" style="display:block; max-width:100%;">
     </td>
 </tr>
 </tbody>
@@ -252,9 +249,9 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 | `gallery-memory` | 「同步一下相册记忆并更新用户画像，先扫最近 20 张。」 |
 | `clipboard-to-shortcut` | 「把剪贴板里的链接做成一个技能，名字叫『淘宝好物直达』。」 |
 | `channel-config` | 「把飞书渠道配置好并启用，应用编号是 xxx，密钥是 xxx。」 |
-| `model-config` | 「新增一个兼容开放式接口的提供商，接口地址是 xxx，默认模型设成 xxx。」 |
+| `model-config` | 「新增一个兼容OpenAI接口的提供商，接口地址是 xxx，默认模型设成 xxx。」 |
 | `scheduled-automation` | 「每周三早上 10 点打开小红书搜索人工智能新闻并总结给我。」 |
-| `capcut-theme-video` | 「把今天拍的风景图做成剪映一键成片，素材放到 A_latest 后开始。」 |
+| `capcut-theme-video` | 「把今天拍的风景图做成剪映一键成片。」 |
 | `skill-creator` | 「帮我把刚刚执行成功的方法总结成新的技能，并生成对应的 SKILL.md。」 |
 
 ---

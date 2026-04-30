@@ -4,13 +4,13 @@
     <a href="https://github.com/OPPO-Mente-Lab/X-OmniClaw/releases/latest"><img src="https://img.shields.io/badge/Release-latest-blue.svg" alt="Latest release" /></a>
     <a href="https://www.android.com/"><img src="https://img.shields.io/badge/Android-8.0%2B-green.svg" alt="Android 8.0+" /></a>
     <a href="https://github.com/OPPO-Mente-Lab/X-OmniClaw/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License Apache 2.0" /></a>
-    <a href="assets/main.pdf"><img src="https://img.shields.io/badge/Paper-PDF-orange.svg" alt="Paper PDF" /></a>
+    <a href="assets/X_OmniClaw_Technical_Report__1_.pdf"><img src="https://img.shields.io/badge/Paper-PDF-orange.svg" alt="Paper PDF" /></a>
   </p>
 </div>
 
-**X-OmniClaw** is a **native Android agent** that combines speech, vision, and action. It works as an **executable graphical-interface engine**: no virtual environment—it runs on real devices and follows a **perceive → act → refine** loop.
+**X-OmniClaw** is an edge-native **Multimodal Android Agent** that integrates multimodal perception, memory, and action. It operates independently of any virtual environments, functioning directly on physical Android devices. By capturing real-time visual telemetry and executing native touch interactions, it performs cross-app operations through on-device tools.
 
-**Omni** stands for holistic perception—the system cares about pixels on screen *and* physical context beyond the display; **X-** adds cross-modal fusion so fragmented signals become a coherent plan. The agent can complete task closures autonomously and reliably in real mobile ecosystems.
+**Omni** refers to the integration of three sensing domains: on-screen UI state, real-world visual context, and audio input. **X-** emphasizes cross-modal fusion, turning fragmented signals into structured intent representations that can drive reliable perception-to-action execution in real mobile ecosystems.
 
 **English** · [简体中文 Chinese](README_zh.md)
 
@@ -33,37 +33,32 @@
 
 ![X-OmniClaw local engine architecture](figure/x-omniclaw-local-engine2.png)
 
-**X-OmniClaw** is a **full-modal mobile agent** for smartphones: no virtual environment; on-device **perceive → plan → act → verify** loop. The sections below summarize **execution methodology**, **four-layer architecture**, and **three omni-modal pillars**.
-
+To ensure task completion in complex mobile GUI environments, X-OmniClaw organizes every interface interaction as a minimal **Observation → Reasoning → Execution** loop during device manipulation. It first perceives the current screen interface and the outcome of the previous action, then infers the next optimal operation, and finally invokes atomic Android actions for actual execution. This loop repeats continuously until the task is accomplished or terminated.
 ### 1. Core methodology: from “chat” to “execution”
 
 X-OmniClaw follows **iterative recursive reasoning** so tasks can finish in complex mobile GUIs.
 
 <table style="width:100%; border-collapse:collapse; border:1px solid #d0d7de; table-layout:fixed; margin-bottom:12px;">
 <colgroup>
-<col style="width:14%">
-<col style="width:24%">
-<col style="width:62%">
+<col style="width:18%">
+<col style="width:82%">
 </colgroup>
 <thead>
 <tr style="background:#f6f8fa; border-bottom:1px solid #d0d7de;">
 <th align="left" style="padding:8px 12px;">Stage</th>
-<th align="left" style="padding:8px 12px;">Action</th>
 <th align="left" style="padding:8px 12px;">Description</th>
 </tr>
 </thead>
 <tbody>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">Observe</td><td style="padding:8px 12px; vertical-align:top;"><strong>Observe</strong></td><td style="padding:8px 12px;">Capture UI state via system snapshot, live screenshot, or accessibility tree.</td></tr>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">Think</td><td style="padding:8px 12px; vertical-align:top;"><strong>Think</strong></td><td style="padding:8px 12px;">LLM/VLM decides using goals, context, and action history.</td></tr>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">Act</td><td style="padding:8px 12px; vertical-align:top;"><strong>Act</strong></td><td style="padding:8px 12px;">Drive taps, swipes, text input, app switches, etc.</td></tr>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">Verify</td><td style="padding:8px 12px; vertical-align:top;"><strong>Verify</strong></td><td style="padding:8px 12px;">Re-capture UI and compare expected vs actual.</td></tr>
-<tr><td style="padding:8px 12px; vertical-align:top;">Loop</td><td style="padding:8px 12px; vertical-align:top;"><strong>Loop</strong></td><td style="padding:8px 12px;">Feed new state into the next round until done or stopped.</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>observation</strong></td><td style="padding:8px 12px;">Build a unified observation stack from screenshots, XML metadata, screen projection. The stack perceives the execution outcome of the previous step and provides decision evidence for subsequent action planning.</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>reasoning</strong></td><td style="padding:8px 12px;">LLM/VLM interprets the current page, checks the previous action state, retrieves relevant memory, selects skills/tools, and decides whether to answer directly or continue execution.</td></tr>
+<tr><td style="padding:8px 12px; vertical-align:top;"><strong>execution</strong></td><td style="padding:8px 12px;">Dispatch concrete operations through Android atomic actions, including taps, swipes, text input, and app switches.</td></tr>
 </tbody>
 </table>
 
 ### 2. System architecture: four-layer closed loop
 
-Modular design closes the loop along **perceive → plan → act → verify**.
+At the system-level lifecycle, X-OmniClaw forms a full closed loop through **perceive → plan → act → verify**. The perception layer aggregates multimodal inputs, the planning layer forms task plans, the execution layer dispatches device actions, and the verification layer checks results and decides whether to continue.
 
 <table style="width:100%; border-collapse:collapse; border:1px solid #d0d7de; table-layout:fixed; margin-bottom:12px;">
 <colgroup>
@@ -80,7 +75,7 @@ Modular design closes the loop along **perceive → plan → act → verify**.
 </thead>
 <tbody>
 <tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">Perception</td><td style="padding:8px 12px; vertical-align:top;"><strong>Multi-modal Input</strong></td><td style="padding:8px 12px;">ASR, screenshot/recording frames, accessibility tree → unified context.</td></tr>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">Planning</td><td style="padding:8px 12px; vertical-align:top;"><strong>Agent Logic</strong></td><td style="padding:8px 12px;">Main agent loop: task decomposition; Kotlin bridge for dispatch.</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">Planning</td><td style="padding:8px 12px; vertical-align:top;"><strong>Agent Loop</strong></td><td style="padding:8px 12px;">Main agent loop: task decomposition; Kotlin bridge for dispatch.</td></tr>
 <tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;">Execution</td><td style="padding:8px 12px; vertical-align:top;"><strong>Device Scheduler</strong></td><td style="padding:8px 12px;">Snapshots, simulated UI actions, app lifecycle.</td></tr>
 <tr><td style="padding:8px 12px; vertical-align:top;">Verification</td><td style="padding:8px 12px; vertical-align:top;"><strong>Success Monitor</strong></td><td style="padding:8px 12px;">Post-action checks and loop detection for drift or completion.</td></tr>
 </tbody>
@@ -104,9 +99,9 @@ Beyond typical agents, X-OmniClaw strengthens **perception depth, memory breadth
 </tr>
 </thead>
 <tbody>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Perception</strong></td><td style="padding:8px 12px; vertical-align:top;">Fusion & intent parsing</td><td style="padding:8px 12px;">UI metadata plus real-world vision (camera); distill raw input into structured intent.</td></tr>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Memory</strong></td><td style="padding:8px 12px; vertical-align:top;">Cross-app continuity</td><td style="padding:8px 12px;">Working memory + long-term memory; semantic cues from private galleries.</td></tr>
-<tr><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Action</strong></td><td style="padding:8px 12px; vertical-align:top;">Heterogeneous interaction</td><td style="padding:8px 12px;">Vision-grounded robust UI; behavior cloning and trajectory replay for reuse.</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Perception</strong></td><td style="padding:8px 12px; vertical-align:top;">Unified multimodal ingress and intent understanding</td><td style="padding:8px 12px;">Integrates UI states, real-world visual contexts, speech inputs, scheduled triggers, floating widgets, and external channels; uses temporal alignment and scene-grounded VLM understanding to convert raw streams into structured intent.</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Memory</strong></td><td style="padding:8px 12px; vertical-align:top;">Multimodal Personalized Memory</td><td style="padding:8px 12px;">Combines working memory for task continuity with long-term personal memory distilled from local multimodal data, enabling personalized multi-turn interactions and memory-grounded automation.</td></tr>
+<tr><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Action</strong></td><td style="padding:8px 12px; vertical-align:top;">Robust mobile execution and reusable skills</td><td style="padding:8px 12px;">Runs an observation-reasoning-execution loop over hybrid UI evidence;  convert user navigation into reusable deeplink/intent-based skills.</td></tr>
 </tbody>
 </table>
 
@@ -129,7 +124,7 @@ Beyond typical agents, X-OmniClaw strengthens **perception depth, memory breadth
 <a id="use-cases-demo"></a>
 ## 🎬 Demos
 
-### Four scenarios
+### Three demo tracks / four demos
 
 <!-- Two rows × two columns; demos are GIFs under videos/ (relative paths) -->
 <table width="100%">
@@ -139,8 +134,8 @@ Beyond typical agents, X-OmniClaw strengthens **perception depth, memory breadth
 </colgroup>
 <thead>
 <tr style="background:#f6f8fa; border-bottom:1px solid #d0d7de;">
-<th align="left" width="50%">📷 Demo 1.1 — Camera-grounded task</th>
-<th align="left" width="50%">📺 Demo 1.2 — Casting / screen companion</th>
+<th align="left" width="50%">📷 Demo A1 — Camera-informed execution</th>
+<th align="left" width="50%">📺 Demo A2 — ScreenAvatar execution / screen companion</th>
 </tr>
 </thead>
 <tbody>
@@ -168,10 +163,10 @@ Beyond typical agents, X-OmniClaw strengthens **perception depth, memory breadth
 </tr>
 <tr style="vertical-align:top;">
     <td style="padding:8px 12px;">
-        <img src="videos/demo1.1_fast.gif" alt="Demo 1.1 — camera-grounded task recording" width="100%" style="display:block; max-width:100%;">
+        <img src="videos/demo1.1_fast.gif" alt="Demo A1 — camera-informed execution recording" width="100%" style="display:block; max-width:100%;">
     </td>
     <td style="padding:8px 12px;">
-        <img src="videos/demo1.2_fast.gif" alt="Demo 1.2 — casting / screen companion recording" width="100%" style="display:block; max-width:100%;">
+        <img src="videos/demo1.2_fast.gif" alt="Demo A2 — ScreenAvatar execution recording" width="100%" style="display:block; max-width:100%;">
     </td>
 </tr>
 </tbody>
@@ -184,8 +179,8 @@ Beyond typical agents, X-OmniClaw strengthens **perception depth, memory breadth
 </colgroup>
 <thead>
 <tr style="background:#f6f8fa; border-bottom:1px solid #d0d7de;">
-<th align="left" width="50%">✂️ Demo 2 — Memory-driven one-tap video</th>
-<th align="left" width="50%">📦 Demo 3 — Behavior cloning</th>
+<th align="left" width="50%">✂️ Demo B — Memory-based one-tap video</th>
+<th align="left" width="50%">📦 Demo C — Instant portal to a Meituan flash-sale page / Behavior cloning</th>
 </tr>
 </thead>
 <tbody>
@@ -213,10 +208,10 @@ Beyond typical agents, X-OmniClaw strengthens **perception depth, memory breadth
 </tr>
 <tr style="vertical-align:top;">
     <td style="padding:8px 12px;">
-        <img src="videos/demo2_fast.gif" alt="Demo 2 — memory-driven one-tap video recording" width="100%" style="display:block; max-width:100%;">
+        <img src="videos/demo2_fast.gif" alt="Demo B — memory-based one-tap video recording" width="100%" style="display:block; max-width:100%;">
     </td>
     <td style="padding:8px 12px;">
-        <img src="videos/demo3_fast.gif" alt="Demo 3 — behavior cloning recording" width="100%" style="display:block; max-width:100%;">
+        <img src="videos/demo3_fast.gif" alt="Demo C — instant portal to a Meituan flash-sale page recording / behavior cloning recording" width="100%" style="display:block; max-width:100%;">
     </td>
 </tr>
 </tbody>
@@ -253,7 +248,7 @@ Path: `app/src/main/assets/skills/<skill>/SKILL.md`.
 | `channel-config` | “Configure Feishu channel: app id xxx, secret xxx.” |
 | `model-config` | “Add an OpenAI-compatible provider at URL xxx; default model xxx.” |
 | `scheduled-automation` | “Every Wednesday 10:00 open Xiaohongshu, search AI news, summarize.” |
-| `capcut-theme-video` | “Make a one-tap video from today’s landscapes; put assets in A_latest first.” |
+| `capcut-theme-video` | “Make a one-tap video from today’s landscapes.” |
 | `skill-creator` | “Summarize what just worked as a new skill and write SKILL.md.” |
 
 ---
