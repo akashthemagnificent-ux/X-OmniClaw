@@ -278,19 +278,16 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 
 | 提供商 ID | 示例模型 ID |
 | :--- | :--- |
-| `bot-adaptor` | `doubao-seed-2.0-lite` |
 | `openrouter` | `z-ai/glm-4.5-air:free` |
 | `anthropic` | `claude-opus-4` |
 | `openai` | `gpt-4.1` |
-| `google` | `gemini-2.5-pro` |
 | `moonshot` | `kimi-k2.5` |
-| `xiaomi` | `mimo-v2-flash` |
 | `minimax` | `MiniMax-M2.5` |
 | `ollama` | 无固定 ID（`/api/tags`） |
 
-### 配置文件参考：Agent 主模型（进阶）
+### 配置文件参考：Agent 主模型
 
-与「模型配置」中选择的提供商 / 默认模型一致；示例：**bot-adaptor** + **doubao-seed-2.0-lite**。
+与「模型配置」中选择的提供商 / 默认模型一致。
 
 ```json
 {
@@ -298,7 +295,16 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
     "providers": {
       "openrouter": {
         "baseUrl": "https://openrouter.ai/api/v1",
-        "apiKey": "sk-or-v1-xxx"
+        "api": "openai-completions",
+        "apiKey": "<OPENROUTER_API_KEY>",
+        "models": [
+          {
+            "id": "z-ai/glm-4.5-air:free",
+            "name": "GLM 4.5 Air（免费）",
+            "contextWindow": 131072,
+            "maxTokens": 8192
+          }
+        ]
       }
     }
   },
@@ -312,9 +318,10 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 }
 ```
 
-### 配置文件参考：语音 STT（进阶）
+### 配置文件参考：语音 STT
 
-对应「STT 配置」页；`models.providers.stt` 与 Agent / VLM **分开**。示例：**硅基流动** + **FunAudioLLM/SenseVoiceSmall**。  
+对应「STT 配置」页。示例：**硅基流动** + **FunAudioLLM/SenseVoiceSmall**。  
+硅基流动申请地址：[https://cloud.siliconflow.cn](https://cloud.siliconflow.cn)。  
 当前示例语音 STT 线路可免费使用（以服务商当期免费额度/策略为准）。
 
 ```json
@@ -339,24 +346,24 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 }
 ```
 
-### 配置文件参考：视觉 VLM（进阶）
+### 配置文件参考：视觉 VLM
 
-对应「VLM 配置」页；`models.providers.vlm` 用于截图 / UI 理解。示例：**doubao-seed-2.0-lite**。
+对应「VLM 配置」页。以下为 **OpenRouter** + OpenAI 兼容视觉模型的示例：
 
 ```json
 {
   "models": {
     "providers": {
       "vlm": {
-        "baseUrl": "https://api.example.com/v1/chat/completions",
-        "api": "bot-adaptor",
-        "apiKey": "<密钥>",
+        "baseUrl": "https://openrouter.ai/api/v1",
+        "api": "openai-completions",
+        "apiKey": "sk-or-v1-xxx",
         "models": [
           {
-            "id": "doubao-seed-2.0-lite",
-            "name": "豆包 Seed 2.0 Lite",
-            "contextWindow": 32768,
-            "maxTokens": 65536
+            "id": "qwen/qwen3.6-flash",
+            "name": "Qwen 3.6 Flash（经 OpenRouter）",
+            "contextWindow": 200000,
+            "maxTokens": 16384
           }
         ]
       }
@@ -377,9 +384,9 @@ X-OmniClaw 遵循 **循环递归推理** 模型，确保在复杂移动端 GUI �
 
 ### ⚙️ 2）首次配置（优先用应用内表单）
 
-1. 打开应用，完成 **「模型配置」**：填写 **Agent** 的 API Key 并选择支持**多模态（图像）**的默认模型；再按需进入 **STT**、**VLM** 分别填写密钥（可与 Agent 不同）。  
+1. 打开应用，完成 **「模型配置」**：填写 **Agent** 的 API Key 并选择支持**多模态（图像）**的默认模型；再按需进入 **STT**、**VLM** 分别填写密钥。  
 2. 授予权限（与应用内检测一致，共 **7** 项）：**无障碍**，**悬浮窗**，**录屏**，**相册**，**全部文件访问**，**摄像头**，**麦克风**。  
-3. 可选：在应用内配置 **飞书 / Discord** 等渠道，而非只改 JSON。
+3. 可选：在应用内配置 **飞书 / Discord** 等渠道。
 
 ### 📄 3）配置文件位置（自动生成）
 
@@ -434,12 +441,6 @@ notepad local.properties
 
 ```text
 releases/X-OmniClaw-v<version>-debug.apk
-```
-
-构建观察者组件：
-
-```bash
-./gradlew :extensions:observer:assembleDebug
 ```
 
 ---

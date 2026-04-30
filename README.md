@@ -277,19 +277,16 @@ UI fields map to the JSON below; edit the file directly only for bulk migration,
 
 | Provider ID | Example model ID |
 | :--- | :--- |
-| `bot-adaptor` | `doubao-seed-2.0-lite` |
 | `openrouter` | `z-ai/glm-4.5-air:free` |
 | `anthropic` | `claude-opus-4` |
 | `openai` | `gpt-4.1` |
-| `google` | `gemini-2.5-pro` |
 | `moonshot` | `kimi-k2.5` |
-| `xiaomi` | `mimo-v2-flash` |
 | `minimax` | `MiniMax-M2.5` |
 | `ollama` | No fixed ID (`/api/tags`) |
 
-### Config snippet: Agent model (advanced)
+### Config snippet: Agent model
 
-Matches in-app provider / default model; example combo **bot-adaptor** + **doubao-seed-2.0-lite**.
+Matches in-app provider / default model.
 
 ```json
 {
@@ -297,7 +294,16 @@ Matches in-app provider / default model; example combo **bot-adaptor** + **douba
     "providers": {
       "openrouter": {
         "baseUrl": "https://openrouter.ai/api/v1",
-        "apiKey": "sk-or-v1-xxx"
+        "api": "openai-completions",
+        "apiKey": "<OPENROUTER_API_KEY>",
+        "models": [
+          {
+            "id": "z-ai/glm-4.5-air:free",
+            "name": "GLM 4.5 Air (free)",
+            "contextWindow": 131072,
+            "maxTokens": 8192
+          }
+        ]
       }
     }
   },
@@ -311,9 +317,10 @@ Matches in-app provider / default model; example combo **bot-adaptor** + **douba
 }
 ```
 
-### Config snippet: Speech STT (advanced)
+### Config snippet: Speech STT
 
-Maps to **STT** screen; `models.providers.stt` is separate from Agent / VLM. Example: **SiliconFlow** + **FunAudioLLM/SenseVoiceSmall**.  
+Maps to **STT** screen. Example: **SiliconFlow** + **FunAudioLLM/SenseVoiceSmall**.  
+SiliconFlow signup: [https://cloud.siliconflow.cn](https://cloud.siliconflow.cn).  
 Free tiers depend on the vendor’s current policy.
 
 ```json
@@ -338,24 +345,24 @@ Free tiers depend on the vendor’s current policy.
 }
 ```
 
-### Config snippet: Vision VLM (advanced)
+### Config snippet: Vision VLM
 
-Maps to **VLM**; `models.providers.vlm` for screenshots/UI. Example model **doubao-seed-2.0-lite**.
+Maps to **VLM**. Example using **OpenRouter** with an OpenAI-compatible vision model:
 
 ```json
 {
   "models": {
     "providers": {
       "vlm": {
-        "baseUrl": "https://api.example.com/v1/chat/completions",
-        "api": "bot-adaptor",
-        "apiKey": "<secret>",
+        "baseUrl": "https://openrouter.ai/api/v1",
+        "api": "openai-completions",
+        "apiKey": "sk-or-v1-xxx",
         "models": [
           {
-            "id": "doubao-seed-2.0-lite",
-            "name": "Doubao Seed 2.0 Lite",
-            "contextWindow": 32768,
-            "maxTokens": 65536
+            "id": "qwen/qwen3.6-flash",
+            "name": "Qwen 3.6 Flash (via OpenRouter)",
+            "contextWindow": 200000,
+            "maxTokens": 16384
           }
         ]
       }
@@ -378,7 +385,7 @@ Latest APK:
 
 1. **Model configuration**: set Agent **API Key** and a default model with **multimodal (image)** support; optionally configure **STT** and **VLM** separately.  
 2. Grant permissions (seven, same as in-app checks): **Accessibility**, **Overlay**, **Screen capture**, **Photos**, **All files access**, **Camera**, **Microphone**.  
-3. Optional: configure **Feishu / Discord** (and similar) in-app instead of editing JSON only.
+3. Optional: configure **Feishu / Discord** (and similar) in-app.
 
 ### 📄 3) Config file location (auto-generated)
 
@@ -433,12 +440,6 @@ Example output path:
 
 ```text
 releases/X-OmniClaw-v<version>-debug.apk
-```
-
-Observer extension:
-
-```bash
-./gradlew :extensions:observer:assembleDebug
 ```
 
 ---
