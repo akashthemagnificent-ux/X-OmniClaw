@@ -61,7 +61,7 @@
 
 ### 2. 系统技术架构：四层闭环驱动
 
-在系统级生命周期中，通过「感知 → 策略 → 执行 → 验收」实现全链路闭环。感知层汇聚多模态输入，策略层形成任务计划，执行层调度设备动作，验收层检查结果并判断是否继续。
+在系统级，通过「感知 → 策略 → 执行 → 验收」实现全链路闭环。感知层汇聚多模态输入，策略层形成任务计划，执行层调度设备动作，验收层检查结果并判断是否继续。
 
 <table style="width:100%; border-collapse:collapse; border:1px solid #d0d7de; table-layout:fixed; margin-bottom:12px;">
 <colgroup>
@@ -162,7 +162,7 @@
 </tr>
 <tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
     <td style="padding:8px 12px;"><strong>相机识物</strong> → <strong>电商询价</strong>闭环。</td>
-    <td style="padding:8px 12px;"><strong>屏幕伴侣跟随</strong> → <strong>多步读屏作答</strong>。</td>
+    <td style="padding:8px 12px;"><strong>屏幕伴侣跟随</strong> → <strong>多步读屏自动作答</strong>。</td>
 </tr>
 <tr style="vertical-align:top;">
     <td style="padding:8px 12px;">
