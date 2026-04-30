@@ -8,7 +8,7 @@
   </p>
 </div>
 
-**X-OmniClaw** is an edge-native **Multimodal Android Agent** that integrates multimodal perception, memory, and action. It operates independently of any virtual environments, functioning directly on physical Android devices. By capturing real-time visual telemetry and executing native touch interactions, it performs cross-app operations through on-device tools.
+**X-OmniClaw** is an edge-native **Multimodal Android Agent** that integrates multimodal perception, memory, and action. It operates independently of virtual environments, functioning directly on physical Android devices. By capturing real-time visual telemetry and executing native touch interactions, it performs cross-app operations through on-device tools.
 
 **Omni** refers to the integration of three sensing domains: on-screen UI state, real-world visual context, and audio input. **X-** emphasizes cross-modal fusion, turning fragmented signals into structured intent representations that can drive reliable perception-to-action execution in real mobile ecosystems.
 
@@ -33,10 +33,11 @@
 
 ![X-OmniClaw local engine architecture](figure/x-omniclaw-local-engine2.png)
 
-To ensure task completion in complex mobile GUI environments, X-OmniClaw organizes every interface interaction as a minimal **Observation → Reasoning → Execution** loop during device manipulation. It first perceives the current screen interface and the outcome of the previous action, then infers the next optimal operation, and finally invokes atomic Android actions for actual execution. This loop repeats continuously until the task is accomplished or terminated.
+X-OmniClaw is an edge-native multimodal Android Agent deployed on mobile devices. In the following, we summarize its core execution methodology, four-layer system architecture, and three omni-modal pillars in a table.
+
 ### 1. Core methodology: from “chat” to “execution”
 
-X-OmniClaw follows **iterative recursive reasoning** so tasks can finish in complex mobile GUIs.
+To ensure task completion in complex mobile GUI environments, X-OmniClaw organizes every interface interaction as a minimal **Observation → Reasoning → Execution** loop during device manipulation. It first perceives the current screen interface and the outcome of the previous action, then infers the next optimal operation, and finally invokes atomic Android actions for actual execution. This loop repeats continuously until the task is accomplished or terminated.
 
 <table style="width:100%; border-collapse:collapse; border:1px solid #d0d7de; table-layout:fixed; margin-bottom:12px;">
 <colgroup>
@@ -50,7 +51,7 @@ X-OmniClaw follows **iterative recursive reasoning** so tasks can finish in comp
 </tr>
 </thead>
 <tbody>
-<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>observation</strong></td><td style="padding:8px 12px;">Build a unified observation stack from screenshots, XML metadata, screen projection. The stack perceives the execution outcome of the previous step and provides decision evidence for subsequent action planning.</td></tr>
+<tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>observation</strong></td><td style="padding:8px 12px;">Build a unified observation stack from screenshots, XML metadata, and screen projection. The stack perceives the execution outcome of the previous step and provides decision evidence for subsequent action planning.</td></tr>
 <tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>reasoning</strong></td><td style="padding:8px 12px;">LLM/VLM interprets the current page, checks the previous action state, retrieves relevant memory, selects skills/tools, and decides whether to answer directly or continue execution.</td></tr>
 <tr><td style="padding:8px 12px; vertical-align:top;"><strong>execution</strong></td><td style="padding:8px 12px;">Dispatch concrete operations through Android atomic actions, including taps, swipes, text input, and app switches.</td></tr>
 </tbody>
@@ -58,7 +59,7 @@ X-OmniClaw follows **iterative recursive reasoning** so tasks can finish in comp
 
 ### 2. System architecture: four-layer closed loop
 
-At the system-level lifecycle, X-OmniClaw forms a full closed loop through **perceive → plan → act → verify**. The perception layer aggregates multimodal inputs, the planning layer forms task plans, the execution layer dispatches device actions, and the verification layer checks results and decides whether to continue.
+At the system level, X-OmniClaw forms a full closed loop through **perceive → plan → act → verify**. The perception layer aggregates multimodal inputs, the planning layer forms task plans, the execution layer dispatches device actions, and the verification layer checks results and decides whether to continue.
 
 <table style="width:100%; border-collapse:collapse; border:1px solid #d0d7de; table-layout:fixed; margin-bottom:12px;">
 <colgroup>
@@ -101,7 +102,7 @@ Beyond typical agents, X-OmniClaw strengthens **perception depth, memory breadth
 <tbody>
 <tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Perception</strong></td><td style="padding:8px 12px; vertical-align:top;">Unified multimodal ingress and intent understanding</td><td style="padding:8px 12px;">Integrates UI states, real-world visual contexts, speech inputs, scheduled triggers, floating widgets, and external channels; uses temporal alignment and scene-grounded VLM understanding to convert raw streams into structured intent.</td></tr>
 <tr style="border-bottom:1px solid #eef1f4;"><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Memory</strong></td><td style="padding:8px 12px; vertical-align:top;">Multimodal Personalized Memory</td><td style="padding:8px 12px;">Combines working memory for task continuity with long-term personal memory distilled from local multimodal data, enabling personalized multi-turn interactions and memory-grounded automation.</td></tr>
-<tr><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Action</strong></td><td style="padding:8px 12px; vertical-align:top;">Robust mobile execution and reusable skills</td><td style="padding:8px 12px;">Runs an observation-reasoning-execution loop over hybrid UI evidence;  convert user navigation into reusable deeplink/intent-based skills.</td></tr>
+<tr><td style="padding:8px 12px; vertical-align:top;"><strong>Omni Action</strong></td><td style="padding:8px 12px; vertical-align:top;">Robust mobile execution and reusable skills</td><td style="padding:8px 12px;">Runs an observation-reasoning-execution loop over hybrid UI evidence and converts user navigation into reusable deeplink/intent-based skills</td></tr>
 </tbody>
 </table>
 
@@ -152,14 +153,14 @@ Beyond typical agents, X-OmniClaw strengthens **perception depth, memory breadth
     </td>
     <td style="padding:8px 12px;">
         <strong>Behavior</strong><br>
-        • Follow cast/main screen<br>
+        • Follow the active screen as the primary context<br>
         • Push-to-talk + screen understanding<br>
         • Multi-step execution with live feedback
     </td>
 </tr>
 <tr style="vertical-align:top; border-bottom:1px solid #eef1f4;">
-    <td style="padding:8px 12px;"><strong>Object ID</strong> → <strong>e-commerce lookup</strong>.</td>
-    <td style="padding:8px 12px;"><strong>Companion follow</strong> → <strong>multi-step screen QA</strong>.</td>
+    <td style="padding:8px 12px;"><strong>Camera-based item recognition</strong> → <strong> Camera object recognition</strong>.</td>
+    <td style="padding:8px 12px;"><strong>screen Companion</strong> → <strong>multi-step auto execution </strong>.</td>
 </tr>
 <tr style="vertical-align:top;">
     <td style="padding:8px 12px;">
