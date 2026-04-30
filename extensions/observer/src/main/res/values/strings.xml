@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">S4Claw</string>
+    <string name="accessibility_service_description">Screen4Claw - Provides accessibility control and screen capture functions</string>
+
+    <!-- Permission Activity -->
+    <string name="permission_activity_title">Permission Setup</string>
+    <string name="accessibility_permission_title">Accessibility Permission</string>
+    <string name="accessibility_permission_desc">Required for UI control and automation</string>
+    <string name="screen_capture_permission_title">Screen Capture Permission</string>
+    <string name="screen_capture_permission_desc">Required for taking screenshots</string>
+
+    <!-- Permission Status -->
+    <string name="permission_status_granted">Granted</string>
+    <string name="permission_status_not_granted">Not Granted</string>
+    <string name="permission_request">Request Permission</string>
+    <string name="permission_open_settings">Open Settings</string>
+
+    <!-- Buttons -->
+    <string name="button_enable">Enable</string>
+    <string name="button_disable">Disable</string>
+    <string name="button_retry">Retry</string>
+    <string name="button_close">Close</string>
+
+    <!-- Toast Messages -->
+    <string name="toast_permission_granted">Permission granted</string>
+    <string name="toast_permission_denied">Permission denied</string>
+    <string name="toast_accessibility_enabled">Accessibility service enabled</string>
+    <string name="toast_accessibility_disabled">Accessibility service disabled</string>
+    <string name="toast_screen_capture_granted">Screen capture permission granted</string>
+    <string name="toast_screen_capture_denied">Screen capture permission denied</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">Service Status</string>
+    <string name="notification_channel_desc">Shows service running status</string>
+    <string name="notification_title">Screen4Claw Service Running</string>
+    <string name="notification_content">Accessibility and screen capture services active</string>
+</resources>

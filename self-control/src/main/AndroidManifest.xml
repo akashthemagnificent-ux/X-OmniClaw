@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Self-Control Module: Expose PhoneForClaw internal capabilities -->
+
+    <application>
+        <!-- ContentProvider: 通过 content:// URI 调用 -->
+        <provider
+            android:name=".SelfControlProvider"
+            android:authorities="com.shijing.xomniclaw.selfcontrol"
+            android:exported="true"
+            android:enabled="true" />
+
+        <!-- BroadcastReceiver: 通过广播调用 -->
+        <receiver
+            android:name=".SelfControlReceiver"
+            android:exported="true"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="com.shijing.xomniclaw.SELF_CONTROL" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Service: 提供 Binder 接口 -->
+        <service
+            android:name=".SelfControlService"
+            android:exported="false"
+            android:enabled="true" />
+    </application>
+</manifest>
