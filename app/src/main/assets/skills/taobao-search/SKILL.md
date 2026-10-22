@@ -48,7 +48,7 @@ Use this skill when user asks about:
 Taobao search Deep Link format:
 
 ```
-taobao://s.taobao.com/search?q={关键词}
+taobao://s.taobao.com/search?q={keyword}
 ```
 
 Keywords use `+` to join multiple search terms, for example:
@@ -125,13 +125,13 @@ This kind of reply is as good as no answer — the user can see the screen thems
 ✅ **Must include concrete numbers and details**, reply format:
 
 ```
-I searched Taobao for "{搜索词}" and picked a few worth a look:
+I searched Taobao for "{search term}" and picked a few worth a look:
 
-1. {完整商品名含型号} - ¥{具体价格}, {颜色}, {店铺名}, {销量}
-2. {完整商品名含型号} - ¥{具体价格}, {颜色}, {店铺名}, {销量}
-3. {完整商品名含型号} - ¥{具体价格}, {颜色}, {店铺名}, {销量}
+1. {full product name incl. model} - ¥{price}, {colour}, {shop name}, {sales}
+2. {full product name incl. model} - ¥{price}, {colour}, {shop name}, {sales}
+3. {full product name incl. model} - ¥{price}, {colour}, {shop name}, {sales}
 
-Price range ¥{最低}-¥{最高}. {1-2句具体购物建议，如哪款性价比高、哪家是官方旗舰店等}. Want me to open one of them for details?
+Price range ¥{lowest}-¥{highest}. {1-2 sentences of concrete buying advice, e.g. which is the better value, which shop is the official flagship}. Want me to open one of them for details?
 ```
 
 ## 💡 Complete Example
