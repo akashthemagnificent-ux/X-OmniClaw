@@ -71,23 +71,23 @@ class ImageMemorySummarizer(private val context: Context) {
         val imageBytes = loadCompressedImageBytes(record) ?: return buildFallbackSummary(record)
         val imageB64 = Base64.encodeToString(imageBytes, Base64.NO_WRAP)
         val systemPrompt = """
-            你是一个“用户图片长期记忆提炼器”。
-            任务：根据图片内容，提炼出适合长期记忆保存的安全摘要。
-            必须输出 JSON，结构如下：
+            You are a "long-term memory extractor for user images".
+            Task: from the image content, extract a safe summary suitable for long-term memory.
+            You must output JSON with this structure:
             {"summary":"...","extracted_text":"...","reason":"..."}
-            规则：
-            - summary 用中文，40~100 字
-            - 只保留对长期理解用户有价值的信息
-            - summary 必须简洁，避免罗列过多枝节
-            - 避免输出完整身份证号、手机号、银行卡号、验证码、订单号等敏感字段
-            - 如果图片主要是隐私或支付类信息，summary 只写“敏感内容，已省略细节”
+            Rules:
+            - summary is 40-100 words, in English
+            - keep only information useful for understanding the user long term
+            - summary must be concise; do not list every minor detail
+            - never output full ID numbers, phone numbers, bank card numbers, verification codes or order numbers
+            - if the image is mainly private or payment-related, summary is only "Sensitive content, details omitted"
         """.trimIndent()
 
         val userPrompt = buildString {
-            appendLine("请总结这张图片，输出长期记忆安全摘要。")
-            appendLine("图片名称：${record.displayName}")
-            appendLine("相册目录：${record.bucketName ?: "unknown"}")
-            appendLine("时间：${record.formattedTimestamp()}")
+            appendLine("Summarise this image as a safe long-term memory summary.")
+            appendLine("Image name: ${record.displayName}")
+            appendLine("Gallery bucket: ${record.bucketName ?: "unknown"}")
+            appendLine("Time: ${record.formattedTimestamp()}")
         }
 
         val response = llmProvider.chatWithTools(

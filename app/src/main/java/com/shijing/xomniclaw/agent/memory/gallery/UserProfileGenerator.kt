@@ -201,25 +201,25 @@ class UserProfileGenerator(
     ): List<String> {
         val normalized = "$displayName $summary ${albumOrBucket.orEmpty()}".lowercase(Locale.getDefault())
         val tags = linkedSetOf<String>()
-        if (normalized.contains("截图") || normalized.contains("screen") || normalized.contains("screenshot")) {
+        if (normalized.containsAny("截图", "screen", "screenshot")) {
             tags += "screenshot"
         }
-        if (normalized.contains("工作") || normalized.contains("文档") || normalized.contains("表格") || normalized.contains("电脑")) {
+        if (normalized.containsAny("工作", "文档", "表格", "电脑", "work", "document", "spreadsheet", "laptop")) {
             tags += "work"
         }
-        if (normalized.contains("学习") || normalized.contains("课程") || normalized.contains("书") || normalized.contains("笔记")) {
+        if (normalized.containsAny("学习", "课程", "笔记", "study", "course", "note")) {
             tags += "learning"
         }
-        if (normalized.contains("购物") || normalized.contains("小票") || normalized.contains("发票") || normalized.contains("订单")) {
+        if (normalized.containsAny("购物", "小票", "发票", "订单", "shopping", "receipt", "invoice", "order")) {
             tags += "shopping"
         }
-        if (normalized.contains("聊天") || normalized.contains("消息") || normalized.contains("社交")) {
+        if (normalized.containsAny("聊天", "消息", "社交", "chat", "message", "social")) {
             tags += "social"
         }
-        if (normalized.contains("出行") || normalized.contains("旅行") || normalized.contains("酒店") || normalized.contains("机票")) {
+        if (normalized.containsAny("出行", "旅行", "酒店", "机票", "travel", "hotel", "flight")) {
             tags += "travel"
         }
-        if (normalized.contains("相机") || normalized.contains("拍摄") || normalized.contains("照片")) {
+        if (normalized.containsAny("相机", "拍摄", "照片", "camera", "photo")) {
             tags += "camera"
         }
         if (tags.isEmpty()) {
@@ -236,6 +236,9 @@ class UserProfileGenerator(
         }
         return "This profile is inferred from gallery memories, long-term memory, and recent logs. Evidence confidence: $confidence."
     }
+
+    private fun String.containsAny(vararg needles: String): Boolean =
+        needles.any { contains(it) }
 
     private fun extractPreferredName(userContext: String, longTermMemory: String): String {
         val candidateTexts = listOf(userContext, longTermMemory)
