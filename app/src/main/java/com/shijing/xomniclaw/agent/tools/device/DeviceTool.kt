@@ -168,7 +168,7 @@ class DeviceTool(private val context: Context) : Tool {
                         ),
                         "refs" to PropertySchema(
                             type = "array",
-                            description = "For kind=multi_tap: refs from the **current** snapshot only (e.g. 剪映从左到右各格勾选圈 ref 列表)；ref 编号无奇偶规律，勿套用旧 snapshot。**重复 ref 会自动去重（保序）**，避免连点同一格导致取消选中。Max $MULTI_TAP_MAX per call.",
+                            description = "For kind=multi_tap: refs from the **current** snapshot only (e.g. CapCut grid selection-circle refs from left to right); ref numbers have no odd/even pattern, do not apply an old snapshot. **Duplicate refs are automatically de-duplicated (order preserved)**, avoiding consecutive taps on the same cell that would toggle it off. Max $MULTI_TAP_MAX per call.",
                             items = PropertySchema("string", "ref id")
                         ),
                         "ref" to PropertySchema(
@@ -240,8 +240,8 @@ class DeviceTool(private val context: Context) : Tool {
                         "uri" to PropertySchema(
                             type = "string",
                             description = "Deep link for action=open: uses ACTION_VIEW. " +
-                                "剪映一键成片入口（示例）: uri=\"$CAPCUT_DEEPLINK_ONE_TAP_SMART\" + package_name=\"com.lemon.lv\" " +
-                                "可直达相关页，无需再点首页「一键成片」。scheme=videocut 且未写 package_name 时默认 com.lemon.lv。"
+                                "CapCut '一键成片' entry (example): uri=\"$CAPCUT_DEEPLINK_ONE_TAP_SMART\" + package_name=\"com.lemon.lv\" " +
+                                "reaches the relevant page directly, no need to tap the home-page '一键成片' button. When scheme=videocut and package_name is omitted, defaults to com.lemon.lv."
                         ),
                         "url" to PropertySchema(
                             type = "string",
@@ -250,7 +250,7 @@ class DeviceTool(private val context: Context) : Tool {
                         "query" to PropertySchema(
                             type = "string",
                             description = "For action=screenshot: what to verify or which UI region matters (VLM/grounding hint). " +
-                                "Be specific (e.g. 'confirm 消息已发出', '右上角搜索'). If omitted, a generic screen analysis is used."
+                                "Be specific (e.g. 'confirm message sent', 'search in the top-right corner'). If omitted, a generic screen analysis is used."
                         ),
                         "format" to PropertySchema(
                             type = "string",
@@ -378,9 +378,9 @@ class DeviceTool(private val context: Context) : Tool {
         if (!isPermissionDialogPackage(packageHeader)) return null
         val lemonCount = topPackages.find { it.first == "com.lemon.lv" }?.second ?: 0
         if (lemonCount < 5) return null
-        return "[权限/安全顶层] 当前 **package=$packageHeader**（系统权限或安全页在上层）。树中虽混有 **剪映 com.lemon.lv** 节点，" +
-            "在弹窗未处理前 **勿点** 剪映区域的 ref（易点穿、坐标错位或与包名校验冲突）。请先点本页 **允许 / 拒绝 / 仅在使用中允许** 等带文案的按钮；" +
-            "待 snapshot 首行 **package=com.lemon.lv** 后再点「一键成片」。"
+        return "[permission/security overlay] Current **package=$packageHeader** (system permission or security page is on top). Although **CapCut com.lemon.lv** nodes are mixed in the tree, " +
+            "do not tap refs in the CapCut area before the dialog is dismissed (easy to tap through, coordinate mismatch, or package validation conflict). First tap buttons with labels on this page such as **Allow / Deny / Allow only while using**; " +
+            "then tap '一键成片' after the snapshot's first line shows **package=com.lemon.lv**."
     }
 
     // ==================== snapshot ====================
@@ -399,16 +399,16 @@ class DeviceTool(private val context: Context) : Tool {
             proxy.dumpViewTree(useCache = false)
         } catch (e: IllegalStateException) {
             Log.e(TAG, "Accessibility service not available", e)
-            return ToolResult.error("无障碍服务未开启。请到 设置 → 无障碍 → OmniClaw 开启无障碍权限，才能获取屏幕元素。")
+            return ToolResult.error("Accessibility service is not enabled. Go to Settings → Accessibility → OmniClaw to grant accessibility permission, so screen elements can be retrieved.")
         } catch (e: Exception) {
             Log.e(TAG, "Failed to dump view tree", e)
-            return ToolResult.error("获取 UI 树失败: ${e.message}。请检查无障碍服务是否正常运行。")
+            return ToolResult.error("Failed to get UI tree: ${e.message}. Please check that the accessibility service is running normally.")
         }
 
         if (viewNodes.isEmpty()) {
             val accessibilityOn = try { proxy.isConnected.value == true && proxy.isServiceReady() } catch (_: Exception) { false }
-            val status = if (accessibilityOn) "无障碍服务: ✅ 已开启（但当前页面无可识别元素，可能页面正在加载，建议等 1-2 秒重试）" 
-                         else "无障碍服务: ❌ 未开启。请到 设置 → 无障碍 → OmniClaw 开启无障碍权限。"
+            val status = if (accessibilityOn) "Accessibility: ✅ enabled (but no recognizable elements on the current page; the page may still be loading, retry in 1-2 seconds)"
+                         else "Accessibility: ❌ not enabled. Go to Settings → Accessibility → OmniClaw to grant accessibility permission."
             return ToolResult.error(status)
         }
 
@@ -464,7 +464,7 @@ class DeviceTool(private val context: Context) : Tool {
                 append(" top_packages=${formatTopPackages(topPackages)}")
             }
             appendLine("]")
-            appendLine("提示：[约束] 每次执行 act/open 等会改变界面的操作前，必须先 snapshot；首行 seq 仅便于日志对照，勿作为工具入参或校验依据。")
+            appendLine("Hint: [constraint] Before each act/open or other interface-changing operation, you must first snapshot; the leading seq line is only for log correlation, do not use it as a tool input or validation basis.")
             buildOverlaySnapshotInfo(packageForHeader, topPackages)?.let { appendLine(it) }
             buildPermissionOverlaySnapshotHint(packageForHeader, topPackages)?.let { appendLine(it) }
 

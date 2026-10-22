@@ -1248,7 +1248,7 @@ fun StatusTab(
         } catch (e: Exception) {
             if (e is CancellationException) throw e
             Log.e("StatusTab", "Failed to load scheduled tasks", e)
-            loadErrorMessage.value = "读取定时任务失败：${e.message}"
+            loadErrorMessage.value = "Failed to read scheduled tasks: ${e.message}"
         }
 
         try {
@@ -1263,17 +1263,17 @@ fun StatusTab(
                 manualSyncMaxImages = settings.manualSyncMaxImages,
                 automationTaskSummary = if (settings.featureEnabled) {
                     automationTask?.let {
-                        "已启用，每隔 ${it.intervalMinutes ?: settings.scanIntervalMinutes} 分钟扫描一次"
-                    } ?: "已启用，等待后台自动任务创建"
+                        "Enabled, scanning every ${it.intervalMinutes ?: settings.scanIntervalMinutes} minutes"
+                    } ?: "Enabled, waiting for background task creation"
                 } else {
-                    "未启用"
+                    "Not enabled"
                 }
             )
         } catch (e: Exception) {
             if (e is CancellationException) throw e
             Log.e("StatusTab", "Failed to load gallery memory settings", e)
             if (loadErrorMessage.value == null) {
-                loadErrorMessage.value = "读取相册记忆设置失败：${e.message}"
+                loadErrorMessage.value = "Failed to read gallery memory settings: ${e.message}"
             }
         }
 
@@ -1308,7 +1308,7 @@ fun StatusTab(
             if (e is CancellationException) throw e
             Log.e("StatusTab", "Failed to load memory status", e)
             if (loadErrorMessage.value == null) {
-                loadErrorMessage.value = "读取 Memory 失败：${e.message}"
+                loadErrorMessage.value = "Failed to read Memory: ${e.message}"
             }
         }
     }
@@ -1320,10 +1320,10 @@ fun StatusTab(
             val content = withContext(Dispatchers.IO) { loader(manager) }
             memoryDetailState.value = MemoryDetailState(
                 title = title,
-                content = if (content.isNotBlank()) content else "暂无内容"
+                content = if (content.isNotBlank()) content else "No content"
             )
         } catch (e: Exception) {
-            Toast.makeText(context, "读取 Memory 内容失败：${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Failed to read Memory content: ${e.message}", Toast.LENGTH_SHORT).show()
         } finally {
             memoryDetailLoading.value = false
         }
@@ -1353,14 +1353,14 @@ fun StatusTab(
                 scanIntervalMinutes = updated.scanIntervalMinutes,
                 manualSyncMaxImages = updated.manualSyncMaxImages,
                 automationTaskSummary = if (updated.featureEnabled) {
-                    "已启用，每隔 ${updated.scanIntervalMinutes} 分钟扫描一次"
+                    "Enabled, scanning every ${updated.scanIntervalMinutes} minutes"
                 } else {
-                    "未启用"
+                    "Not enabled"
                 }
             )
             refreshStatus()
         } catch (e: Exception) {
-            Toast.makeText(context, "保存相册记忆设置失败：${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Failed to save gallery memory settings: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -1375,7 +1375,7 @@ fun StatusTab(
                 updateProfile = true
             )
             manualGallerySyncMessage.value =
-                "后台扫描已启动：本次最多补扫 ${settings.manualSyncMaxImages} 张未写入图片，切到后台后也会继续执行。"
+                "Background scan started: at most $manualSyncMaxImages unscanned images this time, will continue running in the background."
             refreshStatus()
         } catch (e: Exception) {
             manualGallerySyncMessage.value = "启动后台扫描失败：${e.message}"

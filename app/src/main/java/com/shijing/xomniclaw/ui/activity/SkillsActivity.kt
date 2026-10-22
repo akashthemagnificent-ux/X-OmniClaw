@@ -166,7 +166,7 @@ class SkillsActivity : AppCompatActivity() {
 
             if (meta.requires != null && meta.requires.hasRequirements()) {
                 appendLine()
-                appendLine("⚙️ 依赖:")
+                appendLine("⚙️ Requirements:")
                 if (meta.requires.bins.isNotEmpty()) {
                     appendLine("  • bins: ${meta.requires.bins.joinToString(", ")}")
                 }
@@ -183,12 +183,12 @@ class SkillsActivity : AppCompatActivity() {
         }
 
         AlertDialog.Builder(this)
-            .setTitle("Skill 详情")
+            .setTitle("Details")
             .setMessage(message)
-            .setPositiveButton("查看内容") { _, _ ->
+            .setPositiveButton("View content", null)
                 showSkillContent(doc)
             }
-            .setNegativeButton("关闭", null)
+            .setNegativeButton("Close", null)
             .show()
     }
 
@@ -198,17 +198,17 @@ class SkillsActivity : AppCompatActivity() {
 
         AlertDialog.Builder(this)
             .setTitle("${doc.metadata.emoji ?: ""} ${doc.name}")
-            .setMessage(content)
+            .setMessage(content.take(1000) + if (doc.content.length > 1000) "\n\n... (content exceeds 1000 chars)" else "")
             .setPositiveButton("关闭", null)
             .show()
     }
 
     private fun getSourceLabel(source: String): String {
         return when (source) {
-            "bundled" -> "📦 内置"
-            "workspace" -> "👤 用户"
-            "managed" -> "🔧 管理"
-            else -> "❓ 未知"
+            "bundled" -> "📦 Built-in"
+            "workspace" -> "👤 User"
+            "managed" -> "🔧 Managed"
+            else -> "❓ Unknown"
         }
     }
 
@@ -334,10 +334,10 @@ class SkillsAdapter(
 
                 // Auto-load marker
                 if (meta.always) {
-                    tvAutoLoad.visibility = View.VISIBLE
-                } else {
-                    tvAutoLoad.visibility = View.GONE
-                }
+                tvAutoLoad.visibility = View.VISIBLE
+            } else {
+                tvAutoLoad.visibility = View.GONE
+            }
 
                 // Click events
                 root.setOnClickListener { onItemClick(skill) }
