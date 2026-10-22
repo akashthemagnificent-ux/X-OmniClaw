@@ -65,7 +65,7 @@ class SkillsActivity : AppCompatActivity() {
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            title = "Skills 管理"
+            title = "Skills"
         }
 
         skillsLoader = SkillsLoader(this)
@@ -114,7 +114,7 @@ class SkillsActivity : AppCompatActivity() {
 
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to load Skills", e)
-                Toast.makeText(this@SkillsActivity, "加载失败: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SkillsActivity, "Failed to load: ${e.message}", Toast.LENGTH_SHORT).show()
             } finally {
                 binding.swipeRefresh.isRefreshing = false
             }
@@ -146,7 +146,7 @@ class SkillsActivity : AppCompatActivity() {
         val workspace = skills.count { it.source == "workspace" }
         val managed = skills.count { it.source == "managed" }
 
-        binding.tvStats.text = "总计: ${skills.size} | 内置: $bundled | 用户: $workspace | 管理: $managed"
+        binding.tvStats.text = "Total: ${skills.size} | Built-in: $bundled | User: $workspace | Managed: $managed"
     }
 
     private fun showSkillDetail(skill: SkillDisplayModel) {
@@ -156,13 +156,13 @@ class SkillsActivity : AppCompatActivity() {
         val message = buildString {
             appendLine("${meta.emoji ?: "📄"} ${doc.name}")
             appendLine()
-            appendLine("📝 描述:")
+            appendLine("📝 Description:")
             appendLine(doc.description)
             appendLine()
-            appendLine("📂 来源: ${getSourceLabel(skill.source)}")
-            appendLine("📍 路径: ${skill.path}")
+            appendLine("📂 Source: ${getSourceLabel(skill.source)}")
+            appendLine("📍 Path: ${skill.path}")
             appendLine()
-            appendLine("🔄 自动加载: ${if (meta.always) "是" else "否"}")
+            appendLine("🔄 Auto-load: ${if (meta.always) "Yes" else "No"}")
 
             if (meta.requires != null && meta.requires.hasRequirements()) {
                 appendLine()
@@ -179,13 +179,13 @@ class SkillsActivity : AppCompatActivity() {
             }
 
             appendLine()
-            appendLine("📊 预估 Tokens: ~${doc.estimateTokens()}")
+            appendLine("📊 Est. Tokens: ~${doc.estimateTokens()}")
         }
 
         AlertDialog.Builder(this)
-            .setTitle("Details")
+            .setTitle("Skill Details")
             .setMessage(message)
-            .setPositiveButton("View content", null)
+            .setPositiveButton("View content") { _, _ ->
                 showSkillContent(doc)
             }
             .setNegativeButton("Close", null)
@@ -194,12 +194,12 @@ class SkillsActivity : AppCompatActivity() {
 
     private fun showSkillContent(doc: SkillDocument) {
         val content = doc.getFormattedContent()
-            .take(1000) + if (doc.content.length > 1000) "\n\n... (内容过长，仅显示前 1000 字符)" else ""
+            .take(1000) + if (doc.content.length > 1000) "\n\n... (content exceeds 1000 chars)" else ""
 
         AlertDialog.Builder(this)
             .setTitle("${doc.metadata.emoji ?: ""} ${doc.name}")
-            .setMessage(content.take(1000) + if (doc.content.length > 1000) "\n\n... (content exceeds 1000 chars)" else "")
-            .setPositiveButton("关闭", null)
+            .setMessage(content)
+            .setPositiveButton("Close", null)
             .show()
     }
 
@@ -214,17 +214,17 @@ class SkillsActivity : AppCompatActivity() {
 
     private fun confirmDeleteSkill(skill: SkillDisplayModel) {
         if (skill.source == "bundled") {
-            Toast.makeText(this, "内置 Skill 无法删除", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Built-in Skills cannot be deleted", Toast.LENGTH_SHORT).show()
             return
         }
 
         AlertDialog.Builder(this)
-            .setTitle("删除 Skill")
-            .setMessage("确定要删除 \"${skill.document.name}\" 吗？\n\n此操作不可撤销。")
-            .setPositiveButton("删除") { _, _ ->
+            .setTitle("Delete Skill")
+            .setMessage("Delete \"${skill.document.name}\"?\n\nThis cannot be undone.")
+            .setPositiveButton("Delete") { _, _ ->
                 deleteSkill(skill)
             }
-            .setNegativeButton("取消", null)
+            .setNegativeButton("Cancel", null)
             .show()
     }
 
@@ -240,14 +240,14 @@ class SkillsActivity : AppCompatActivity() {
                     }
                 }
 
-                Toast.makeText(this@SkillsActivity, "已删除: ${skill.document.name}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SkillsActivity, "Deleted: ${skill.document.name}", Toast.LENGTH_SHORT).show()
 
                 // Reload (SkillsLoader will automatically rescan the file system)
                 loadSkills()
 
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to delete Skill", e)
-                Toast.makeText(this@SkillsActivity, "删除失败: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SkillsActivity, "Failed to delete: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -309,10 +309,10 @@ class SkillsAdapter(
 
                 // Source label
                 tvSource.text = when (skill.source) {
-                    "bundled" -> "📦 内置"
-                    "workspace" -> "👤 用户"
-                    "managed" -> "🔧 管理"
-                    else -> "❓ 未知"
+                    "bundled" -> "📦 Built-in"
+                    "workspace" -> "👤 User"
+                    "managed" -> "🔧 Managed"
+                    else -> "❓ Unknown"
                 }
 
                 // Category label (inferred from name)
@@ -334,10 +334,10 @@ class SkillsAdapter(
 
                 // Auto-load marker
                 if (meta.always) {
-                tvAutoLoad.visibility = View.VISIBLE
-            } else {
-                tvAutoLoad.visibility = View.GONE
-            }
+                    tvAutoLoad.visibility = View.VISIBLE
+                } else {
+                    tvAutoLoad.visibility = View.GONE
+                }
 
                 // Click events
                 root.setOnClickListener { onItemClick(skill) }
