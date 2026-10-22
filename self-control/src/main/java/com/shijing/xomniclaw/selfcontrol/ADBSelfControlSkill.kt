@@ -182,16 +182,16 @@ class ADBSelfControlSkill(private val context: Context) : Skill {
                     properties = mapOf(
                         "method" to PropertySchema(
                             type = "string",
-                            description = "ADB 调用方法",
+                            description = "ADB invocation method",
                             enum = listOf("provider", "broadcast", "script")
                         ),
                         "skill" to PropertySchema(
                             type = "string",
-                            description = "目标 Skill 名称"
+                            description = "Target skill name"
                         ),
                         "args" to PropertySchema(
                             type = "object",
-                            description = "Skill 参数（JSON 对象）"
+                            description = "Skill arguments (JSON object)"
                         )
                     ),
                     required = listOf("method", "skill")

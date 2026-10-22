@@ -80,16 +80,16 @@ object UiYoloClassLabels {
 
     init {
         require(NAMES_EN.size == NUM_CLASSES && NAMES_ZH.size == NUM_CLASSES) {
-            "YOLO UI 类别名表必须与 $NUM_CLASSES 类模型一致"
+            "The YOLO UI class-name table must match the $NUM_CLASSES-class model"
         }
     }
 
     fun displayName(classId: Int, classCount: Int = NUM_CLASSES): String {
         if (classId !in 0 until classCount) {
-            return "未知类别#$classId"
+            return "Unknown class #$classId"
         }
         if (classCount != NUM_CLASSES || classId !in NAMES_EN.indices) {
-            return "类别#$classId（nc=$classCount）"
+            return "Class #$classId (nc=$classCount)"
         }
         return "${NAMES_ZH[classId]}/${NAMES_EN[classId]}"
     }

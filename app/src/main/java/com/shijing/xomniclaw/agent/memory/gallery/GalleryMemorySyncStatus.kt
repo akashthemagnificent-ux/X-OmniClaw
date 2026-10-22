@@ -15,7 +15,7 @@ import org.json.JSONObject
 data class GalleryMemorySyncStatus(
     val isRunning: Boolean = false,
     val stage: String = "idle",
-    val message: String = "未开始扫描",
+    val message: String = "Scan not started yet",
     val maxImages: Int = 0,
     val inspectedCount: Int = 0,
     val discoveredCount: Int = 0,
@@ -58,7 +58,7 @@ class GalleryMemorySyncStatusStore(
             GalleryMemorySyncStatus(
                 isRunning = root.optBoolean("is_running", false),
                 stage = root.optString("stage", "idle"),
-                message = root.optString("message", "未开始扫描"),
+                message = root.optString("message", "Scan not started yet"),
                 maxImages = root.optInt("max_images", 0),
                 inspectedCount = root.optInt("inspected_count", 0),
                 discoveredCount = root.optInt("discovered_count", 0),

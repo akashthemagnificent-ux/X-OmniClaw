@@ -384,7 +384,7 @@ class ScheduledTaskManager(
     private fun buildImmediateExecutionInstruction(rawInstruction: String): String {
         val instruction = stripSchedulePrefix(rawInstruction)
         // 触发阶段必须表达成“现在执行”，避免模型把历史创建语句再次理解成新建定时任务。
-        return "现在立即执行以下手机操作，只执行一次：$instruction"
+        return "Perform the following phone operation now, exactly once: $instruction"
     }
 
     private fun stripSchedulePrefix(rawInstruction: String): String {
