@@ -31,8 +31,10 @@ import com.tencent.mmkv.MMKV
 object SessionFloatWindow {
     private const val TAG = "SessionFloatWindow"
     private const val FLOAT_TAG = "session_float"
-    private val STEP_FULL_RE = Regex("""步骤\s*(\d+)\s*/\s*(\d+)""")
-    private val STEP_ONLY_RE = Regex("""步骤\s*(\d+)""")
+    // Progress titles are generated in English; the Chinese forms stay matched so
+    // stale in-flight text from an older build still renders.
+    private val STEP_FULL_RE = Regex("""(?:步骤|Step)\s*(\d+)\s*/\s*(\d+)""", RegexOption.IGNORE_CASE)
+    private val STEP_ONLY_RE = Regex("""(?:步骤|Step)\s*(\d+)""", RegexOption.IGNORE_CASE)
     private val STEP_CN_RE = Regex("""第\s*(\d+)\s*步""")
 
     private val mainHandler = android.os.Handler(android.os.Looper.getMainLooper())
@@ -231,7 +233,7 @@ object SessionFloatWindow {
             if (full != null) {
                 val cur = full.groupValues[1]
                 val max = full.groupValues[2]
-                return "步骤 $cur/$max"
+                return "Step $cur/$max"
             }
         }
 
@@ -241,7 +243,7 @@ object SessionFloatWindow {
                 ?: STEP_CN_RE.find(raw)?.groupValues?.getOrNull(1)
             if (!stepOnly.isNullOrBlank()) {
                 val maxPart = rememberedMax ?: "--"
-                return "步骤 $stepOnly/$maxPart"
+                return "Step $stepOnly/$maxPart"
             }
         }
         return null
@@ -252,7 +254,7 @@ object SessionFloatWindow {
      */
     private fun shouldClearStepText(title: String, content: String): Boolean {
         val normalized = "$title\n$content"
-        if (normalized.contains("步骤")) {
+        if (normalized.contains("步骤") || normalized.contains("Step", ignoreCase = true)) {
             return false
         }
 
@@ -267,7 +269,14 @@ object SessionFloatWindow {
             "错误",
             "上下文已恢复",
             "上下文超限",
-            "循环检测"
+            "循环检测",
+            "Execution complete",
+            "Thinking complete",
+            "Intermediate reply",
+            "Error",
+            "Context recovered",
+            "Context limit exceeded",
+            "loop detected"
         )
         return clearMarkers.any { normalized.contains(it) }
     }

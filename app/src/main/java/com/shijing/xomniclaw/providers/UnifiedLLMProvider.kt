@@ -181,9 +181,10 @@ class UnifiedLLMProvider(private val context: Context) {
                 val k = provider.apiKey?.trim()
                 if (k.isNullOrEmpty() || k == "未配置" || k.startsWith("\${")) {
                     throw LLMException(
-                        "OpenRouter 未配置有效 API Key。请在应用「模型配置」中填写以 sk-or-v1- 开头的个人密钥，" +
-                            "或编辑 /sdcard/.xomniclaw/xomniclaw.json 将 models.providers.openrouter.apiKey 改为真实字符串 " +
-                            "（若保留 \${OPENROUTER_API_KEY} 且未设系统环境变量，则不会自动注入 Key）。"
+                        "OpenRouter has no valid API key configured. Enter your personal key (starting with sk-or-v1-) " +
+                            "in the app's Model Configuration, or edit /sdcard/.xomniclaw/xomniclaw.json and set " +
+                            "models.providers.openrouter.apiKey to the real string (leaving \${OPENROUTER_API_KEY} " +
+                            "in place without that system environment variable set injects no key)."
                     )
                 }
             }
@@ -339,13 +340,14 @@ class UnifiedLLMProvider(private val context: Context) {
 
         if (code == 401) {
             if (openRouter && errorBody.contains("User not found", ignoreCase = true)) {
-                return " | 提示: 这是 OpenRouter 的 401，表示当前 API Key 对账户无效（错填/已撤销/内置 Key 已失效）。" +
-                    "请在应用「模型配置」中填写自己的 sk-or-v1-...，或到 https://openrouter.ai/keys 重新创建密钥。"
+                return " | Hint: this is OpenRouter's 401, meaning the current API key is not valid for the account " +
+                    "(mistyped, revoked, or an expired built-in key). Enter your own sk-or-v1-... in the app's " +
+                    "Model Configuration, or create a new key at https://openrouter.ai/keys."
             }
             if (openRouter) {
-                return " | 提示: OpenRouter 返回 401，请核对 API Key（sk-or-v1-...）与密钥页是否一致。"
+                return " | Hint: OpenRouter returned 401. Check that the API key (sk-or-v1-...) matches the one on your keys page."
             }
-            return " | 提示: 401 表示鉴权失败，请检查 `$providerName` 的 apiKey 与 baseUrl。"
+            return " | Hint: 401 means authentication failed. Check the apiKey and baseUrl for `$providerName`."
         }
 
         // OpenRouter 429：免费模型常出现上游临时限流（metadata.raw 中 rate-limited upstream）
@@ -354,11 +356,13 @@ class UnifiedLLMProvider(private val context: Context) {
                 errorBody.contains("rate-limited", ignoreCase = true) ||
                 errorBody.contains("rate limit", ignoreCase = true)
             return if (freeTier) {
-                " | 提示: 这是 OpenRouter 的 429 限流（多发生在免费模型 :free 或上游 Google 等配额紧张时）。" +
-                    "可稍后重试；或到 https://openrouter.ai/settings/integrations 绑定/叠加自身密钥以抬高额度；" +
-                    "或在「模型配置」中改选其他预置模型（如其它 :free 模型或付费模型）。"
+                " | Hint: this is OpenRouter's 429 rate limit (common with :free models or when an upstream such as " +
+                    "Google is short on quota). Retry later; attach or top up your own key at " +
+                    "https://openrouter.ai/settings/integrations to raise the limit; or pick another preset model " +
+                    "in Model Configuration (another :free model, or a paid one)."
             } else {
-                " | 提示: OpenRouter 返回 429，表示请求过频或账户用量已达限制，请稍后重试并检查 OpenRouter 用量/套餐。"
+                " | Hint: OpenRouter returned 429, meaning requests were too frequent or the account hit its usage " +
+                    "limit. Retry later and check your OpenRouter usage/plan."
             }
         }
 
@@ -558,7 +562,7 @@ class UnifiedLLMProvider(private val context: Context) {
             .put("provider", providerName)
             .put("model", modelId)
             .put("apiUrl", apiUrl)
-            .put("note", "同批次完整含 base64 的 requestBody 见同目录、无 _readable 后缀的 .json。语音/摄像头上游为 LocalVoiceVisionHub。")
+            .put("note", "For the full requestBody including base64 in this batch, see the .json without the _readable suffix in the same directory. Voice/camera requests go upstream through LocalVoiceVisionHub.")
             .put("totalApproxImageFieldChars", totalImageChars)
             .put("messages", arr)
     }
@@ -654,10 +658,11 @@ class UnifiedLLMProvider(private val context: Context) {
                 }
             }
             throw IllegalArgumentException(
-                "没有可用的模型配置，请先配置模型。" +
-                    "请确认 /sdcard/.xomniclaw/xomniclaw.json 中 models.providers 非空，" +
-                    "且 agents.defaults.model.primary 指向存在的 provider/模型 id；" +
-                    "若曾启用飞书但未填写 appId/appSecret，请更新应用版本或暂时关闭 channels.feishu.enabled。"
+                "No usable model configuration; configure a model first. " +
+                    "Make sure models.providers in /sdcard/.xomniclaw/xomniclaw.json is not empty and that " +
+                    "agents.defaults.model.primary points at an existing provider/model id. " +
+                    "If Feishu was enabled without appId/appSecret, update the app or temporarily set " +
+                    "channels.feishu.enabled to false."
             )
         }
 

@@ -330,7 +330,7 @@ object ApiAdapter {
     ): JSONObject {
         val (prompt, image) = extractLatestUserPromptAndImage(messages)
         val imageUrl = image
-            ?: throw LLMException("MiniMax images/understand 缺少 image_url：当前消息里没有可用图片")
+            ?: throw LLMException("MiniMax images/understand is missing image_url: the current messages contain no usable image")
         // MiniMax 图像理解链路实测要求 data:image/png;base64 包装；
         // 即使上游传入的是压缩后的 JPEG 字节，也保持该前缀以兼容中转识别。
         val normalizedImageUrl = if (imageUrl.trim().startsWith("data:", ignoreCase = true)) {
@@ -379,8 +379,9 @@ object ApiAdapter {
             Log.e("ApiAdapter", "Wrapped gateway error: code=$code, msg=$msg")
             val hint = when (code) {
                 -30002 ->
-                    " 提示：多为上游模型侧异常（返回体异常/超时/配额/风控/模型不可用）。" +
-                        "可尝试缩短上下文、暂时减少工具定义，或更换 models 中的 model id。"
+                    " Hint: usually an upstream model-side fault (malformed response, timeout, quota, risk control, " +
+                        "or model unavailable). Try shortening the context, temporarily reducing tool definitions, " +
+                        "or switching to another model id in models."
                 else -> ""
             }
             throw LLMException("Gateway error [$code]: $msg$hint")

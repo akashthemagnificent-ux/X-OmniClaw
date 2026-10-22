@@ -20,12 +20,20 @@ object ChatTimelineMapper {
         baseTimeMs: Long
     ): ChatMessage? {
         val content = normalizeContent(message.content) ?: return null
-        // Agent 内部注入的运行态提示，不应出现在主对话（历史会话里可能仍有残留，此处丢弃）
-        if (message.role == "user" && content.startsWith("系统状态记忆")) {
+        // Agent-injected runtime notes must not surface in the main conversation.
+        // Both the English and the pre-translation Chinese prefixes are checked so
+        // sessions persisted before the switch stay filtered.
+        if (message.role == "user" &&
+            (content.startsWith("System state memory") || content.startsWith("系统状态记忆"))
+        ) {
             return null
         }
-        // Python 文本续跑注入的「伪 user」提示，不入主时间线（否则会出现超长系统话术气泡）
-        if (message.role == "user" && content.startsWith("系统提示：你上一回合没有调用任何工具")) {
+        // Pseudo-user nudges from the Python continuation loop, otherwise they show
+        // up as an oversized system bubble.
+        if (message.role == "user" &&
+            (content.startsWith("System note: your last turn ended without calling any tool") ||
+                content.startsWith("系统提示：你上一回合没有调用任何工具"))
+        ) {
             return null
         }
         // LegacyMessage 无时间字段：用「会话锚点 + 列表下标」生成单调时间戳，多次同步结果一致。
