@@ -17,7 +17,7 @@ class GalleryMemoryAutomationManager(
     companion object {
         const val TASK_NAME = "相册记忆自动同步"
         const val TASK_INSTRUCTION =
-            "调用 gallery_memory 工具，参数 action=sync、update_profile=true。同步相册中的新增图片记忆，并更新用户画像；仅做增量扫描。"
+            "Call the gallery_memory tool with action=sync and update_profile=true. Sync newly added image memories from the gallery and update the user profile; incremental scan only."
     }
 
     private val taskManager = ScheduledTaskManager(context)

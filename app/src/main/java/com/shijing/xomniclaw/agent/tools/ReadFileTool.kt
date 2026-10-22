@@ -121,7 +121,7 @@ class ReadFileTool(
             ToolResult.success(text)
         } catch (e: Exception) {
             Log.w(TAG, "Bundled asset missing: $assetPath (${e.message})")
-            ToolResult.error("File not found: $userPath (APK 内无 assets/$assetPath)")
+            ToolResult.error("File not found: $userPath (no assets/$assetPath inside the APK)")
         }
     }
 

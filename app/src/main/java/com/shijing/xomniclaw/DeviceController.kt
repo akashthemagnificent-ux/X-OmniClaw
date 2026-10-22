@@ -183,7 +183,7 @@ object DeviceController {
         if (hasNonAscii) {
             Log.e(TAG, "inputText failed for non-ASCII: accessibility input channel unavailable")
             throw IllegalStateException(
-                "中文输入失败：当前输入框未建立可用输入通道。请确认输入框已聚焦，或开启无障碍服务后再试。"
+                "Text input failed: the current field has no usable input channel. Make sure the field is focused, or enable the accessibility service and try again."
             )
         }
         Log.w(TAG, "inputText fallback shell (ASCII only)")

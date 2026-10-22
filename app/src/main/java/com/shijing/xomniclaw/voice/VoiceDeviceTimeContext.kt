@@ -9,15 +9,15 @@ import java.util.Locale
  */
 internal object VoiceDeviceTimeContext {
 
-    private val WEEKDAYS_ZH = arrayOf(
+    private val WEEKDAYS = arrayOf(
         "",
-        "星期日",
-        "星期一",
-        "星期二",
-        "星期三",
-        "星期四",
-        "星期五",
-        "星期六",
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
     )
 
     /**
@@ -25,9 +25,9 @@ internal object VoiceDeviceTimeContext {
      */
     fun buildSystemLine(): String {
         val cal = Calendar.getInstance()
-        val dateStr = SimpleDateFormat("yyyy年M月d日", Locale.CHINA).format(cal.time)
-        val timeStr = SimpleDateFormat("HH:mm", Locale.CHINA).format(cal.time)
-        val weekday = WEEKDAYS_ZH.getOrElse(cal.get(Calendar.DAY_OF_WEEK)) { "" }
-        return "【设备本地时间】$dateStr $weekday $timeStr。若用户询问今天星期几、几号、现在几点等，请直接根据以上信息用口语简短回答，不要声称无法获取实时时间。"
+        val dateStr = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(cal.time)
+        val timeStr = SimpleDateFormat("HH:mm", Locale.US).format(cal.time)
+        val weekday = WEEKDAYS.getOrElse(cal.get(Calendar.DAY_OF_WEEK)) { "" }
+        return "[Device local time] $dateStr $weekday $timeStr. If the user asks what day/date/time it is, answer briefly and conversationally from the information above; never claim you cannot get the current time."
     }
 }

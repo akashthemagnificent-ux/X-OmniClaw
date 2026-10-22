@@ -49,7 +49,7 @@ class ImageMemorySummarizer(private val context: Context) {
         }
 
         val finalSummary = if (filterResult.sensitivity == "high") {
-            "该图片可能包含敏感信息，已跳过详细沉淀，仅保留安全摘要：${buildFallbackSummary(record).summary}"
+            "This image may contain sensitive information; detailed extraction was skipped and only a safe summary is kept: ${buildFallbackSummary(record).summary}"
         } else {
             filterResult.sanitizedText
         }.take(MAX_SUMMARY_CHARS)
@@ -147,7 +147,7 @@ class ImageMemorySummarizer(private val context: Context) {
         val bucket = record.bucketName ?: "unknown"
         val mime = record.mimeType ?: "unknown"
         return RawSummary(
-            summary = "图片来自相册目录 $bucket，文件名 ${record.displayName}，时间 ${record.formattedTimestamp()}，格式 $mime，分辨率 $resolution。",
+            summary = "Image from gallery bucket $bucket, filename ${record.displayName}, time ${record.formattedTimestamp()}, format $mime, resolution $resolution.",
             originalText = "",
             source = "fallback"
         )

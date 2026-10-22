@@ -35,11 +35,11 @@ data class GalleryMemorySyncStatus(
     fun progressText(): String {
         return when {
             isRunning && discoveredCount > 0 ->
-                "已检查 $inspectedCount 张，待处理 $discoveredCount 张，已完成 $processedCount 张"
+                "Checked $inspectedCount, pending $discoveredCount, done $processedCount"
             isRunning ->
-                "已检查 $inspectedCount 张，正在继续扫描..."
+                "Checked $inspectedCount, still scanning..."
             else ->
-                "最近一次：检查 $inspectedCount 张，写入 $writtenCount 条，跳过 $skippedCount 条"
+                "Last run: checked $inspectedCount, wrote $writtenCount, skipped $skippedCount"
         }
     }
 }

@@ -159,7 +159,7 @@ class AndroidToolRegistry(
         return buildString {
             appendLine("## Android Platform Tools")
             appendLine()
-            appendLine("Android 设备专属能力,通过 AccessibilityService 和系统 API 提供：")
+            appendLine("Android device-specific capabilities, provided through AccessibilityService and system APIs:")
             appendLine()
 
             // Organize by category

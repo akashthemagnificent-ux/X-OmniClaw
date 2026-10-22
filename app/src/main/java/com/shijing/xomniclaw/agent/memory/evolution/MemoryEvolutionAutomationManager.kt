@@ -17,7 +17,7 @@ class MemoryEvolutionAutomationManager(
     companion object {
         const val TASK_NAME = "全局记忆进化"
         const val TASK_INSTRUCTION =
-            "调用 memory_evolution 工具，参数 action=run。处理待沉淀的 X-OmniClaw 任务记忆，更新 MEMORY.md，并重建 USER-PROFILE.md。"
+            "Call the memory_evolution tool with action=run. Process pending X-OmniClaw task memories, update MEMORY.md, and rebuild USER-PROFILE.md."
     }
 
     private val taskManager = ScheduledTaskManager(context)

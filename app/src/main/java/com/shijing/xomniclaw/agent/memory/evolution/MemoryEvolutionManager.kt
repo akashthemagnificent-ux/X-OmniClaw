@@ -179,7 +179,7 @@ class MemoryEvolutionManager(
             candidates += MemoryCandidate(
                 category = MemoryCategory.TASK_WORKFLOW,
                 title = summarizeTitle(event.userInput),
-                content = "用户曾使用 X-OmniClaw 完成：${event.userInput.take(MAX_CANDIDATE_TEXT_CHARS)}。结果摘要：${event.finalContent.take(MAX_CANDIDATE_TEXT_CHARS)}",
+                content = "The user used X-OmniClaw to complete: ${event.userInput.take(MAX_CANDIDATE_TEXT_CHARS)}. Result summary: ${event.finalContent.take(MAX_CANDIDATE_TEXT_CHARS)}",
                 confidence = 0.68,
                 sourceEventId = event.id
             )
@@ -189,7 +189,7 @@ class MemoryEvolutionManager(
             candidates += MemoryCandidate(
                 category = MemoryCategory.FAILURE_LESSON,
                 title = summarizeTitle(event.userInput),
-                content = "任务相关经验：${event.userInput.take(160)}；现象/结论：${reason.take(MAX_CANDIDATE_TEXT_CHARS)}",
+                content = "Task-related lesson: ${event.userInput.take(160)}; symptom/conclusion: ${reason.take(MAX_CANDIDATE_TEXT_CHARS)}",
                 confidence = if (event.errorMessage.isNullOrBlank()) 0.58 else 0.75,
                 sourceEventId = event.id
             )
@@ -198,7 +198,7 @@ class MemoryEvolutionManager(
             candidates += MemoryCandidate(
                 category = MemoryCategory.PROJECT_CONTEXT,
                 title = summarizeTitle(event.userInput),
-                content = "用户持续推进的上下文：${event.userInput.take(MAX_CANDIDATE_TEXT_CHARS)}",
+                content = "Ongoing context the user is pursuing: ${event.userInput.take(MAX_CANDIDATE_TEXT_CHARS)}",
                 confidence = 0.6,
                 sourceEventId = event.id
             )
@@ -216,7 +216,7 @@ class MemoryEvolutionManager(
         return MemoryCandidate(
             category = MemoryCategory.USER_PREFERENCE,
             title = summarizeTitle(text),
-            content = "用户偏好/约束：${text.take(MAX_CANDIDATE_TEXT_CHARS)}",
+            content = "User preference/constraint: ${text.take(MAX_CANDIDATE_TEXT_CHARS)}",
             confidence = 0.72,
             sourceEventId = event.id
         )

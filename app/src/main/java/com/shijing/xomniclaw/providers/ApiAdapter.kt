@@ -522,7 +522,7 @@ object ApiAdapter {
                 .replace(Regex("\\s+"), " ")
                 .take(240)
             val msg = json.optString("message").ifBlank {
-                "MiniMax images/understand 返回为空（响应预览: $preview）"
+                "MiniMax images/understand returned empty (response preview: $preview)"
             }
             throw LLMException(msg)
         }
@@ -872,7 +872,7 @@ object ApiAdapter {
         Log.e("ApiAdapter", "API response missing 'choices'. keys=[$keys] body=$truncated")
         throw LLMException(
             "API response missing 'choices' field. Top-level JSON keys: [$keys]. " +
-                "若为 `{ code, data }` 包装的 Chat Completions，请确认 `data` 内包含 `choices` 且服务端返回成功 code。"
+                "For Chat Completions wrapped as `{ code, data }`, check that `data` contains `choices` and the server returned a success code."
         )
     }
 
