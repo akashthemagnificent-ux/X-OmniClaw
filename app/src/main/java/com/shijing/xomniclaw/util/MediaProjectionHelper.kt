@@ -24,9 +24,9 @@ object MediaProjectionHelper {
     /** 与 [requestMediaProjection] / 无障碍侧一致，Activity 须在 onActivityResult 中转发 [handleActivityResult]。 */
     const val REQUEST_CODE: Int = ProjectionCore.SCREEN_CAPTURE_REQUEST_CODE
 
-    const val STATUS_AUTHORIZED = "已授权"
-    const val STATUS_OBJECT_NULL = "权限已获取但对象为空"
-    const val STATUS_NOT_AUTHORIZED = "未授权"
+    const val STATUS_AUTHORIZED = "Authorised"
+    const val STATUS_OBJECT_NULL = "Permission granted but the object is null"
+    const val STATUS_NOT_AUTHORIZED = "Not authorised"
 
     /**
      * 请求录屏权限；内部先启动主进程 [ForegroundService]（系统对 MediaProjection 的前台要求），

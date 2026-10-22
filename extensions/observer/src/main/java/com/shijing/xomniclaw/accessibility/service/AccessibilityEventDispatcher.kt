@@ -70,17 +70,17 @@ object AccessibilityEventDispatcher {
         val className = event.className?.toString().orEmpty()
         return when (event.eventType) {
             AccessibilityEvent.TYPE_VIEW_CLICKED ->
-                "点击 ${contentDesc.ifBlank { text }.ifBlank { className }}"
+                "Tapped ${contentDesc.ifBlank { text }.ifBlank { className }}"
             AccessibilityEvent.TYPE_VIEW_LONG_CLICKED ->
-                "长按 ${contentDesc.ifBlank { text }.ifBlank { className }}"
+                "Long-pressed ${contentDesc.ifBlank { text }.ifBlank { className }}"
             AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED ->
-                "输入文本 ${text.ifBlank { "(空)" }}"
+                "Typed ${text.ifBlank { "(empty)" }}"
             AccessibilityEvent.TYPE_VIEW_SCROLLED ->
-                "滚动 ${className.ifBlank { "列表" }}"
+                "Scrolled ${className.ifBlank { "list" }}"
             AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED ->
-                "切换到 ${event.packageName?.toString().orEmpty()}"
+                "Switched to ${event.packageName?.toString().orEmpty()}"
             AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED ->
-                "页面内容变化 ${className.ifBlank { "" }}".trim()
+                "Page content changed ${className.ifBlank { "" }}".trim()
             else ->
                 eventTypeToName(event.eventType)
         }

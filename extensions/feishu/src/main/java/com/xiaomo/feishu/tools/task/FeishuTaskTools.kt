@@ -209,7 +209,7 @@ class TaskListTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(
             parameters = ParametersSchema(
                 properties = mapOf(
                     "completed" to PropertySchema("boolean", "filter by completed (optional)"),
-                    "page_size" to PropertySchema("number", "每页数量（默认50）")
+                    "page_size" to PropertySchema("number", "page size (default 50)")
                 ),
                 required = emptyList()
             )

@@ -53,10 +53,10 @@ object MediaProjectionHelper {
         Regex("""^\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}_\d{3}$""")
 
     // 状态常量
-    const val STATUS_NOT_INITIALIZED = "未初始化"
-    const val STATUS_WAITING_PERMISSION = "等待授权"
-    const val STATUS_AUTHORIZED = "已授权"
-    const val STATUS_ERROR = "出现错误"
+    const val STATUS_NOT_INITIALIZED = "Not initialised"
+    const val STATUS_WAITING_PERMISSION = "Waiting for authorisation"
+    const val STATUS_AUTHORIZED = "Authorised"
+    const val STATUS_ERROR = "Error"
 
     // 状态管理
     private enum class State {
@@ -434,9 +434,9 @@ object MediaProjectionHelper {
             State.REQUESTING -> STATUS_WAITING_PERMISSION
             State.AUTHORIZED -> {
                 if (mediaProjection != null && imageReader != null) {
-                    "$STATUS_AUTHORIZED\n前台服务: ${if (isForegroundServiceRunning.get()) "运行中" else "已停止"}"
+                    "$STATUS_AUTHORIZED\nForeground service: ${if (isForegroundServiceRunning.get()) "running" else "stopped"}"
                 } else {
-                    "$STATUS_ERROR: 对象未初始化"
+                    "$STATUS_ERROR: object not initialised"
                 }
             }
             State.ERROR -> STATUS_ERROR

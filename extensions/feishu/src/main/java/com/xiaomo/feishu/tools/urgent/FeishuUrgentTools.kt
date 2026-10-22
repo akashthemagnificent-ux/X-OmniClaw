@@ -76,7 +76,7 @@ class UrgentSendTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBas
             parameters = ParametersSchema(
                 properties = mapOf(
                     "message_id" to PropertySchema("string", "message ID to escalate"),
-                    "user_ids" to PropertySchema("array", "user IDs to notify", items = PropertySchema("string", "用户ID"))
+                    "user_ids" to PropertySchema("array", "user IDs to notify", items = PropertySchema("string", "user ID"))
                 ),
                 required = listOf("message_id", "user_ids")
             )
@@ -131,7 +131,7 @@ class UrgentAppTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase
             parameters = ParametersSchema(
                 properties = mapOf(
                     "message_id" to PropertySchema("string", "message ID to escalate"),
-                    "user_ids" to PropertySchema("array", "user IDs to notify", items = PropertySchema("string", "用户ID")),
+                    "user_ids" to PropertySchema("array", "user IDs to notify", items = PropertySchema("string", "user ID")),
                     "urgent_type" to PropertySchema(
                         "string",
                         "escalation type (app/sms/phone, default app)",
