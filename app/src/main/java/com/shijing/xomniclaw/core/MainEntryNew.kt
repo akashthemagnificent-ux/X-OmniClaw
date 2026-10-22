@@ -110,7 +110,7 @@ object MainEntryNew {
      */
     private fun appendTokenUsageForDisplay(plain: String, usage: LlmTokenUsage?): String {
         if (usage == null) return plain
-        return plain + "\n\n—\n" + "本回合 LLM tokens：输入 ${usage.promptTokens}，输出 ${usage.completionTokens}，合计 ${usage.totalTokens}（多轮请求累加；未返回时可能为 0）"
+        return plain + "\n\n—\n" + "LLM tokens this turn: input ${usage.promptTokens}, output ${usage.completionTokens}, total ${usage.totalTokens} (accumulated across requests; may be 0 when not returned)"
     }
 
     /**
@@ -530,8 +530,8 @@ object MainEntryNew {
                     // Agent 开始执行 → 自动显示浮动窗口
                     SessionFloatWindow.setAgentRunning(true, application)
                     SessionFloatWindow.updateSessionInfo(
-                        title = "Agent 启动中",
-                        content = "任务: ${userInput.take(60)}"
+                        title = "Agent starting",
+                        content = "Task: ${userInput.take(60)}"
                     )
 
                     // 1. Build system prompt
@@ -650,7 +650,7 @@ object MainEntryNew {
                     if (shouldReturnToMain) {
                         bringMainUiToFrontAndNotify(
                             sessionId = effectiveSessionId,
-                            notice = "✅ 复杂任务已完成，已返回主界面。"
+                            notice = "✅ Complex task completed, returned to the main screen."
                         )
                     }
                 } finally {
@@ -693,25 +693,25 @@ object MainEntryNew {
                 // 用户主动取消与真正异常使用不同文案，避免误导为代码故障。
                 val errorMessage = if (cancelledByUser) {
                     buildString {
-                        append("🛑 已停止执行\n\n")
-                        append("你已手动取消当前任务，这不是系统错误。\n\n")
-                        append("你可以：\n")
-                        append("- 直接发送新指令继续\n")
-                        append("- 或点击“新对话”开始新的会话")
+                        append("🛑 Execution stopped.\n\n")
+                        append("You manually cancelled the current task; this is not a system error.\n\n")
+                        append("You can:\n")
+                        append("- Send a new instruction to continue\n")
+                        append("- Or tap "New conversation" to start a new session")
                     }
                 } else {
                     buildString {
-                        append("❌ 执行出错:\n\n")
-                        append("**错误**: ${exception.message}\n\n")
+                        append("❌ Execution error:\n\n")
+                        append("**Error**: ${exception.message}\n\n")
 
                         // 如果是 LLM 异常，添加更详细的信息
                         if (exception is com.shijing.xomniclaw.providers.LLMException) {
-                            append("**类型**: API 调用失败\n")
-                            append("**建议**: 请检查模型配置和 API key\n\n")
+                            append("**Type**: API call failed\n")
+                            append("**Recommendation**: check your model configuration and API key\n\n")
                         }
 
                         // 添加堆栈跟踪 (前500字符)
-                        append("**堆栈跟踪**:\n```\n")
+                        append("**Stack trace**:\n```\n")
                         append(exception.stackTraceToString().take(500))
                         append("\n```")
                     }
@@ -864,8 +864,8 @@ object MainEntryNew {
 
                     SessionFloatWindow.setAgentRunning(true, application)
                     SessionFloatWindow.updateSessionInfo(
-                        title = "Agent 启动中",
-                        content = "任务: ${userInput.take(60)}"
+                        title = "Agent starting",
+                        content = "Task: ${userInput.take(60)}"
                     )
 
                     Log.d(TAG, "💬 Step 1: Building system prompt...")

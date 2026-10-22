@@ -53,7 +53,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📋 VLM Provider 使用说明"
+                        android:text="📋 VLM Provider usage"
                         android:textColor="#1A237E"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -63,7 +63,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:lineSpacingExtra="3dp"
-                        android:text="1. 勾选“与 Agent 大模型一致”时，不写入 vlm provider，运行时默认复用 Agent 模型。\n2. 取消勾选后，将保存到 models.providers.vlm。\n3. URL、API Key 按需填写；模型引用填写独立 VLM 使用的模型 ID（或 vlm/模型ID）。"
+                        android:text="1. When &quot;Use the same model as Agent&quot; is checked, no vlm provider is written and Agent's model is reused at runtime.\n2. When unchecked, settings are saved to models.providers.vlm.\n3. Fill in URL and API Key as needed; for the model reference enter the model ID used by the standalone VLM (or vlm/modelID)."
                         android:textColor="#3949AB"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -73,7 +73,7 @@
                 android:id="@+id/switch_follow_agent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="与 Agent 大模型一致"
+                android:text="Use the same model as Agent"
                 android:textSize="14sp" />
 
             <TextView
@@ -82,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:layout_marginBottom="10dp"
-                android:text="勾选后 VLM 将跟随 Agent。"
+                android:text="When checked, VLM follows the Agent model."
                 android:textColor="#5C6BC0"
                 android:textSize="12sp" />
 
@@ -96,7 +96,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:hint="VLM 模型引用（provider/model）"
+                    android:hint="VLM model reference (provider/model)"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -111,7 +111,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:hint="VLM URL（可选）"
+                    android:hint="VLM URL (optional)"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -128,7 +128,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:hint="VLM API Key（可选）"
+                    android:hint="VLM API Key (optional)"
                     app:helperText="保存到 models.providers.vlm.apiKey；留空则沿用已有 vlm 或 mimimax 密钥"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -149,7 +149,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_margin="16dp"
-        android:text="保存 VLM Provider"
+        android:text="Save VLM Provider"
         android:textSize="16sp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

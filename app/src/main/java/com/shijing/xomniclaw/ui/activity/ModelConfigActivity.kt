@@ -85,7 +85,7 @@ class ModelConfigActivity : AppCompatActivity() {
             currentModelRef = config.agents?.defaults?.model?.primary
 
             binding.tvCurrentModel.text =
-                "Agent：${currentModelRef ?: "未配置"}"
+                "Agent: ${currentModelRef ?: "Not configured"}"
             // 当前模型卡片始终展示（布局顺序：STT → VLM → Agent）。
             binding.cardCurrentModel.visibility = View.VISIBLE
 
@@ -99,17 +99,17 @@ class ModelConfigActivity : AppCompatActivity() {
             // STT Provider 状态在主页面独立展示，避免用户进二级页面才看到配置入口。
             val sttModelId = sttProvider?.models?.firstOrNull()?.id
             binding.tvSttProviderStatus.text = if (sttProvider == null || sttModelId.isNullOrBlank()) {
-                "未配置（点击配置 STT）"
+                "Not configured (tap to configure STT)"
             } else {
-                "已配置（stt/$sttModelId）"
+                "Configured (stt/$sttModelId)"
             }
             binding.tvVlmProviderStatus.text = if (followAgentVlm) {
-                "已启用跟随 Agent（已保存独立 VLM 配置）"
+                "Following Agent enabled (separate VLM config saved)"
             } else if (vlmProvider == null) {
-                "未配置（点击配置 VLM）"
+                "Not configured (tap to configure VLM)"
             } else {
-                val modelId = vlmProvider.models.firstOrNull()?.id ?: "未设置模型"
-                "已配置（vlm/$modelId）"
+                val modelId = vlmProvider.models.firstOrNull()?.id ?: "No model set"
+                "Configured (vlm/$modelId)"
             }
 
         } catch (e: Exception) {
@@ -118,11 +118,11 @@ class ModelConfigActivity : AppCompatActivity() {
             currentModelRef = null
             // 即使配置读取失败，也保留总览卡片并给出降级文案。
             binding.cardCurrentModel.visibility = View.VISIBLE
-            binding.tvCurrentModel.text = "Agent：未配置"
-            binding.tvCurrentSttSummary.text = "STT：未配置（模型未设置）"
-            binding.tvCurrentVlmSummary.text = "VLM：未配置（模型未设置）"
-            binding.tvSttProviderStatus.text = "未配置（点击配置 STT Key）"
-            binding.tvVlmProviderStatus.text = "未配置（点击配置 VLM）"
+            binding.tvCurrentModel.text = "Agent: Not configured"
+            binding.tvCurrentSttSummary.text = "STT: Not configured (no model set)"
+            binding.tvCurrentVlmSummary.text = "VLM: Not configured (no model set)"
+            binding.tvSttProviderStatus.text = "Not configured (tap to configure STT Key)"
+            binding.tvVlmProviderStatus.text = "Not configured (tap to configure VLM)"
         }
     }
 
@@ -132,9 +132,9 @@ class ModelConfigActivity : AppCompatActivity() {
     private fun buildSttSummary(sttProvider: ProviderConfig?): String {
         val model = sttProvider?.models?.firstOrNull()?.id
         return if (model.isNullOrBlank()) {
-            "STT：未配置"
+            "STT: Not configured"
         } else {
-            "STT：stt/$model"
+            "STT: stt/$model"
         }
     }
 
@@ -143,13 +143,13 @@ class ModelConfigActivity : AppCompatActivity() {
      */
     private fun buildVlmSummary(vlmProvider: ProviderConfig?, agentModelRef: String?, followAgentVlm: Boolean): String {
         if (followAgentVlm) {
-            return "VLM：跟随 Agent（${agentModelRef ?: "未配置"}）"
+            return "VLM: Following Agent (${agentModelRef ?: "Not configured"})"
         }
         val model = vlmProvider?.models?.firstOrNull()?.id
         return if (!model.isNullOrBlank()) {
-            "VLM：vlm/$model"
+            "VLM: vlm/$model"
         } else {
-            "VLM：未配置"
+            "VLM: Not configured"
         }
     }
 
@@ -188,7 +188,7 @@ class ModelConfigActivity : AppCompatActivity() {
     private fun showPage1() {
         binding.pageProviderList.visibility = View.VISIBLE
         binding.pageProviderDetail.visibility = View.GONE
-        binding.toolbar.title = "模型配置"
+        binding.toolbar.title = "Model configuration"
     }
 
     private fun showPage2(provider: ProviderDefinition) {
@@ -275,7 +275,7 @@ class ModelConfigActivity : AppCompatActivity() {
         binding.tilApiKey.hint = provider.keyHint
         binding.etApiKey.setText("")
         if (!provider.keyRequired) {
-            binding.tilApiKey.helperText = "可选（有内置免费 Key）"
+            binding.tilApiKey.helperText = "Optional (built-in free key available)"
         } else {
             binding.tilApiKey.helperText = null
         }
@@ -372,10 +372,10 @@ class ModelConfigActivity : AppCompatActivity() {
 
             if (model.free) {
                 tvBadge.visibility = View.VISIBLE
-                tvBadge.text = "免费"
+                tvBadge.text = "Free"
             } else if (model.reasoning) {
                 tvBadge.visibility = View.VISIBLE
-                tvBadge.text = "推理"
+                tvBadge.text = "Reasoning"
                 tvBadge.setTextColor(getColor(android.R.color.holo_blue_dark))
             }
 
@@ -410,12 +410,12 @@ class ModelConfigActivity : AppCompatActivity() {
         etContextWindow.setText("128000")
 
         AlertDialog.Builder(this)
-            .setTitle("添加模型")
+            .setTitle("Add model")
             .setView(dialogView)
-            .setPositiveButton("添加") { _, _ ->
+            .setPositiveButton("Add") { _, _ ->
                 val modelId = etModelId.text?.toString()?.trim() ?: ""
                 if (modelId.isBlank()) {
-                    Toast.makeText(this, "模型 ID 不能为空", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Model ID cannot be empty", Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
                 val modelName = etModelName.text?.toString()?.trim()?.takeIf { it.isNotBlank() } ?: modelId
@@ -436,7 +436,7 @@ class ModelConfigActivity : AppCompatActivity() {
                 selectedModelId = modelId
                 buildModelRadioGroup(allModels)
             }
-            .setNegativeButton("取消", null)
+            .setNegativeButton("Cancel", null)
             .show()
     }
 
@@ -447,7 +447,7 @@ class ModelConfigActivity : AppCompatActivity() {
 
         // Validate
         if (provider.keyRequired && apiKey.isNullOrBlank()) {
-            binding.tilApiKey.error = "请输入 API Key"
+            binding.tilApiKey.error = "Please enter API Key"
             return
         }
         binding.tilApiKey.error = null
@@ -456,7 +456,7 @@ class ModelConfigActivity : AppCompatActivity() {
         val modelId = selectedModelId
 
         if (modelId.isNullOrBlank()) {
-            Toast.makeText(this, "请选择或输入模型", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Please select or enter a model", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -511,7 +511,7 @@ class ModelConfigActivity : AppCompatActivity() {
 
             configLoader.saveOmniClawConfig(updatedConfig)
 
-            Toast.makeText(this, "✅ 已保存: $modelRef", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "✅ Saved: $modelRef", Toast.LENGTH_SHORT).show()
             Log.i(TAG, "Saved provider=$providerKey model=$modelRef")
 
             // Return to list or finish
@@ -520,7 +520,7 @@ class ModelConfigActivity : AppCompatActivity() {
 
         } catch (e: Exception) {
             Log.e(TAG, "Failed to save config", e)
-            Toast.makeText(this, "保存失败: ${e.message}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Save failed: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 

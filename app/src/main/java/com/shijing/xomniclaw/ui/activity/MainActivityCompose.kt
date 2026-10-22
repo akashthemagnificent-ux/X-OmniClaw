@@ -230,7 +230,7 @@ private suspend fun queryPermissionSnapshot(context: Context): PermissionSnapsho
  * Contains three tabs:
  * 1. Chat - AI assistant chat interface
  * 2. Status - System status cards
- * 3. Settings - 配置与系统相关项
+ * 3. Settings - Configuration and system items
  */
 class MainActivityCompose : ComponentActivity() {
 
@@ -285,7 +285,7 @@ class MainActivityCompose : ComponentActivity() {
 
         // Check if model setup is needed (first run, no API key configured)
         if (ModelSetupActivity.isNeeded(this)) {
-            Log.i(TAG, "🔧 首次启动，打开模型配置引导...")
+            Log.i(TAG, "🔧 First launch, opening model setup wizard...")
             startActivity(Intent(this, ModelSetupActivity::class.java))
         }
 
@@ -341,9 +341,9 @@ class MainActivityCompose : ComponentActivity() {
                     // Show update dialog on main thread
                     val sizeStr = if (info.fileSize > 0) "%.1f MB".format(info.fileSize / 1024.0 / 1024.0) else ""
                     val message = buildString {
-                        append("发现新版本 v${info.latestVersion}\n")
-                        append("当前版本 v${info.currentVersion}\n")
-                        if (sizeStr.isNotEmpty()) append("大小: $sizeStr\n")
+                        append("New version v${info.latestVersion}\n")
+                        append("Current version v${info.currentVersion}\n")
+                        if (sizeStr.isNotEmpty()) append("Size: $sizeStr\n")
                         if (!info.releaseNotes.isNullOrEmpty()) {
                             append("\n${info.releaseNotes.take(200)}")
                         }
@@ -365,7 +365,7 @@ class MainActivityCompose : ComponentActivity() {
                                 }
                             }
                         }
-                        .setNegativeButton("稍后再说", null)
+                        .setNegativeButton("Later", null)
                         .show()
                 }
             } catch (_: Exception) {
@@ -494,9 +494,9 @@ fun MainScreen(
     ) { grantResult ->
         val granted = grantResult.values.all { it }
         if (granted) {
-            Toast.makeText(context, "相册权限已授权", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Album permission granted", Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(context, "相册权限未完全授权，请在权限页手动开启", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Album permission not fully granted, please enable it manually on the permission page", Toast.LENGTH_LONG).show()
         }
     }
 

@@ -52,7 +52,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="AI 移动自动化平台"
+                        android:text="AI Mobile Automation Platform"
                         android:textSize="14sp"
                         android:textColor="#666666" />
                 </LinearLayout>
@@ -106,7 +106,7 @@
                             android:id="@+id/tv_gateway_status"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="运行中"
+                            android:text="Running"
                             android:textSize="14sp"
                             android:layout_marginTop="4dp"
                             android:textColor="#4CAF50" />
@@ -161,7 +161,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="权限"
+                            android:text="Permissions"
                             android:textSize="16sp"
                             android:textStyle="bold"
                             android:textColor="#000000" />
@@ -170,7 +170,7 @@
                             android:id="@+id/tv_permissions_status"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="已授权"
+                            android:text="Granted"
                             android:textSize="14sp"
                             android:layout_marginTop="4dp"
                             android:textColor="#4CAF50" />
@@ -179,7 +179,7 @@
                             android:id="@+id/tv_permissions_details"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="无障碍: ✓  悬浮窗: ✓  录屏: ✓"
+                            android:text="Accessibility: ✓  Overlay: ✓  Screen capture: ✓"
                             android:textSize="12sp"
                             android:textColor="#999999"
                             android:layout_marginTop="4dp" />
@@ -234,7 +234,7 @@
                             android:id="@+id/tv_skills_status"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="8 个 Skills"
+                            android:text="8 Skills"
                             android:textSize="14sp"
                             android:layout_marginTop="4dp"
                             android:textColor="#4CAF50" />
@@ -298,7 +298,7 @@
                             android:id="@+id/tv_sessions_status"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="无活跃会话"
+                            android:text="No active sessions"
                             android:textSize="14sp"
                             android:layout_marginTop="4dp"
                             android:textColor="#999999" />
@@ -307,7 +307,7 @@
                             android:id="@+id/tv_sessions_details"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="暂无活跃的 Agent 会话"
+                            android:text="No active Agent sessions"
                             android:textSize="12sp"
                             android:textColor="#999999"
                             android:layout_marginTop="4dp" />
@@ -345,7 +345,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="配置"
+                android:text="Configure"
                 android:textSize="14sp"
                 android:drawableTop="@android:drawable/ic_menu_manage"
                 android:drawablePadding="4dp" />
@@ -356,7 +356,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="检查更新"
+                android:text="Check for updates"
                 android:textSize="14sp"
                 android:drawableTop="@android:drawable/ic_menu_compass"
                 android:drawablePadding="4dp" />
@@ -367,7 +367,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="日志"
+                android:text="Logs"
                 android:textSize="14sp"
                 android:drawableTop="@android:drawable/ic_menu_info_details"
                 android:drawablePadding="4dp" />

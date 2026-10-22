@@ -35,7 +35,7 @@ class ObserverForegroundService : Service() {
         private const val TAG = "S4ClawForeground"
         private const val NOTIFICATION_ID = 10086
         private const val CHANNEL_ID = "s4claw_media_projection"
-        private const val CHANNEL_NAME = "S4Claw 录屏服务"
+        private const val CHANNEL_NAME = "S4Claw Screen Recording Service"
 
         @Volatile
         private var isRunning = false
@@ -106,7 +106,7 @@ class ObserverForegroundService : Service() {
                 CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "S4Claw 需要前台服务来维持录屏权限"
+                description = "S4Claw needs a foreground service to maintain screen recording permission"
                 setShowBadge(false)
                 enableLights(false)
                 enableVibration(false)
@@ -142,8 +142,8 @@ class ObserverForegroundService : Service() {
         )
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("S4Claw 录屏服务")
-            .setContentText("正在维持录屏权限 · 点击查看状态")
+            .setContentTitle("S4Claw Screen Recording Service")
+            .setContentText("Maintaining screen recording permission · Tap to view status")
             .setSmallIcon(android.R.drawable.ic_menu_camera)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)

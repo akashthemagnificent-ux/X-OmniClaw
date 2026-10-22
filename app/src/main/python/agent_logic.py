@@ -34,10 +34,12 @@ _REASONING_TAG_RE = re.compile(
     re.DOTALL | re.IGNORECASE,
 )
 
-# 将聊天态识别提示集中管理，避免业务关键词散落在逻辑分支中难以维护。
-_CHAT_SNAPSHOT_INPUT_MARKERS_RAW = ("输入框",)
-_CHAT_SNAPSHOT_INPUT_MARKERS_LOWER = ("editable=true", "edittext")
-_CHAT_SNAPSHOT_SEND_MARKERS_RAW = ("发送",)
+# shortcut: on an English UI the Chinese markers below never match, so the
+# English equivalents are kept alongside them. Remove only if the UI is
+# guaranteed to stay Chinese.
+_CHAT_SNAPSHOT_INPUT_MARKERS_RAW = ("输入框", "Input")
+_CHAT_SNAPSHOT_INPUT_MARKERS_LOWER = ("editable=true", "edittext", "input")
+_CHAT_SNAPSHOT_SEND_MARKERS_RAW = ("发送", "Send")
 _CHAT_SNAPSHOT_SEND_MARKERS_LOWER = ("send",)
 
 

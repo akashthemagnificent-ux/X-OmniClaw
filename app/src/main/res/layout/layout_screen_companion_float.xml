@@ -37,7 +37,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="按住说话"
+                    android:text="Hold to talk"
                     android:textColor="#FFFFFFFF"
                     android:textSize="12sp"
                     android:textStyle="bold" />

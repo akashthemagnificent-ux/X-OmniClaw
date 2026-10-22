@@ -47,7 +47,7 @@ class VlmProviderConfigActivity : AppCompatActivity() {
         binding.switchFollowAgent.isChecked = followAgent
         binding.etVlmModelRef.setText(if (modelId.isBlank()) "" else "vlm/$modelId")
         binding.etVlmUrl.setText(provider?.baseUrl.orEmpty())
-        // 独立 VLM 的 apiKey；加载失败时保持为空（保存时再解析默认继承）
+        // Independent VLM apiKey; load error shows empty (reconfigure later)
         binding.etVlmApiKey.setText(provider?.apiKey.orEmpty())
         applyFollowAgentUi(followAgent)
     }
@@ -66,9 +66,9 @@ class VlmProviderConfigActivity : AppCompatActivity() {
     private fun applyFollowAgentUi(followAgent: Boolean) {
         binding.layoutManual.visibility = if (followAgent) android.view.View.GONE else android.view.View.VISIBLE
         binding.tvFollowHint.text = if (followAgent) {
-            "已启用：VLM 将复用 Agent provider/model。"
+            "Following Agent enabled. VLM will reuse Agent model."
         } else {
-            "已启用独立 VLM：请填写独立 provider/model 或其他参数。"
+            "Independent VLM: set provider or other parameters."
         }
     }
 

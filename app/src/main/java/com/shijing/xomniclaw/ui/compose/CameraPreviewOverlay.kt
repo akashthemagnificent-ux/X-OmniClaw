@@ -188,6 +188,7 @@ fun CameraPreviewOverlay(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             if (source != VisionFrameSource.SCREEN_CAPTURE && onSwitchCamera != null) {
+                if (source != VisionFrameSource.SCREEN_CAPTURE && onSwitchCamera != null) {
                 IconButton(
                     onClick = onSwitchCamera,
                     modifier = Modifier
@@ -197,7 +198,7 @@ fun CameraPreviewOverlay(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Cameraswitch,
-                        contentDescription = "切换前后摄像头",
+                        contentDescription = "Switch camera",
                         tint = Color.White,
                         modifier = Modifier.size(24.dp)
                     )
@@ -239,15 +240,15 @@ fun CameraPreviewOverlay(
                     .size(52.dp)
                     .pointerInput(Unit) {
                         detectTapGestures(
-                            onPress = {
-                                pressStartLatest.value?.invoke()
-                                try {
-                                    tryAwaitRelease()
-                                } finally {
-                                    pressEndLatest.value?.invoke()
-                                }
+                        onPress = {
+                            pressStartLatest.value?.invoke()
+                            try {
+                                tryAwaitRelease()
+                            } finally {
+                                pressEndLatest.value?.invoke()
                             }
-                        )
+                        }
+                    )
                     },
                 shape = CircleShape,
                 color = if (isVoiceListening) Color(0xFFFF3B30) else Color.Black.copy(alpha = 0.45f)
@@ -264,7 +265,7 @@ fun CameraPreviewOverlay(
         }
 
         if (source != VisionFrameSource.SCREEN_CAPTURE) {
-            Surface(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter),
@@ -282,20 +283,26 @@ fun CameraPreviewOverlay(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Videocam,
-                            contentDescription = null,
-                            tint = Color.White.copy(alpha = 0.8f),
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = if (isVoiceListening) "正在识别语音..." else "右侧悬浮麦克风按住说话",
-                            style = TextStyle(
-                                color = Color.White.copy(alpha = 0.8f),
-                                fontSize = 13.sp
+                        Row(
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .horizontalArrangement = Arrangement.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Videocam,
+                                contentDescription = null,
+                                tint = Color.White.copy(alpha = 0.8f),
+                                modifier = Modifier.size(18.dp)
                             )
-                        )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = if (isVoiceListening) "Recognizing voice..."
+                                else "Hold microphone to speak",
+                                style = TextStyle(
+                                    color = Color.White.copy(alpha = 0.8f),
+                                    fontSize = 13.sp
+                                )
+                            )
                     }
                 }
             }

@@ -25,7 +25,7 @@
                 android:id="@+id/tv_behavior_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="正在记录行为"
+                android:text="Recording behavior"
                 android:textColor="#FFFFFFFF"
                 android:textSize="12sp"
                 android:textStyle="bold" />
@@ -37,7 +37,7 @@
                 android:layout_marginTop="4dp"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="请开始操作，结束后点停止"
+                android:text="Start your actions, then tap Stop when finished"
                 android:textColor="#CCFFFFFF"
                 android:textSize="11sp" />
         </LinearLayout>

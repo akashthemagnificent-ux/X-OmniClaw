@@ -131,10 +131,11 @@ class DeviceTool(private val context: Context) : Tool {
         }
 
         /**
-         * 附在「会改变界面」的操作成功结果末尾，强调模型侧流程约束（不再附带 snapshot_id / expected 等监控文案）。
+         * Attached to successful results of operations that will change the interface,
+         * emphasizing the model's process constraints (no longer include snapshot_id / expected for monitoring).
          */
         private const val SNAPSHOT_BEFORE_NEXT_ACT_HINT =
-            "\n[建议] 若页面已变化、ref 可能失效或将执行高风险点击，请先调用 device(action=\"snapshot\") 刷新界面再继续。"
+            "\n[Suggestion] If the page has changed, ref may be invalid or a high-risk tap will be executed, please first call device(action=\"snapshot\") to refresh the interface before continuing."
     }
 
     override val name = "device"

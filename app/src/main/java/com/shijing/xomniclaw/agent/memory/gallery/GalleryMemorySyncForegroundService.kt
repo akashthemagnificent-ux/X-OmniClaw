@@ -32,7 +32,7 @@ class GalleryMemorySyncForegroundService : Service() {
     companion object {
         private const val TAG = "GalleryMemorySyncSvc"
         private const val CHANNEL_ID = "gallery_memory_sync"
-        private const val CHANNEL_NAME = "X-OmniClaw 相册记忆同步"
+        private const val CHANNEL_NAME = "X-OmniClaw Gallery Memory Sync"
         private const val NOTIFICATION_ID = 2010
 
         private const val ACTION_START_SYNC =
@@ -70,8 +70,8 @@ class GalleryMemorySyncForegroundService : Service() {
         super.onCreate()
         createNotificationChannel()
         startServiceForeground(
-            title = "X-OmniClaw 相册扫描准备中",
-            text = "正在初始化后台扫描任务"
+            title = "X-OmniClaw Gallery Scan Preparing",
+            text = "Initializing the background scan task"
         )
     }
 
@@ -83,8 +83,8 @@ class GalleryMemorySyncForegroundService : Service() {
 
         if (activeJob?.isActive == true) {
             updateNotification(
-                title = "X-OmniClaw 相册扫描进行中",
-                text = "已有后台扫描任务正在执行"
+                title = "X-OmniClaw Gallery Scan in Progress",
+                text = "A background scan task is already running"
             )
             return START_NOT_STICKY
         }
@@ -95,12 +95,12 @@ class GalleryMemorySyncForegroundService : Service() {
 
         statusStore.markRunning(
             maxImages = maxImages,
-            message = "后台扫描已启动，准备读取新增图片",
+            message = "Background scan started, preparing to read new images",
             stage = "preparing"
         )
         updateNotification(
-            title = "X-OmniClaw 相册扫描进行中",
-            text = "准备扫描最多 $maxImages 张未入库图片"
+            title = "X-OmniClaw Gallery Scan in Progress",
+            text = "Preparing to scan up to $maxImages images not yet stored"
         )
 
         activeJob = serviceScope.launch {
@@ -129,7 +129,7 @@ class GalleryMemorySyncForegroundService : Service() {
                             )
                         }
                         updateNotification(
-                            title = "X-OmniClaw 相册扫描进行中",
+                            title = "X-OmniClaw Gallery Scan in Progress",
                             text = buildNotificationText(running)
                         )
                     }
@@ -149,7 +149,7 @@ class GalleryMemorySyncForegroundService : Service() {
                     )
                 }
                 updateNotification(
-                    title = "X-OmniClaw 相册扫描已完成",
+                    title = "X-OmniClaw Gallery Scan Complete",
                     text = buildNotificationText(completed)
                 )
             } catch (e: Exception) {
@@ -158,11 +158,11 @@ class GalleryMemorySyncForegroundService : Service() {
                     current.copy(
                         isRunning = false,
                         stage = "failed",
-                        message = "相册扫描失败：${e.message ?: "unknown"}"
+                        message = "Gallery scan failed: ${e.message ?: "unknown"}"
                     )
                 }
                 updateNotification(
-                    title = "X-OmniClaw 相册扫描失败",
+                    title = "X-OmniClaw Gallery Scan Failed",
                     text = buildNotificationText(failed)
                 )
             } finally {
@@ -205,7 +205,7 @@ class GalleryMemorySyncForegroundService : Service() {
                 CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "承接 X-OmniClaw 相册记忆扫描与画像生成"
+                description = "Runs X-OmniClaw gallery memory scanning and profile generation"
                 setShowBadge(false)
                 enableLights(false)
                 enableVibration(false)
@@ -252,9 +252,9 @@ class GalleryMemorySyncForegroundService : Service() {
     private fun buildNotificationText(status: GalleryMemorySyncStatus): String {
         return when {
             status.isRunning && status.discoveredCount > 0 ->
-                "${status.message}，已完成 ${status.processedCount}/${status.discoveredCount}"
+                "${status.message}, completed ${status.processedCount}/${status.discoveredCount}"
             status.isRunning ->
-                "${status.message}，已检查 ${status.inspectedCount} 张"
+                "${status.message}, inspected ${status.inspectedCount} images"
             else ->
                 status.progressText()
         }

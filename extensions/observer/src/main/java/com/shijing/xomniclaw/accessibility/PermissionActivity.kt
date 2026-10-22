@@ -325,36 +325,36 @@ class PermissionActivity : Activity() {
     private fun updateAccessibilityUI(isEnabled: Boolean) {
         binding.apply {
             if (isEnabled) {
-                tvAccessibilityStatus.text = "✅ 已启用"
+                tvAccessibilityStatus.text = "✅ Enabled"
                 tvAccessibilityStatus.setTextColor(getColor(android.R.color.holo_green_dark))
                 btnAccessibility.isEnabled = false
-                btnAccessibility.text = "已启用"
+                btnAccessibility.text = "Enabled"
                 btnAccessibility.alpha = 0.5f
 
                 tvAccessibilityDesc.text = """
-                    ✅ 无障碍服务已启用
+                    ✅ Accessibility service enabled
 
-                    功能:
-                    • 点击、滑动、长按
-                    • 输入文本
-                    • 获取界面信息
-                    • 导航 (Home/Back)
+                    Features:
+                    • Tap, swipe, long press
+                    • Enter text
+                    • Read screen information
+                    • Navigation (Home/Back)
                 """.trimIndent()
             } else {
-                tvAccessibilityStatus.text = "❌ 未启用"
+                tvAccessibilityStatus.text = "❌ Not enabled"
                 tvAccessibilityStatus.setTextColor(getColor(android.R.color.holo_red_dark))
                 btnAccessibility.isEnabled = true
-                btnAccessibility.text = "去设置"
+                btnAccessibility.text = "Go to Settings"
                 btnAccessibility.alpha = 1.0f
 
                 tvAccessibilityDesc.text = """
-                    ⚠️ 需要启用无障碍服务
+                    ⚠️ Accessibility service needs to be enabled
 
-                    步骤:
-                    1. 点击"去设置"按钮
-                    2. 选择已下载的应用，找到X-OmniClaw
-                    3. 开启服务开关
-                    4. 授予权限
+                    Steps:
+                    1. Tap the "Go to Settings" button
+                    2. Select downloaded apps and find X-OmniClaw
+                    3. Turn on the service switch
+                    4. Grant the permission
                 """.trimIndent()
             }
         }
@@ -368,41 +368,41 @@ class PermissionActivity : Activity() {
 
         binding.apply {
             if (isAuthorized) {
-                tvScreenCaptureStatus.text = "✅ 已授权"
+                tvScreenCaptureStatus.text = "✅ Authorized"
                 tvScreenCaptureStatus.setTextColor(getColor(android.R.color.holo_green_dark))
                 btnScreenCapture.isEnabled = false
-                btnScreenCapture.text = "已授权"
+                btnScreenCapture.text = "Authorized"
                 btnScreenCapture.alpha = 0.5f
 
                 tvScreenCaptureDesc.text = """
-                    ✅ 录屏权限已授权
+                    ✅ Screen recording permission granted
 
-                    状态: $statusDetails
+                    Status: $statusDetails
 
-                    功能:
-                    • 截取屏幕画面
-                    • 分析 UI 元素
-                    • 辅助 Agent 观察
+                    Features:
+                    • Capture the screen
+                    • Analyze UI elements
+                    • Assist Agent observation
                 """.trimIndent()
             } else {
-                tvScreenCaptureStatus.text = "❌ 未授权"
+                tvScreenCaptureStatus.text = "❌ Not authorized"
                 tvScreenCaptureStatus.setTextColor(getColor(android.R.color.holo_red_dark))
                 btnScreenCapture.isEnabled = true
-                btnScreenCapture.text = "授予权限"
+                btnScreenCapture.text = "Grant Permission"
                 btnScreenCapture.alpha = 1.0f
 
                 tvScreenCaptureDesc.text = """
-                    ⚠️ 需要授予录屏权限
+                    ⚠️ Screen recording permission needs to be granted
 
-                    状态: $statusDetails
+                    Status: $statusDetails
 
-                    步骤:
-                    1. 点击"授予权限"按钮
-                    2. 选择"整个屏幕"，然后点击下一步
-                    3. 在弹窗中点击"立即开始"
-                    4. 前台服务将自动启动
+                    Steps:
+                    1. Tap the "Grant Permission" button
+                    2. Select "Entire screen", then tap Next
+                    3. Tap "Start now" in the dialog
+                    4. The foreground service will start automatically
 
-                    注意: 录屏权限需要前台服务维持
+                    Note: Screen recording permission requires the foreground service to stay active
                 """.trimIndent()
             }
         }
@@ -414,36 +414,36 @@ class PermissionActivity : Activity() {
     private fun updateStorageUI(isGranted: Boolean) {
         binding.apply {
             if (isGranted) {
-                tvStorageStatus.text = "✅ 已授权"
+                tvStorageStatus.text = "✅ Authorized"
                 tvStorageStatus.setTextColor(getColor(android.R.color.holo_green_dark))
                 btnStorage.isEnabled = false
-                btnStorage.text = "已授权"
+                btnStorage.text = "Authorized"
                 btnStorage.alpha = 0.5f
 
                 tvStorageDesc.text = """
-                    ✅ 存储权限已授权
+                    ✅ Storage permission granted
 
-                    功能:
-                    • 保存截图文件
-                    • 访问工作空间
-                    • 读写配置文件
+                    Features:
+                    • Save screenshot files
+                    • Access the workspace
+                    • Read and write config files
                 """.trimIndent()
             } else {
-                tvStorageStatus.text = "❌ 未授权"
+                tvStorageStatus.text = "❌ Not authorized"
                 tvStorageStatus.setTextColor(getColor(android.R.color.holo_red_dark))
                 btnStorage.isEnabled = true
-                btnStorage.text = "授予权限"
+                btnStorage.text = "Grant Permission"
                 btnStorage.alpha = 1.0f
 
                 tvStorageDesc.text = """
-                    ⚠️ 需要授予存储权限
+                    ⚠️ Storage permission needs to be granted
 
-                    说明:
-                    • Android 11+ 需要"所有文件访问权限"
-                    • 点击"授予权限"按钮
-                    • 在设置中开启权限
+                    Details:
+                    • Android 11+ requires "All files access"
+                    • Tap the "Grant Permission" button
+                    • Enable the permission in Settings
 
-                    注意: 存储权限用于保存截图
+                    Note: Storage permission is used to save screenshots
                 """.trimIndent()
             }
         }
@@ -455,30 +455,30 @@ class PermissionActivity : Activity() {
     private fun updateAlbumUI(isGranted: Boolean) {
         binding.apply {
             if (isGranted) {
-                tvAlbumStatus.text = "✅ 已授权"
+                tvAlbumStatus.text = "✅ Authorized"
                 tvAlbumStatus.setTextColor(getColor(android.R.color.holo_green_dark))
                 btnAlbum.isEnabled = false
-                btnAlbum.text = "已授权"
+                btnAlbum.text = "Authorized"
                 btnAlbum.alpha = 0.5f
                 tvAlbumDesc.text = """
-                    ✅ 相册读取权限已授权
+                    ✅ Gallery read permission granted
 
-                    功能:
-                    • 读取系统相册图片
-                    • 支持图库检索/复制等能力
+                    Features:
+                    • Read images from the system gallery
+                    • Support gallery search/copy and similar capabilities
                 """.trimIndent()
             } else {
-                tvAlbumStatus.text = "❌ 未授权"
+                tvAlbumStatus.text = "❌ Not authorized"
                 tvAlbumStatus.setTextColor(getColor(android.R.color.holo_red_dark))
                 btnAlbum.isEnabled = true
-                btnAlbum.text = "授予相册权限"
+                btnAlbum.text = "Grant Gallery Permission"
                 btnAlbum.alpha = 1.0f
                 tvAlbumDesc.text = """
-                    ⚠️ 需要授予相册读取权限
+                    ⚠️ Gallery read permission needs to be granted
 
-                    说明:
-                    • Android 13+ 申请“照片和视频”中的图片读取
-                    • Android 12 及以下使用读取存储权限
+                    Details:
+                    • Android 13+ requests image access from "Photos and videos"
+                    • Android 12 and below uses the read storage permission
                 """.trimIndent()
             }
         }
@@ -491,32 +491,32 @@ class PermissionActivity : Activity() {
         val both = cameraGranted && microphoneGranted
         binding.apply {
             if (both) {
-                tvCameraMicStatus.text = "✅ 已授权"
+                tvCameraMicStatus.text = "✅ Authorized"
                 tvCameraMicStatus.setTextColor(getColor(android.R.color.holo_green_dark))
                 btnCameraMic.isEnabled = false
-                btnCameraMic.text = "已授权"
+                btnCameraMic.text = "Authorized"
                 btnCameraMic.alpha = 0.5f
                 tvCameraMicDesc.text = """
-                    ✅ 摄像头与麦克风已授权
+                    ✅ Camera and microphone granted
 
-                    功能:
-                    • 摄像头预览与推流
-                    • 语音输入、按住说话
+                    Features:
+                    • Camera preview and streaming
+                    • Voice input, press and hold to talk
                 """.trimIndent()
             } else {
                 val camText = if (cameraGranted) "✅" else "❌"
                 val micText = if (microphoneGranted) "✅" else "❌"
-                tvCameraMicStatus.text = "摄像头 $camText  麦克风 $micText"
+                tvCameraMicStatus.text = "Camera $camText  Microphone $micText"
                 tvCameraMicStatus.setTextColor(getColor(android.R.color.holo_red_dark))
                 btnCameraMic.isEnabled = true
-                btnCameraMic.text = "授予摄像头与麦克风"
+                btnCameraMic.text = "Grant Camera and Microphone"
                 btnCameraMic.alpha = 1.0f
                 tvCameraMicDesc.text = """
-                    ⚠️ 需要摄像头与麦克风权限
+                    ⚠️ Camera and microphone permissions are required
 
-                    说明:
-                    • 点击按钮后，在系统弹窗中允许相应权限
-                    • 也可通过「一键授权」在无障碍/存储/录屏完成后自动弹出
+                    Details:
+                    • After tapping the button, allow the permissions in the system dialog
+                    • You can also use "Grant All" to prompt automatically once Accessibility/Storage/Screen recording are granted
                 """.trimIndent()
             }
         }
@@ -550,16 +550,16 @@ class PermissionActivity : Activity() {
 
         binding.apply {
             if (allGranted) {
-                tvAllStatus.text = "✅ 所有权限已授予 (6/6)"
+                tvAllStatus.text = "✅ All permissions granted (6/6)"
                 tvAllStatus.setTextColor(getColor(android.R.color.holo_green_dark))
                 btnGrantAll.isEnabled = false
-                btnGrantAll.text = "全部已授权"
+                btnGrantAll.text = "All Granted"
                 btnGrantAll.alpha = 0.5f
             } else {
-                tvAllStatus.text = "⚠️ 已授予 $grantedCount/6 个权限"
+                tvAllStatus.text = "⚠️ Granted $grantedCount/6 permissions"
                 tvAllStatus.setTextColor(getColor(android.R.color.holo_orange_dark))
                 btnGrantAll.isEnabled = true
-                btnGrantAll.text = "一键授权 (${grantedCount}/6)"
+                btnGrantAll.text = "Grant All (${grantedCount}/6)"
                 btnGrantAll.alpha = 1.0f
             }
         }
@@ -572,10 +572,10 @@ class PermissionActivity : Activity() {
         try {
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
             startActivityForResult(intent, REQUEST_CODE_ACCESSIBILITY)
-            Toast.makeText(this, "请找到并启用无障碍服务", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Please find and enable the accessibility service", Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             Log.e(TAG, "Failed to open accessibility settings", e)
-            Toast.makeText(this, "无法打开无障碍设置", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Unable to open accessibility settings", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -587,14 +587,14 @@ class PermissionActivity : Activity() {
             val needsPermission = !MediaProjectionHelper.requestPermission(this)
 
             if (!needsPermission) {
-                Toast.makeText(this, "录屏权限已授予", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Screen recording permission granted", Toast.LENGTH_SHORT).show()
                 checkPermissionsAsync("requestMediaProjectionPermission-alreadyGranted")
             } else {
-                Toast.makeText(this, "请先选择\"整个屏幕\"并点击下一步，再在弹窗中点击\"立即开始\"", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Please select \"Entire screen\" and tap Next, then tap \"Start now\" in the dialog", Toast.LENGTH_LONG).show()
             }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to request media projection", e)
-            Toast.makeText(this, "请求录屏权限失败: ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Failed to request screen recording permission: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -609,7 +609,7 @@ class PermissionActivity : Activity() {
                     data = Uri.parse("package:$packageName")
                 }
                 startActivityForResult(intent, REQUEST_CODE_MANAGE_STORAGE)
-                Toast.makeText(this, "请开启\"允许管理所有文件\"权限", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Please enable the \"Allow management of all files\" permission", Toast.LENGTH_LONG).show()
             } else {
                 // Android 10 及以下直接请求 WRITE_EXTERNAL_STORAGE
                 requestPermissions(
@@ -619,7 +619,7 @@ class PermissionActivity : Activity() {
             }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to request storage permission", e)
-            Toast.makeText(this, "请求存储权限失败: ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Failed to request storage permission: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -632,15 +632,15 @@ class PermissionActivity : Activity() {
                 checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED
             }
             if (need.isEmpty()) {
-                Toast.makeText(this, "相册权限已具备", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Gallery permission already granted", Toast.LENGTH_SHORT).show()
                 checkPermissionsAsync("requestAlbum-alreadyOk")
                 return
             }
             requestPermissions(need.toTypedArray(), REQUEST_CODE_ALBUM)
-            Toast.makeText(this, "请在系统弹窗中允许相册读取权限", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Please allow gallery read access in the system dialog", Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             Log.e(TAG, "Failed to request album permission", e)
-            Toast.makeText(this, "请求相册权限失败: ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Failed to request gallery permission: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -657,15 +657,15 @@ class PermissionActivity : Activity() {
                 need.add(Manifest.permission.RECORD_AUDIO)
             }
             if (need.isEmpty()) {
-                Toast.makeText(this, "摄像头与麦克风权限已具备", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Camera and microphone permissions already granted", Toast.LENGTH_SHORT).show()
                 checkPermissionsAsync("requestCameraMic-alreadyOk")
                 return
             }
             requestPermissions(need.toTypedArray(), REQUEST_CODE_CAMERA_MIC)
-            Toast.makeText(this, "请在系统弹窗中允许摄像头与麦克风", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Please allow camera and microphone in the system dialog", Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             Log.e(TAG, "Failed to request camera/microphone permissions", e)
-            Toast.makeText(this, "请求摄像头/麦克风失败: ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Failed to request camera/microphone access: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -680,7 +680,7 @@ class PermissionActivity : Activity() {
             !cachedAlbumGranted -> requestAlbumPermission()
             !cachedCameraGranted || !cachedMicrophoneGranted -> requestCameraMicrophonePermissions()
             else -> {
-                Toast.makeText(this, "全部权限已就绪", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "All permissions are ready", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -690,14 +690,14 @@ class PermissionActivity : Activity() {
      */
     private fun showResetDialog() {
         android.app.AlertDialog.Builder(this)
-            .setTitle("重置权限")
-            .setMessage("确定要重置所有权限吗?\n\n这将:\n• 停止前台服务\n• 清除录屏权限\n• 需要重新授权")
-            .setPositiveButton("重置") { _, _ ->
+            .setTitle("Reset permissions")
+            .setMessage("Reset all permissions?\n\nThis will:\n• Stop the foreground service\n• Clear screen recording permission\n• Require re-authorization")
+            .setPositiveButton("Reset") { _, _ ->
                 MediaProjectionHelper.releaseCompletely(this)
-                Toast.makeText(this, "权限已重置", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Permissions reset", Toast.LENGTH_SHORT).show()
                 mainHandler.postDelayed({ checkPermissionsAsync() }, 500)
             }
-            .setNegativeButton("取消", null)
+            .setNegativeButton("Cancel", null)
             .show()
     }
 
@@ -767,9 +767,9 @@ class PermissionActivity : Activity() {
                 val allGranted = grantResults.isNotEmpty() &&
                     grantResults.all { it == PackageManager.PERMISSION_GRANTED }
                 if (allGranted) {
-                    Toast.makeText(this, "✅ 摄像头与麦克风权限已授予", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "✅ Camera and microphone permissions granted", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(this, "❌ 部分权限未授予，可在系统设置中手动开启", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "❌ Some permissions were not granted; you can enable them manually in system settings", Toast.LENGTH_LONG).show()
                 }
                 mainHandler.postDelayed({ checkPermissionsAsync("onRequestPermissionsResult-cameraMic") }, 400)
             }
@@ -777,9 +777,9 @@ class PermissionActivity : Activity() {
                 val allGranted = grantResults.isNotEmpty() &&
                     grantResults.all { it == PackageManager.PERMISSION_GRANTED }
                 if (allGranted) {
-                    Toast.makeText(this, "✅ 相册权限已授予", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "✅ Gallery permission granted", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(this, "❌ 相册权限未授予，可在系统设置中手动开启", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "❌ Gallery permission not granted; you can enable it manually in system settings", Toast.LENGTH_LONG).show()
                 }
                 mainHandler.postDelayed({ checkPermissionsAsync("onRequestPermissionsResult-album") }, 400)
             }
@@ -795,25 +795,25 @@ class PermissionActivity : Activity() {
                 val granted = MediaProjectionHelper.handlePermissionResult(this, requestCode, resultCode, data)
 
                 if (granted) {
-                    Toast.makeText(this, "✅ 录屏权限已授予", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "✅ Screen recording permission granted", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(this, "❌ 录屏权限被拒绝", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "❌ Screen recording permission denied", Toast.LENGTH_SHORT).show()
                 }
 
                 mainHandler.postDelayed({ checkPermissionsAsync("onActivityResult-mediaProjection") }, 500)
             }
 
             REQUEST_CODE_ACCESSIBILITY -> {
-                Toast.makeText(this, "正在检查无障碍服务状态...", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Checking accessibility service status...", Toast.LENGTH_SHORT).show()
                 mainHandler.postDelayed({ checkPermissionsAsync("onActivityResult-accessibility") }, 1000)
             }
 
             REQUEST_CODE_MANAGE_STORAGE -> {
                 val granted = isStoragePermissionGranted()
                 if (granted) {
-                    Toast.makeText(this, "✅ 存储权限已授予", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "✅ Storage permission granted", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(this, "❌ 存储权限被拒绝", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "❌ Storage permission denied", Toast.LENGTH_SHORT).show()
                 }
                 mainHandler.postDelayed({ checkPermissionsAsync("onActivityResult-storage") }, 500)
             }

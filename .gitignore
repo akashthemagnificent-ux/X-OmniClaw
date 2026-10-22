@@ -31,3 +31,7 @@ videos/*.mp4
 releases/*.apk
 *.backup
 scripts_rm
+# --- fork: CI signing + local build artifacts ---
+keystore.jks
+*.jks
+local.properties

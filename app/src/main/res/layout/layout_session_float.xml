@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:paddingHorizontal="12dp"
         android:paddingVertical="6dp"
-        android:text="步骤 --/--"
+        android:text="Step --/--"
         android:textColor="#FFFFFFFF"
         android:textSize="12sp"
         android:textStyle="bold"

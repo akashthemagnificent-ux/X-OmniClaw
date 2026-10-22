@@ -250,7 +250,7 @@ fun ChatScreen(
     var sessionMenuExpanded by remember { mutableStateOf(false) }
     var pendingDeleteSession by remember { mutableStateOf<SessionManager.Session?>(null) }
     val sortedSessions = remember(sessions) { sessions.sortedByDescending { it.createdAt } }
-    val currentSessionTitle = currentSession?.title?.takeIf { it.isNotBlank() } ?: "选择会话"
+    val currentSessionTitle = currentSession?.title?.takeIf { it.isNotBlank() } ?: "Select session"
     // 仅用于主对话展示：隐藏工具调用/工具结果，避免界面被技术细节刷屏。
     val visibleMessages = remember(messages) {
         messages.filterNot { it.kind in HiddenInMainTimelineKinds }
@@ -329,7 +329,7 @@ fun ChatScreen(
                         )
                         Icon(
                             imageVector = Icons.Default.ExpandMore,
-                            contentDescription = "选择会话",
+                            contentDescription = "Select session",
                             tint = Color(0xFF6B7280)
                         )
                     }
@@ -365,7 +365,7 @@ fun ChatScreen(
                                         ) {
                                             Icon(
                                                 imageVector = Icons.Filled.Delete,
-                                                contentDescription = "删除会话",
+                                                contentDescription = "Delete session",
                                                 tint = Color(0xFFDC2626)
                                             )
                                         }
@@ -384,15 +384,15 @@ fun ChatScreen(
                 FilledTonalButton(onClick = onNewSession) {
                     Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("新对话", maxLines = 1)
+                    Text("New chat", maxLines = 1)
                 }
             }
 
             pendingDeleteSession?.let { session ->
                 AlertDialog(
                     onDismissRequest = { pendingDeleteSession = null },
-                    title = { Text("删除会话") },
-                    text = { Text("确认删除会话「${session.title}」吗？删除后将不可恢复。") },
+                    title = { Text("Delete session") },
+                    text = { Text("Delete session \"${session.title}\"? This cannot be undone.") },
                     confirmButton = {
                         TextButton(
                             onClick = {
@@ -400,12 +400,12 @@ fun ChatScreen(
                                 pendingDeleteSession = null
                             }
                         ) {
-                            Text("删除", color = Color(0xFFDC2626))
+                            Text("Delete", color = Color(0xFFDC2626))
                         }
                     },
                     dismissButton = {
                         TextButton(onClick = { pendingDeleteSession = null }) {
-                            Text("取消")
+                            Text("Cancel")
                         }
                     }
                 )
@@ -442,7 +442,7 @@ fun ChatScreen(
                 ) {
                     Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)) {
                         Text(
-                            text = "执行中任务（点击可跳转）",
+                            text = "Running tasks (tap to jump)",
                             style = TextStyle(
                                 fontSize = 11.sp,
                                 color = Color(0xFF1E40AF),
@@ -527,7 +527,7 @@ fun ChatScreen(
                         Text(text = "👋", style = TextStyle(fontSize = 48.sp))
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "开始聊天",
+                            text = "Start chatting",
                             style = TextStyle(
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
@@ -536,7 +536,7 @@ fun ChatScreen(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "向 AI 助手发送消息来控制手机",
+                            text = "Send a message to the AI assistant to control your phone",
                             style = TextStyle(fontSize = 14.sp, color = Color(0xFF6B7280))
                         )
                     }
@@ -628,7 +628,7 @@ private fun CollapsedChatSidebarRail(
             IconButton(onClick = onExpand) {
                 Icon(
                     imageVector = Icons.Filled.KeyboardArrowRight,
-                    contentDescription = "展开会话列表",
+                    contentDescription = "Expand session list",
                     tint = ChatPurple
                 )
             }
@@ -667,7 +667,7 @@ private fun ChatSessionSidebar(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.KeyboardArrowLeft,
-                        contentDescription = "收起会话列表",
+                        contentDescription = "Collapse session list",
                         tint = Color(0xFF6B7280)
                     )
                 }
@@ -684,7 +684,7 @@ private fun ChatSessionSidebar(
                 )
                 if (onCheckUpdate != null) {
                     TextButton(onClick = onCheckUpdate) {
-                        Text("更新", fontSize = 12.sp, color = ChatPurple)
+                        Text("Update", fontSize = 12.sp, color = ChatPurple)
                     }
                 }
             }
@@ -697,11 +697,11 @@ private fun ChatSessionSidebar(
             ) {
                 Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(modifier = Modifier.width(6.dp))
-                Text("新对话")
+                Text("New chat")
             }
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = "历史会话",
+                text = "Session history",
                 style = TextStyle(fontSize = 12.sp, color = Color(0xFF6B7280))
             )
             Spacer(modifier = Modifier.height(6.dp))
@@ -758,7 +758,7 @@ private fun ExpandableToolTimelineItem(
 ) {
     var expanded by remember(message.id) { mutableStateOf(false) }
     val (_, textColor) = messageColors(message)
-    val label = messageTimelineLabel(message.kind) ?: "步骤"
+    val label = messageTimelineLabel(message.kind) ?: "Step"
     val cleaned = remember(message.content) { ChatMediaParser.extract(message.content).cleanedText }
     val oneLine = cleaned.lines().firstOrNull()?.take(120) ?: ""
 
@@ -944,7 +944,7 @@ fun MessageItem(
                     if (isLong) {
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = if (expanded) "收起 ▲" else "展开 ▼",
+                            text = if (expanded) "Collapse ▲" else "Expand ▼",
                             style = TextStyle(
                                 color = if (message.isUser) Color(0xFF6B21A8).copy(alpha = 0.85f)
                                 else ChatPurple,
@@ -963,7 +963,7 @@ fun MessageItem(
                         }
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
-                            text = "✅ 已复制",
+                            text = "✅ Copied",
                             style = TextStyle(
                                 color = textColor.copy(alpha = 0.6f),
                                 fontSize = 11.sp
@@ -1032,12 +1032,12 @@ private fun messageTimelineLabel(kind: ChatMessageKind): String? {
     return when (kind) {
         ChatMessageKind.USER -> null
         ChatMessageKind.ASSISTANT -> null
-        ChatMessageKind.THINKING -> "思考过程"
-        ChatMessageKind.BLOCK_REPLY -> "中间回复"
-        ChatMessageKind.TOOL_CALL -> "工具调用"
-        ChatMessageKind.TOOL_RESULT -> "工具结果"
-        ChatMessageKind.ERROR -> "执行错误"
-        ChatMessageKind.SYSTEM -> "系统消息"
+        ChatMessageKind.THINKING -> "Thinking process"
+        ChatMessageKind.BLOCK_REPLY -> "Intermediate reply"
+        ChatMessageKind.TOOL_CALL -> "Tool call"
+        ChatMessageKind.TOOL_RESULT -> "Tool result"
+        ChatMessageKind.ERROR -> "Execution error"
+        ChatMessageKind.SYSTEM -> "System message"
     }
 }
 
@@ -1077,7 +1077,7 @@ private fun ChatImageThumbnail(
         if (bitmap != null) {
             Image(
                 bitmap = bitmap.asImageBitmap(),
-                contentDescription = "聊天图片预览",
+                contentDescription = "Chat image preview",
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = 120.dp, max = 220.dp),
@@ -1085,7 +1085,7 @@ private fun ChatImageThumbnail(
             )
         } else {
             Text(
-                text = "图片不存在或无法读取\n${media.normalizedPath}",
+                text = "Image missing or unreadable\n${media.normalizedPath}",
                 style = TextStyle(fontSize = 13.sp, color = Color(0xFF666666)),
                 modifier = Modifier.padding(12.dp)
             )
@@ -1107,7 +1107,7 @@ private fun ChatVideoCard(
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Text(
-                text = "视频预览",
+                text = "Video preview",
                 style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color(0xFF1A1A1A))
             )
             Spacer(modifier = Modifier.height(4.dp))
@@ -1117,7 +1117,7 @@ private fun ChatVideoCard(
             )
             Spacer(modifier = Modifier.height(6.dp))
                 Text(
-                text = "点击播放",
+                text = "Tap to play",
                 style = TextStyle(fontSize = 13.sp, color = ChatPurple, fontWeight = FontWeight.Medium)
             )
         }
@@ -1143,7 +1143,7 @@ private fun ChatMediaPreviewDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("关闭")
+                Text("Close")
             }
         },
         text = {
@@ -1152,12 +1152,12 @@ private fun ChatMediaPreviewDialog(
                     if (bitmap != null) {
                         Image(
                             bitmap = bitmap.asImageBitmap(),
-                            contentDescription = "大图预览",
+                            contentDescription = "Full image preview",
                             modifier = Modifier.fillMaxWidth(),
                             contentScale = ContentScale.Fit
                         )
                     } else {
-                        Text("图片不存在或无法读取：${media.normalizedPath}")
+                        Text("Image missing or unreadable: ${media.normalizedPath}")
                     }
                 }
                 ChatMediaType.VIDEO -> {
@@ -1181,13 +1181,13 @@ private fun ChatMediaPreviewDialog(
                                 .height(240.dp)
                         )
                     } else {
-                        Text("视频不存在或无法读取：${media.normalizedPath}")
+                        Text("Video missing or unreadable: ${media.normalizedPath}")
                     }
                 }
             }
         },
         title = {
-            Text(if (media.type == ChatMediaType.IMAGE) "图片预览" else "视频播放")
+            Text(if (media.type == ChatMediaType.IMAGE) "Image preview" else "Video player")
         }
     )
 }
@@ -1368,7 +1368,7 @@ private fun AnnotatedString.Builder.appendInlineMarkdown(text: String, textColor
 private fun copyToClipboard(context: Context, text: String) {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     clipboard.setPrimaryClip(ClipData.newPlainText("message", text))
-    Toast.makeText(context, "已复制", Toast.LENGTH_SHORT).show()
+    Toast.makeText(context, "Copied", Toast.LENGTH_SHORT).show()
 }
 
 @Composable
@@ -1476,7 +1476,7 @@ fun MessageComposer(
                     ) {
                         Icon(
                             imageVector = if (isVoiceMode) Icons.Default.Keyboard else Icons.Default.Mic,
-                            contentDescription = if (isVoiceMode) "切换键盘输入" else "切换语音输入",
+                            contentDescription = if (isVoiceMode) "Switch to keyboard input" else "Switch to voice input",
                             tint = Color(0xFF666666),
                             modifier = Modifier.size(20.dp)
                         )
@@ -1527,9 +1527,9 @@ fun MessageComposer(
                     ) {
                         Text(
                             text = when {
-                                isVoiceListening -> "松开结束识别"
-                                isVoiceProcessing -> "正在识别并等待回答..."
-                                else -> "按住说话"
+                                isVoiceListening -> "Release to finish"
+                                isVoiceProcessing -> "Recognizing and waiting for reply..."
+                                else -> "Hold to talk"
                             },
                             style = TextStyle(
                                 fontSize = 15.sp,
@@ -1569,7 +1569,7 @@ fun MessageComposer(
                             ) {
                                 if (value.isEmpty()) {
                                     Text(
-                                        text = "发送消息",
+                                        text = "Send a message",
                                         style = TextStyle(fontSize = 15.sp, color = Color(0xFF999999))
                                     )
                                 }
@@ -1651,9 +1651,9 @@ private fun formatSessionTime(timestamp: Long): String {
     val now = System.currentTimeMillis()
     val diff = now - timestamp
     return when {
-        diff < 60_000 -> "刚刚"
-        diff < 3600_000 -> "${diff / 60_000} 分钟前"
-        diff < 86400_000 -> "${diff / 3600_000} 小时前"
+        diff < 60_000 -> "Just now"
+        diff < 3600_000 -> "${diff / 60_000} min ago"
+        diff < 86400_000 -> "${diff / 3600_000} hours ago"
         else -> {
             val sdf = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
             sdf.format(Date(timestamp))
@@ -1704,7 +1704,7 @@ private fun AgentRoundTraceCard(
                     color = Color(0xFFEEF2FF)
                 ) {
                     Text(
-                        text = "第 ${roundIndex.coerceAtLeast(1)} 轮",
+                        text = "Round ${roundIndex.coerceAtLeast(1)}",
                         style = TextStyle(
                             fontSize = 11.sp,
                             color = Color(0xFF4338CA),
@@ -1715,7 +1715,7 @@ private fun AgentRoundTraceCard(
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Agent 执行轨迹 · ${steps.size} steps",
+                    text = "Agent execution trace · ${steps.size} steps",
                     modifier = Modifier.weight(1f),
                     style = TextStyle(
                         fontSize = 13.sp,
@@ -1726,7 +1726,7 @@ private fun AgentRoundTraceCard(
                 IconButton(onClick = onToggleExpanded, modifier = Modifier.size(24.dp)) {
                     Icon(
                         imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                        contentDescription = if (expanded) "收起执行轨迹" else "展开执行轨迹",
+                        contentDescription = if (expanded) "Collapse execution trace" else "Expand execution trace",
                         tint = Color(0xFF94A3B8),
                         modifier = Modifier.size(18.dp)
                     )
@@ -1736,7 +1736,7 @@ private fun AgentRoundTraceCard(
             if (!expanded) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "最近一步：${summary.ifBlank { "暂无摘要" }}",
+                    text = "Last step: ${summary.ifBlank { "No summary" }}",
                     style = TextStyle(
                         fontSize = 12.sp,
                         color = Color(0xFF64748B)
@@ -1765,7 +1765,7 @@ private fun AgentTraceStepRow(
     modifier: Modifier = Modifier
 ) {
     val (_, textColor) = messageColors(message)
-    val title = messageTimelineLabel(message.kind) ?: "步骤"
+    val title = messageTimelineLabel(message.kind) ?: "Step"
     val cleanedContent = remember(message.content) {
         stripInlineStepPrefix(message.content)
     }

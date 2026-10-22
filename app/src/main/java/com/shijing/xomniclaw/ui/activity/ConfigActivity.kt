@@ -54,7 +54,7 @@ class ConfigActivity : AppCompatActivity() {
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            title = "配置"
+            title = "Configuration"
         }
 
         // Check storage permission first
@@ -89,7 +89,7 @@ class ConfigActivity : AppCompatActivity() {
                 startActivityForResult(intent, REQUEST_MANAGE_STORAGE)
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to open storage permission settings", e)
-                Toast.makeText(this, "无法打开权限设置页面", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Unable to open permission settings", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -102,7 +102,7 @@ class ConfigActivity : AppCompatActivity() {
                 loadConfig()
             } else {
                 Log.w(TAG, "Storage permission not granted")
-                Toast.makeText(this, "需要文件管理权限才能读取配置", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "File management permission is required to read the configuration", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -124,7 +124,7 @@ class ConfigActivity : AppCompatActivity() {
                 // Show current model in model config card
                 val primary = config.agents?.defaults?.model?.primary
                 if (!primary.isNullOrBlank()) {
-                    tvCurrentModelSummary.text = "当前: $primary"
+                    tvCurrentModelSummary.text = "Current: $primary"
                 }
                 if (providers.isNotEmpty()) {
                     val firstProvider = providers.entries.first()
@@ -144,8 +144,8 @@ class ConfigActivity : AppCompatActivity() {
                     Log.d(TAG, "Model config displayed successfully")
                 } else {
                     Log.w(TAG, "providers is empty")
-                    etApiBase.setText("未配置")
-                    etApiKey.setText("未配置")
+                    etApiBase.setText("Not configured")
+                    etApiKey.setText("Not configured")
                 }
 
                 // Feature switches - read from xomniclaw.json
@@ -164,7 +164,7 @@ class ConfigActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Log.e(TAG, "Failed to load config", e)
             Log.e(TAG, "Error details: ${e.stackTraceToString()}")
-            Toast.makeText(this, "加载配置失败: ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Failed to load configuration: ${e.message}", Toast.LENGTH_SHORT).show()
 
             // Use default values on failure
             binding.apply {
@@ -206,29 +206,29 @@ class ConfigActivity : AppCompatActivity() {
 
             // Check update card
             val updater = AppUpdater(this@ConfigActivity)
-            tvCurrentVersion.text = "当前版本: v${updater.getCurrentVersion()}"
+            tvCurrentVersion.text = "Current version: v${updater.getCurrentVersion()}"
 
             cardUpdate.setOnClickListener {
-                Toast.makeText(this@ConfigActivity, "正在检查更新...", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ConfigActivity, "Checking for updates…", Toast.LENGTH_SHORT).show()
                 lifecycleScope.launch {
                     try {
                         val info = updater.checkForUpdate()
                         if (info.hasUpdate) {
                             val sizeStr = if (info.fileSize > 0) "%.1f MB".format(info.fileSize / 1024.0 / 1024.0) else ""
                             val message = buildString {
-                                append("当前版本: v${info.currentVersion}\n")
-                                append("最新版本: v${info.latestVersion}\n")
-                                if (sizeStr.isNotEmpty()) append("大小: $sizeStr\n")
+                                append("Current version: v${info.currentVersion}\n")
+                                append("Latest version: v${info.latestVersion}\n")
+                                if (sizeStr.isNotEmpty()) append("Size: $sizeStr\n")
                                 if (!info.releaseNotes.isNullOrEmpty()) {
                                     append("\n${info.releaseNotes.take(300)}")
                                 }
                             }
                             androidx.appcompat.app.AlertDialog.Builder(this@ConfigActivity)
-                                .setTitle("发现新版本 v${info.latestVersion}")
+                                .setTitle("New version available v${info.latestVersion}")
                                 .setMessage(message)
-                                .setPositiveButton("立即更新") { _, _ ->
+                                .setPositiveButton("Update Now") { _, _ ->
                                     if (info.downloadUrl != null) {
-                                        Toast.makeText(this@ConfigActivity, "开始下载...", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(this@ConfigActivity, "Starting download…", Toast.LENGTH_SHORT).show()
                                         lifecycleScope.launch {
                                             val ok = updater.downloadAndInstall(info.downloadUrl, info.latestVersion)
                                             if (!ok) {
@@ -239,16 +239,16 @@ class ConfigActivity : AppCompatActivity() {
                                         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(info.releaseUrl)))
                                     }
                                 }
-                                .setNeutralButton("在浏览器中打开") { _, _ ->
+                                .setNeutralButton("Open in Browser") { _, _ ->
                                     startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(info.releaseUrl)))
                                 }
-                                .setNegativeButton("取消", null)
+                                .setNegativeButton("Cancel", null)
                                 .show()
                         } else {
-                            Toast.makeText(this@ConfigActivity, "已是最新版本 v${info.currentVersion}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@ConfigActivity, "You're on the latest version v${info.currentVersion}", Toast.LENGTH_SHORT).show()
                         }
                     } catch (e: Exception) {
-                        Toast.makeText(this@ConfigActivity, "检查更新失败: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ConfigActivity, "Update check failed: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -299,19 +299,19 @@ class ConfigActivity : AppCompatActivity() {
             // Save to xomniclaw.json only (not MMKV)
             configLoader.saveOmniClawConfig(updatedConfig)
 
-            Toast.makeText(this, "配置已保存到 xomniclaw.json", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Configuration saved to xomniclaw.json", Toast.LENGTH_SHORT).show()
             finish()
         } catch (e: Exception) {
             Log.e(TAG, "Failed to save config", e)
-            Toast.makeText(this, "保存配置失败: ${e.message}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Failed to save configuration: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 
     private fun resetToDefault() {
         androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle("恢复默认")
-            .setMessage("确定要恢复所有配置为默认值吗？")
-            .setPositiveButton("确定") { _, _ ->
+            .setTitle("Restore Defaults")
+            .setMessage("Restore all configuration to default values?")
+            .setPositiveButton("Confirm") { _, _ ->
                 // Delete current xomniclaw.json, will be recreated with defaults on next load
                 try {
                     val configFile = java.io.File("/sdcard/.xomniclaw/xomniclaw.json")
@@ -319,13 +319,13 @@ class ConfigActivity : AppCompatActivity() {
                         configFile.delete()
                     }
                     loadConfig()
-                    Toast.makeText(this, "已恢复默认配置", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Default configuration restored", Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
                     Log.e(TAG, "Failed to reset config", e)
-                    Toast.makeText(this, "恢复默认配置失败", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Failed to restore default configuration", Toast.LENGTH_SHORT).show()
                 }
             }
-            .setNegativeButton("取消", null)
+            .setNegativeButton("Cancel", null)
             .show()
     }
 
