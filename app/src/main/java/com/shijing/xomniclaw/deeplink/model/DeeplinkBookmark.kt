@@ -41,23 +41,23 @@ data class DeeplinkBookmark(
     val deeplinkSummary: String
         get() = dataUri.ifBlank {
             if (hasPreciseJumpSpec) {
-                "已捕获带 extras 的启动参数"
+                "Captured launch parameters with extras"
             } else {
-                "未捕获显式 deeplink，使用 Activity 兜底"
+                "No explicit deeplink captured; falling back to the Activity"
             }
         }
 
     val statusText: String
         get() = when {
             dataUri.isNotBlank() && capturedExtrasCount > 0 ->
-                "已捕获 deeplink + $capturedExtrasCount 个 extras"
+                "Captured deeplink + $capturedExtrasCount extras"
             dataUri.isNotBlank() ->
-                "已捕获 deeplink，可一键直达"
+                "Captured deeplink; one-tap jump available"
             capturedExtrasCount > 0 ->
-                "已捕获 $capturedExtrasCount 个 extras，可精确回放"
+                "Captured $capturedExtrasCount extras; exact replay available"
             rawIntentLine.contains("(has extras)") ->
-                "检测到 extras，但当前 ROM 输出未完全解析"
+                "Extras detected, but this ROM's output could not be fully parsed"
             else ->
-                "仅保存 Activity 兜底信息"
+                "Only the Activity fallback was saved"
         }
 }

@@ -89,8 +89,8 @@ class CopyImagesToAlbumSkill(private val context: Context) : Skill {
             }
             val deleted = clearAlbumMediaInBucket(resolver, folderSegment, results)
             val summary = buildString {
-                appendLine("📁 相册文件夹: Pictures/$folderSegment/ （系统相册中常显示为「$rawName」）")
-                appendLine("仅清空：已删除 $deleted 条媒体记录（本相册内副本；原图仍在其它相册）。")
+                appendLine("📁 Album folder: Pictures/$folderSegment/ (usually shown as \"$rawName\" in the system gallery)")
+                appendLine("Clear only: deleted $deleted media entries (copies inside this album; originals remain in other albums).")
                 results.forEach { appendLine(it) }
             }
             val meta = mapOf(
@@ -174,9 +174,9 @@ class CopyImagesToAlbumSkill(private val context: Context) : Skill {
         }
 
         val summary = buildString {
-            appendLine("📁 复制到相册文件夹: Pictures/$folderSegment/ （系统相册中常显示为「$rawName」）")
-            appendLine("成功 $ok，失败 $fail（共 ${uris.size} 个源）")
-            appendLine("说明：为**复制**非移动，原图仍在原相册。")
+            appendLine("📁 Copied to album folder: Pictures/$folderSegment/ (usually shown as \"$rawName\" in the system gallery)")
+            appendLine("Succeeded $ok, failed $fail (out of ${uris.size} sources)")
+            appendLine("Note: this is a **copy**, not a move — the originals stay in their original album.")
             results.forEach { appendLine(it) }
         }
 

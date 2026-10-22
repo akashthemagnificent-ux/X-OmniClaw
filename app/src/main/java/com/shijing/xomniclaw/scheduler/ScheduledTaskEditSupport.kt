@@ -77,10 +77,10 @@ object ScheduledTaskEditValidator {
     ): ScheduledTaskEditResult {
         return try {
             val normalizedName = draft.name.trim()
-            require(normalizedName.isNotBlank()) { "任务名称不能为空" }
+            require(normalizedName.isNotBlank()) { "Task name cannot be empty" }
 
             val normalizedInstruction = draft.instruction.trim()
-            require(normalizedInstruction.isNotBlank()) { "任务指令不能为空" }
+            require(normalizedInstruction.isNotBlank()) { "Task instruction cannot be empty" }
 
             val normalizedRepeat = draft.repeat.trim().lowercase()
             require(
@@ -91,7 +91,7 @@ object ScheduledTaskEditValidator {
                     ScheduledTask.REPEAT_WORKDAY,
                     ScheduledTask.REPEAT_INTERVAL
                 )
-            ) { "重复类型不合法：$normalizedRepeat" }
+            ) { "Invalid repeat type: $normalizedRepeat" }
 
             val normalizedTimezone = draft.timezone?.trim()?.ifBlank { null }
             val updatedTask = when (normalizedRepeat) {
@@ -145,7 +145,7 @@ object ScheduledTaskEditValidator {
 
             ScheduledTaskEditResult(task = updatedTask)
         } catch (e: Exception) {
-            ScheduledTaskEditResult(errorMessage = e.message ?: "修改定时任务失败")
+            ScheduledTaskEditResult(errorMessage = e.message ?: "Failed to update the scheduled task")
         }
     }
 
@@ -158,7 +158,7 @@ object ScheduledTaskEditValidator {
         normalizedTimezone: String?
     ): ScheduledTask {
         val runAtText = draft.runAtText?.trim()
-        require(!runAtText.isNullOrBlank()) { "一次性任务必须填写执行时间" }
+        require(!runAtText.isNullOrBlank()) { "A one-off task must have a run time" }
         val triggerAtMs = ScheduledTaskTimeResolver.resolveOneTimeTriggerAtMs(
             runAt = runAtText,
             runAtMs = null,
@@ -193,7 +193,7 @@ object ScheduledTaskEditValidator {
         normalizedTimezone: String?
     ): ScheduledTask {
         val dailyTime = draft.dailyTime?.trim()
-        require(!dailyTime.isNullOrBlank()) { "每天任务必须填写时间，格式如 21:30" }
+        require(!dailyTime.isNullOrBlank()) { "A daily task must have a time, e.g. 21:30" }
         val nextTriggerAtMs = ScheduledTaskTimeResolver.computeNextDailyTriggerAtMs(
             dailyTime = dailyTime,
             timezone = normalizedTimezone,
@@ -226,9 +226,9 @@ object ScheduledTaskEditValidator {
         normalizedTimezone: String?
     ): ScheduledTask {
         val dailyTime = draft.dailyTime?.trim()
-        require(!dailyTime.isNullOrBlank()) { "每周任务必须填写时间，格式如 21:30" }
+        require(!dailyTime.isNullOrBlank()) { "A weekly task must have a time, e.g. 21:30" }
         val daysOfWeekText = draft.daysOfWeekText?.trim()
-        require(!daysOfWeekText.isNullOrBlank()) { "每周任务必须填写周几，例如 周三 或 1,3,5" }
+        require(!daysOfWeekText.isNullOrBlank()) { "A weekly task must have weekdays, e.g. \"Wednesday\" or 1,3,5" }
         val daysOfWeek = ScheduledTaskWeekdayParser.parseFlexible(daysOfWeekText)
         val nextTriggerAtMs = ScheduledTaskTimeResolver.computeNextWeeklyTriggerAtMs(
             dailyTime = dailyTime,
@@ -263,7 +263,7 @@ object ScheduledTaskEditValidator {
         normalizedTimezone: String?
     ): ScheduledTask {
         val dailyTime = draft.dailyTime?.trim()
-        require(!dailyTime.isNullOrBlank()) { "工作日任务必须填写时间，格式如 21:30" }
+        require(!dailyTime.isNullOrBlank()) { "A workday task must have a time, e.g. 21:30" }
         val nextTriggerAtMs = ScheduledTaskTimeResolver.computeNextWorkdayTriggerAtMs(
             dailyTime = dailyTime,
             timezone = normalizedTimezone,
@@ -296,8 +296,8 @@ object ScheduledTaskEditValidator {
         normalizedTimezone: String?
     ): ScheduledTask {
         val intervalMinutes = draft.intervalMinutesText?.trim()?.toIntOrNull()
-            ?: throw IllegalArgumentException("固定间隔任务必须填写有效的分钟数")
-        require(intervalMinutes > 0) { "固定间隔分钟数必须大于 0" }
+            ?: throw IllegalArgumentException("An interval task must have a valid number of minutes")
+        require(intervalMinutes > 0) { "The interval in minutes must be greater than 0" }
         val nextTriggerAtMs = ScheduledTaskTimeResolver.computeNextIntervalTriggerAtMs(
             intervalMinutes = intervalMinutes,
             nowMs = nowMs

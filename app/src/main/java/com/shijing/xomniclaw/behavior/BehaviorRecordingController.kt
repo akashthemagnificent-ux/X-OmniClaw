@@ -23,11 +23,11 @@ import kotlinx.coroutines.withContext
 object BehaviorRecordingController {
     private const val TAG = "BehaviorRecordingCtrl"
     private const val MAX_RECORDED_EVENTS = 200
-    private const val DEFAULT_IDLE_MESSAGE = "请开始操作，结束后点停止"
+    private const val DEFAULT_IDLE_MESSAGE = "Start doing the task, then tap stop when finished"
 
     data class UiState(
         val isRecording: Boolean = false,
-        val statusText: String = "正在轨迹录制",
+        val statusText: String = "Recording the trail",
         val latestMessage: String = DEFAULT_IDLE_MESSAGE,
         val canBookmarkCurrentPage: Boolean = false
     )
@@ -83,9 +83,9 @@ object BehaviorRecordingController {
         AccessibilityEventDispatcher.addListener(recordingListener)
         _uiState.value = UiState(
             isRecording = true,
-            statusText = "正在轨迹录制",
+            statusText = "Recording the trail",
             latestMessage = buildLatestMessage(
-                latestAction = "已开始轨迹录制",
+                latestAction = "Trail recording started",
                 currentPageTitle = deeplinkSession.currentPage?.let { "${it.appName} / ${it.displayTitle}" }
             ),
             canBookmarkCurrentPage = deeplinkSession.rootAvailable
@@ -122,7 +122,7 @@ object BehaviorRecordingController {
             val result = BehaviorSkillWriter.writeBehaviorSkill(snapshot)
             Toast.makeText(
                 application,
-                "轨迹记录已写入 ${result.skillName}",
+                "Trail written to ${result.skillName}",
                 Toast.LENGTH_LONG
             ).show()
             Log.i(TAG, "Behavior skill written: ${result.skillFile.absolutePath}")
@@ -130,7 +130,7 @@ object BehaviorRecordingController {
             Log.e(TAG, "Failed to write behavior skill", e)
             Toast.makeText(
                 application,
-                "轨迹记录写入失败: ${e.message}",
+                "Failed to write the trail: ${e.message}",
                 Toast.LENGTH_LONG
             ).show()
         }
@@ -143,7 +143,7 @@ object BehaviorRecordingController {
         return if (currentPageTitle.isNullOrBlank()) {
             latestAction.ifBlank { DEFAULT_IDLE_MESSAGE }
         } else {
-            "$latestAction | 当前页：$currentPageTitle"
+            "$latestAction | Current page: $currentPageTitle"
         }
     }
 }

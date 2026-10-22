@@ -8,10 +8,10 @@ import java.util.Locale
  */
 fun formatTaskSortOptionLabel(option: ScheduledTaskSortOption): String {
     return when (option) {
-        ScheduledTaskSortOption.NEXT_TRIGGER_ASC -> "按下次触发时间"
-        ScheduledTaskSortOption.LAST_TRIGGER_DESC -> "按最近触发时间"
-        ScheduledTaskSortOption.UPDATED_DESC -> "按最近更新时间"
-        ScheduledTaskSortOption.NAME_ASC -> "按任务名称"
+        ScheduledTaskSortOption.NEXT_TRIGGER_ASC -> "By next trigger time"
+        ScheduledTaskSortOption.LAST_TRIGGER_DESC -> "By last trigger time"
+        ScheduledTaskSortOption.UPDATED_DESC -> "By last updated"
+        ScheduledTaskSortOption.NAME_ASC -> "By task name"
     }
 }
 

@@ -47,15 +47,15 @@ object DeeplinkLauncher {
             }
             val resolveInfo = context.packageManager.resolveActivity(intent, 0)
             if (resolveInfo == null) {
-                LaunchResult.Failed("当前页面仅支持 root 回放，普通 Intent 无法解析")
+                LaunchResult.Failed("This page only supports replay with root; a plain Intent cannot resolve it")
             } else {
                 context.startActivity(intent)
                 LaunchResult.DirectIntentSuccess
             }
         } catch (e: SecurityException) {
-            LaunchResult.Failed("启动被系统拒绝：${e.message}")
+            LaunchResult.Failed("Launch rejected by the system: ${e.message}")
         } catch (e: Exception) {
-            LaunchResult.Failed("启动失败：${e.message}")
+            LaunchResult.Failed("Launch failed: ${e.message}")
         }
     }
 }

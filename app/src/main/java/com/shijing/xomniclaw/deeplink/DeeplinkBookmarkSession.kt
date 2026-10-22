@@ -83,12 +83,12 @@ object DeeplinkBookmarkSession {
         if (!state.rootAvailable) {
             return BookmarkResult(
                 success = false,
-                message = "当前设备没有 root，无法生成 Deeplink 收藏"
+                message = "This device has no root, so a deeplink bookmark cannot be created"
             )
         }
         val page = state.currentPage ?: return BookmarkResult(
             success = false,
-            message = "还没有跟踪到当前页面，请先完成一次页面切换"
+            message = "The current page has not been tracked yet; switch pages once first"
         )
 
         val capturedSpec = runCatching {
@@ -104,7 +104,7 @@ object DeeplinkBookmarkSession {
             intentCommand = capturedSpec?.amCommand.orEmpty(),
             rawIntentLine = capturedSpec?.rawIntentLine.orEmpty(),
             capturedExtrasCount = capturedSpec?.extras?.size ?: 0,
-            sourceActionSummary = "录制会话中手动收藏"
+            sourceActionSummary = "Manually saved during the recording session"
         )
         DeeplinkBookmarkStore.add(bookmark)
 
@@ -112,13 +112,13 @@ object DeeplinkBookmarkSession {
         val exportResult = DeeplinkSkillExporter.export(bookmark)
 
         val message = if (exportResult.success) {
-            "已收藏并创建快捷指令「${exportResult.skillName}」"
+            "Saved and created shortcut \"${exportResult.skillName}\""
         } else if (bookmark.dataUri.isNotBlank()) {
-            "已收藏 ${page.appName} 的当前页，并捕获 Deeplink（Skill 导出失败）"
+            "Saved the current page of ${page.appName} and captured a deeplink (skill export failed)"
         } else if (bookmark.hasPreciseJumpSpec) {
-            "已收藏 ${page.appName} 的当前页，并捕获可回放参数"
+            "Saved the current page of ${page.appName} with replayable parameters"
         } else {
-            "已收藏 ${page.appName} 的当前页，当前使用 Activity 兜底"
+            "Saved the current page of ${page.appName}, falling back to the Activity"
         }
         return BookmarkResult(
             success = true,
