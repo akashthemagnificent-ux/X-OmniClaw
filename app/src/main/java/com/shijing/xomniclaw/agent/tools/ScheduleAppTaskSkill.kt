@@ -143,14 +143,14 @@ class ScheduleAppTaskSkill(private val context: Context) : Skill {
             return SkillResult.success(
                 content = buildString {
                     appendLine("Need clarification before creating the scheduled app task.")
-                    appendLine("1. 我还不能精确理解这个时间表达：${schedulePhrase ?: "N/A"}")
-                    appendLine("2. 请改成更具体的说法，例如“每周三早上10点”“每个工作日上午10点”或“每隔45分钟”。")
-                    append("请先确认后我再继续创建任务。")
+                    appendLine("1. I could not parse this time expression precisely: ${schedulePhrase ?: "N/A"}")
+                    appendLine("2. Use something more specific, e.g. \"every Wednesday at 10am\", \"every workday at 10am\", or \"every 45 minutes\".")
+                    append("Confirm the time and I will continue creating the task.")
                 },
                 metadata = mapOf(
                     "needs_clarification" to true,
                     "clarification_questions" to listOf(
-                        "请把执行时间改成更明确的说法，例如“每周三早上10点”或“每隔45分钟”。"
+                        "Make the run time more specific, e.g. \"every Wednesday at 10am\" or \"every 45 minutes\"."
                     ),
                     "clarification_reason_codes" to listOf("unparseable_schedule_phrase"),
                     "schedule_phrase" to schedulePhrase,
@@ -196,7 +196,7 @@ class ScheduleAppTaskSkill(private val context: Context) : Skill {
                 val daysOfWeek = parseDaysOfWeek(args["days_of_week"])
                     ?: parsedNaturalSchedule.daysOfWeek
                     ?: return SkillResult.error(
-                        "days_of_week is required when repeat=weekly, or provide schedule_phrase like '每周三早上10点'"
+                        "days_of_week is required when repeat=weekly, or provide schedule_phrase like 'every Wednesday at 10am'"
                     )
                 manager.createWeeklyTask(
                     name = resolvedTaskName,
@@ -228,7 +228,7 @@ class ScheduleAppTaskSkill(private val context: Context) : Skill {
                 val intervalMinutes = (args["interval_minutes"] as? Number)?.toInt()
                     ?: parsedNaturalSchedule?.intervalMinutes
                     ?: return SkillResult.error(
-                        "interval_minutes is required when repeat=interval, or provide schedule_phrase like '每隔45分钟'"
+                        "interval_minutes is required when repeat=interval, or provide schedule_phrase like 'every 45 minutes'"
                     )
                 manager.createIntervalTask(
                     name = resolvedTaskName,
@@ -344,17 +344,18 @@ class ScheduleAppTaskSkill(private val context: Context) : Skill {
     }
 
     private fun buildInstruction(appName: String, packageName: String?, operation: String): String {
-        // 这里把高层口语参数下沉为 Agent 更容易执行的自然语言指令；执行指令里不能再带时间表达。
+        // The stored instruction is replayed to the agent at fire time, so it must
+        // be in the agent's language and must not carry the time expression again.
         val openInstruction = if (!packageName.isNullOrBlank()) {
-            "打开应用 $appName（包名：$packageName）"
+            "Open $appName (package: $packageName)"
         } else {
-            "打开$appName"
+            "Open $appName"
         }
 
         return if (operation.isBlank()) {
             openInstruction
         } else {
-            "$openInstruction，然后$operation"
+            "$openInstruction, then $operation"
         }
     }
 

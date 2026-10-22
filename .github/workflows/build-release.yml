@@ -50,3 +50,8 @@ jobs:
           name: X-OmniClaw-release
           path: releases/*.apk
           if-no-files-found: error
+
+      # Runs after the APK is uploaded so a test-only failure still leaves a
+      # downloadable build, while the run itself turns red.
+      - name: Unit tests
+        run: ./gradlew :app:testReleaseUnitTest --no-daemon --stacktrace

@@ -37,7 +37,7 @@ Important boundary:
 - This skill is only for creating, listing, or cancelling future schedules.
 - When an existing schedule fires, do **not** call `schedule_app_task` again.
 - The saved execution instruction must be immediate and one-shot, e.g. `open Xiaohongshu, then search for news, summarize it, and send it to me`.
-- Never keep words such as `每天晚上8点`, `每周三`, `定时`, or `到点` inside `operation`; those belong only in `schedule_phrase`.
+- Never keep schedule words (e.g. `every day at 8pm`, `每周三`, `定时`, `later`) inside `operation`; those belong only in `schedule_phrase`.
 
 Example:
 
@@ -45,7 +45,7 @@ Example:
 - LLM extraction:
   - `app_name = 小红书`
   - `operation = search for news and summarize`
-  - `schedule_phrase = 每周三早上10点`
+  - `schedule_phrase = every Wednesday at 10am`
 - rule parsing result:
   - `repeat = weekly`
   - `days_of_week = [3]`
@@ -88,7 +88,7 @@ Prefer extracting fields first, then call:
   "task_name": "daily-wechat-task",
   "app_name": "微信",
   "operation": "perform X",
-  "schedule_phrase": "每天晚上12点"
+  "schedule_phrase": "every day at 23:50"
 }
 ```
 
@@ -101,10 +101,10 @@ Prefer extracting fields first, then call:
 - `app_name`: target app name, e.g. `微信`
 - `package_name`: optional package name for higher precision
 - `operation`: what to do after opening the app
-- `schedule_phrase`: preferred natural-language schedule phrase extracted by the LLM, e.g. `每周三早上10点`
+- `schedule_phrase`: natural-language schedule phrase extracted by the LLM, e.g. `every Wednesday at 10am`. Chinese phrases (`每周三早上10点`) are still accepted.
 - `repeat`: `daily` | `once` | `weekly` | `workday` | `interval`
 - `time_text`: backward-compatible alias of `schedule_phrase`
-- `days_of_week`: used with `repeat=weekly`, e.g. `["mon", "wed"]` or `["周三"]`
+- `days_of_week`: used with `repeat=weekly`, e.g. `["mon", "wed"]`, `["monday","wednesday"]` or `["周三"]`
 - `interval_minutes`: used with `repeat=interval`, e.g. `30` or `45`
 - `run_at`: one-time target time
 - `delay_seconds`: one-time delay
@@ -157,7 +157,7 @@ Prefer using `schedule_task` with a clear instruction that tells the agent to us
   "task_name": "daily-xhs-news",
   "app_name": "小红书",
   "operation": "Search for AI news and summarize the top three results",
-  "schedule_phrase": "每天中午12点"
+  "schedule_phrase": "every day at 12:00"
 }
 ```
 
@@ -169,7 +169,7 @@ Prefer using `schedule_task` with a clear instruction that tells the agent to us
   "task_name": "weekly-xhs-news",
   "app_name": "小红书",
   "operation": "Search for AI news and summarize the top three results",
-  "schedule_phrase": "每周三早上10点"
+  "schedule_phrase": "every Wednesday at 10am"
 }
 ```
 
@@ -181,7 +181,7 @@ Prefer using `schedule_task` with a clear instruction that tells the agent to us
   "task_name": "workday-checkin",
   "app_name": "企业微信",
   "operation": "Remind me to clock in",
-  "schedule_phrase": "每个工作日上午10点"
+  "schedule_phrase": "every workday at 10am"
 }
 ```
 
@@ -193,7 +193,7 @@ Prefer using `schedule_task` with a clear instruction that tells the agent to us
   "task_name": "interval-status-check",
   "app_name": "小红书",
   "operation": "Check the home feed highlights once and summarize them",
-  "schedule_phrase": "每隔45分钟"
+  "schedule_phrase": "every 45 minutes"
 }
 ```
 

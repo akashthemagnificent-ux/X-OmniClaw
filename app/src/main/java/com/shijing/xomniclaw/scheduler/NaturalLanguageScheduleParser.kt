@@ -22,15 +22,32 @@ object NaturalLanguageScheduleParser {
     private val dailyPattern = Regex("^(每天|每日)\\s*(.+)$")
     private val weeklyPattern = Regex("^(每周|每星期|周)([一二三四五六日天1-7,，、\\s和及]+)\\s*(.+)$")
 
+    // English phrases are matched too: the agent now emits English schedule_phrase
+    // with the English UI. Chinese stays first so existing users are unaffected.
+    private val intervalMinutePatternEn = Regex("^every\\s+(\\d+)\\s*(minutes?|mins?)$")
+    private val intervalHourPatternEn = Regex("^every\\s+(\\d+)\\s*(hours?|hrs?)$")
+    private val workdayPatternEn = Regex("^(?:every\\s+workday|each\\s+workday|weekdays?)\\s*(?:at\\s+)?(.+)$")
+    private val dailyPatternEn = Regex("^(?:every\\s*day|each\\s+day|daily)\\s*(?:at\\s+)?(.+)$")
+    // Only real weekday names open this branch, so "every day at 10" stays daily.
+    // Strictly longest-first: Regex alternation is ordered, so a short form such
+    // as "thurs" would otherwise swallow the prefix of "thursday".
+    private val weekdayTokenEn =
+        "(?:wednesday|thursday|saturday|monday|friday|sunday|tues|weds|thurs|thur|wed|thu|fri|sat|sun|mon|tue)"
+    private val weeklyPatternEn = Regex(
+        "^(?:every|each|on|weekly\\s+on)\\s+" +
+            "($weekdayTokenEn(?:\\s*(?:,|&|/|and)\\s*$weekdayTokenEn)*)\\s*(?:at\\s+)?(.+)$"
+    )
+
     /**
-     * 解析自然语言调度短语。
+     * Parse a natural-language schedule phrase.
      *
-     * 支持：
-     * 1. 每天晚上12点
-     * 2. 每周三早上10点 / 每周一、三、五早上10点
-     * 3. 每个工作日上午10点
-     * 4. 每隔45分钟 / 每隔2小时 / 每隔半小时
-     * 5. 仅传入“早上10点”时默认按 daily 处理，兼容旧行为
+     * Chinese: 每天晚上12点 / 每周三早上10点 / 每周一、三、五早上10点 /
+     * 每个工作日上午10点 / 每隔45分钟 / 每隔2小时 / 每隔半小时.
+     * English: every day at 10pm / every Wednesday at 10am /
+     * every Monday, Wednesday and Friday at 8:30 pm / every workday at 10am /
+     * every 45 minutes / every 2 hours / every half hour.
+     *
+     * A bare time such as "早上10点" or "10am" defaults to daily, as before.
      */
     fun parse(input: String): ParsedSchedule {
         val normalized = normalize(input)
@@ -50,8 +67,27 @@ object NaturalLanguageScheduleParser {
             )
         }
 
+        weeklyPatternEn.matchEntire(normalized)?.let { match ->
+            val daysOfWeek = parseWeekdayExpression(match.groupValues[1])
+            val dailyTime = NaturalLanguageTimeParser.parseToDailyTime(match.groupValues[2])
+            return ParsedSchedule(
+                repeat = ScheduledTask.REPEAT_WEEKLY,
+                dailyTime = dailyTime,
+                daysOfWeek = daysOfWeek
+            )
+        }
+
         workdayPattern.matchEntire(normalized)?.let { match ->
             val dailyTime = NaturalLanguageTimeParser.parseToDailyTime(match.groupValues[2])
+            return ParsedSchedule(
+                repeat = ScheduledTask.REPEAT_WORKDAY,
+                dailyTime = dailyTime,
+                daysOfWeek = listOf(1, 2, 3, 4, 5)
+            )
+        }
+
+        workdayPatternEn.matchEntire(normalized)?.let { match ->
+            val dailyTime = NaturalLanguageTimeParser.parseToDailyTime(match.groupValues[1])
             return ParsedSchedule(
                 repeat = ScheduledTask.REPEAT_WORKDAY,
                 dailyTime = dailyTime,
@@ -67,7 +103,15 @@ object NaturalLanguageScheduleParser {
             )
         }
 
-        // 兼容旧入口：只给“早上10点”这类纯时间时，默认理解成 daily。
+        dailyPatternEn.matchEntire(normalized)?.let { match ->
+            val dailyTime = NaturalLanguageTimeParser.parseToDailyTime(match.groupValues[1])
+            return ParsedSchedule(
+                repeat = ScheduledTask.REPEAT_DAILY,
+                dailyTime = dailyTime
+            )
+        }
+
+        // Legacy entry point: a bare time ("早上10点", "10am") means daily.
         return ParsedSchedule(
             repeat = ScheduledTask.REPEAT_DAILY,
             dailyTime = NaturalLanguageTimeParser.parseToDailyTime(normalized)
@@ -96,32 +140,49 @@ object NaturalLanguageScheduleParser {
             )
         }
 
+        if (normalized == "every half hour" || normalized == "every half an hour") {
+            return ParsedSchedule(
+                repeat = ScheduledTask.REPEAT_INTERVAL,
+                intervalMinutes = 30
+            )
+        }
+
+        intervalMinutePatternEn.matchEntire(normalized)?.let { match ->
+            return ParsedSchedule(
+                repeat = ScheduledTask.REPEAT_INTERVAL,
+                intervalMinutes = match.groupValues[1].toInt()
+            )
+        }
+
+        intervalHourPatternEn.matchEntire(normalized)?.let { match ->
+            return ParsedSchedule(
+                repeat = ScheduledTask.REPEAT_INTERVAL,
+                intervalMinutes = match.groupValues[1].toInt() * 60
+            )
+        }
+
         return null
     }
 
     /**
-     * 解析“周一、三、五”“135”“一三五”等星期表达。
+     * Parse weekday expressions such as "周一、三、五", "135", "一三五",
+     * "wednesday", or "mon, wed and fri".
      */
     private fun parseWeekdayExpression(expression: String): List<Int> {
-        val compact = expression.replace("星期", "").replace("周", "")
-        val parts = compact.split(Regex("[,，、\\s和及]+")).filter { it.isNotBlank() }
-        val tokens = if (parts.size > 1) {
-            parts
-        } else {
-            expandCompactWeekdayTokens(parts.firstOrNull().orEmpty())
+        val compact = expression.replace("星期", "").replace("周", "").trim()
+        if (compact.isBlank()) {
+            throw IllegalArgumentException("Weekly schedule is missing weekday expression")
         }
 
+        val parts = compact.split(Regex("[,，、\\s和及/&]+"))
+            .filter { it.isNotBlank() && it.lowercase() != "and" }
+
+        // Single token: "135" / "一三五" / "wednesday" all resolve through the shared table.
+        val tokens = if (parts.size > 1) parts else expandCompactWeekdayTokens(compact)
+
         val days = tokens.map { token ->
-            when (token) {
-                "1", "一" -> 1
-                "2", "二" -> 2
-                "3", "三" -> 3
-                "4", "四" -> 4
-                "5", "五" -> 5
-                "6", "六" -> 6
-                "7", "日", "天" -> 7
-                else -> throw IllegalArgumentException("Unsupported weekday expression: $expression")
-            }
+            ScheduledTaskWeekdayParser.dayOf(token)
+                ?: throw IllegalArgumentException("Unsupported weekday expression: $expression")
         }
 
         return ScheduledTaskTimeResolver.normalizeDaysOfWeek(days)

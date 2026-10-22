@@ -18,7 +18,8 @@ object ScheduleAppTaskClarifier {
     )
 
     private val placeholderAppTokens = setOf(
-        "app", "某app", "某个app", "某应用", "应用", "软件", "那个app", "这个app"
+        "app", "某app", "某个app", "某应用", "应用", "软件", "那个app", "这个app",
+        "some app", "an app", "the app", "that app", "this app", "some application"
     )
 
     private val placeholderOperationPatterns = listOf(
@@ -28,11 +29,16 @@ object ScheduleAppTaskClarifier {
         Regex("某操作"),
         Regex("某个操作"),
         Regex("什么操作"),
-        Regex("待定")
+        Regex("待定"),
+        Regex("^some operation$", RegexOption.IGNORE_CASE),
+        Regex("^the operation$", RegexOption.IGNORE_CASE),
+        Regex("^do (?:something|stuff)$", RegexOption.IGNORE_CASE),
+        Regex("^(?:tbd|todo|n/?a)$", RegexOption.IGNORE_CASE)
     )
 
     private val vagueScheduleTokens = listOf(
-        "定时", "稍后", "一会", "过会", "有空", "隔一阵子", "上班前", "下班前", "晚点", "早一点"
+        "定时", "稍后", "一会", "过会", "有空", "隔一阵子", "上班前", "下班前", "晚点", "早一点",
+        "later", "sometime", "soon", "in a while", "when free", "before work", "after work", "eventually"
     )
 
     /**
@@ -51,12 +57,12 @@ object ScheduleAppTaskClarifier {
         val reasonCodes = mutableListOf<String>()
 
         if (appName.isNullOrBlank() || looksLikePlaceholderApp(appName)) {
-            questions += "你要打开哪个 App？请明确给出应用名，例如“小红书”或“企业微信”。"
+            questions += "Which app should be opened? Give the app name, e.g. \"Xiaohongshu\" or \"WeCom\"."
             reasonCodes += "ambiguous_app_name"
         }
 
         if (looksLikePlaceholderOperation(operation)) {
-            questions += "打开 App 后具体要做什么？请把操作说清楚，例如“搜索新闻并总结前三条结果”。"
+            questions += "What exactly should be done after opening the app? Describe the action, e.g. \"search the news and summarize the top three results\"."
             reasonCodes += "ambiguous_operation"
         }
 
@@ -66,14 +72,14 @@ object ScheduleAppTaskClarifier {
         when (normalizedRepeat) {
             null, "" -> {
                 if (normalizedSchedulePhrase.isBlank()) {
-                    questions += "任务什么时候执行？请提供明确时间，例如“每天晚上10点”或“每隔45分钟”。"
+                    questions += "When should the task run? Give an explicit time, e.g. \"every day at 10pm\" or \"every 45 minutes\"."
                     reasonCodes += "missing_schedule_phrase"
                 }
             }
 
             ScheduledTask.REPEAT_ONCE -> {
                 if (!runAtProvided) {
-                    questions += "这是一次性任务，请告诉我具体执行时间，或提供延迟秒数。"
+                    questions += "This is a one-time task. Provide the exact run time, or a delay in seconds."
                     reasonCodes += "missing_one_time_trigger"
                 }
             }
@@ -81,28 +87,28 @@ object ScheduleAppTaskClarifier {
             ScheduledTask.REPEAT_DAILY,
             ScheduledTask.REPEAT_WORKDAY -> {
                 if (normalizedSchedulePhrase.isBlank()) {
-                    questions += "请补充明确时间，例如“每天晚上10点”或“每个工作日上午10点”。"
+                    questions += "Add an explicit time, e.g. \"every day at 10pm\" or \"every workday at 10am\"."
                     reasonCodes += "missing_schedule_phrase"
                 }
             }
 
             ScheduledTask.REPEAT_WEEKLY -> {
                 if (normalizedSchedulePhrase.isBlank() && !daysOfWeekProvided) {
-                    questions += "请补充每周几和具体时间，例如“每周三早上10点”。"
+                    questions += "Add the weekday and time, e.g. \"every Wednesday at 10am\"."
                     reasonCodes += "missing_weekly_schedule"
                 }
             }
 
             ScheduledTask.REPEAT_INTERVAL -> {
                 if (normalizedSchedulePhrase.isBlank() && !intervalMinutesProvided) {
-                    questions += "请补充执行间隔，例如“每隔45分钟”或直接提供 interval_minutes。"
+                    questions += "Add the run interval, e.g. \"every 45 minutes\", or pass interval_minutes directly."
                     reasonCodes += "missing_interval_schedule"
                 }
             }
         }
 
         if (normalizedSchedulePhrase.isNotBlank() && looksLikeVagueSchedule(normalizedSchedulePhrase)) {
-            questions += "当前时间表达还不够精确，请改成可执行的说法，例如“每周三早上10点”或“每隔45分钟”。"
+            questions += "That time expression is not precise enough. Use something actionable, e.g. \"every Wednesday at 10am\" or \"every 45 minutes\"."
             reasonCodes += "ambiguous_schedule_phrase"
         }
 
@@ -125,7 +131,7 @@ object ScheduleAppTaskClarifier {
             request.questions.forEachIndexed { index, question ->
                 appendLine("${index + 1}. $question")
             }
-            append("请先确认以上信息，我再继续创建任务。")
+            append("Confirm the details above and I will create the task.")
         }
     }
 
