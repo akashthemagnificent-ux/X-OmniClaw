@@ -49,7 +49,7 @@ object ScreenCompanionController {
         val isListening: Boolean = false,
         val isProcessing: Boolean = false,
         val isAgentRunning: Boolean = false,
-        val statusText: String = "按住说话",
+        val statusText: String = "Hold to speak",
         val transientMessage: String = ""
     )
 
@@ -124,14 +124,14 @@ object ScreenCompanionController {
                 isListening = false,
                 isProcessing = false,
                 isAgentRunning = false,
-                statusText = "按住说话",
+                statusText = "Hold to speak",
                 transientMessage = ""
             )
         }
         ScreenCompanionFloatWindow.show(application.applicationContext)
         CrashBreadcrumbs.mark("companion.enter.float_window", "show_called")
         scheduleScreenSamplerStart()
-        showTransientMessage("屏内替身已开启")
+        showTransientMessage("On-screen companion enabled")
         CrashBreadcrumbs.mark("companion.enter.success", "companion_mode_active")
         return true
     }
@@ -179,7 +179,7 @@ object ScreenCompanionController {
             }"
         )
         if (_uiState.value.isAgentRunning) {
-            showTransientMessage("任务执行中，请稍候再问")
+            showTransientMessage("A task is running; please try again in a moment")
             return
         }
         val hasRecordPermission = ContextCompat.checkSelfPermission(
@@ -187,7 +187,7 @@ object ScreenCompanionController {
             Manifest.permission.RECORD_AUDIO
         ) == PackageManager.PERMISSION_GRANTED
         if (!hasRecordPermission) {
-            showTransientMessage("请先在主界面授予录音权限", durationMs = TRANSIENT_MESSAGE_CLEAR_MS)
+            showTransientMessage("Grant the recording permission on the main screen first", durationMs = TRANSIENT_MESSAGE_CLEAR_MS)
             return
         }
         val latestVisionConfig = resolveEffectiveVisionConfig(application, visionConfig)
@@ -215,10 +215,10 @@ object ScreenCompanionController {
             it.copy(
                 isListening = false,
                 isProcessing = true,
-                statusText = "正在识别，等待结果"
+                statusText = "Recognising, waiting for a result"
             )
         }
-        showTransientMessage("已收到语音，正在识别并等待回答", durationMs = TRANSIENT_MESSAGE_CLEAR_MS)
+        showTransientMessage("Speech received; recognising and waiting for an answer", durationMs = TRANSIENT_MESSAGE_CLEAR_MS)
         voiceManager?.stopListening()
     }
 
@@ -292,10 +292,10 @@ object ScreenCompanionController {
                     it.copy(
                         isListening = listening,
                         statusText = when {
-                            it.isAgentRunning -> "正在执行"
-                            it.isProcessing -> "正在识别，等待结果"
-                            listening -> "松开结束"
-                            else -> "按住说话"
+                            it.isAgentRunning -> "Running"
+                            it.isProcessing -> "Recognising, waiting for a result"
+                            listening -> "Release to finish"
+                            else -> "Hold to speak"
                         }
                     )
                 }
@@ -307,10 +307,10 @@ object ScreenCompanionController {
                     it.copy(
                         isProcessing = processing,
                         statusText = when {
-                            it.isAgentRunning -> "正在执行"
-                            it.isListening -> "松开结束"
-                            processing -> "正在识别，等待结果"
-                            else -> "按住说话"
+                            it.isAgentRunning -> "Running"
+                            it.isListening -> "Release to finish"
+                            processing -> "Recognising, waiting for a result"
+                            else -> "Hold to speak"
                         }
                     )
                 }
@@ -362,10 +362,10 @@ object ScreenCompanionController {
             updateState {
                 it.copy(
                     isProcessing = true,
-                    statusText = "已识别，等待回答"
+                    statusText = "Recognised, waiting for an answer"
                 )
             }
-            showTransientMessage("已识别：$recognizedText", durationMs = TRANSIENT_MESSAGE_CLEAR_MS)
+            showTransientMessage("Recognised: $recognizedText", durationMs = TRANSIENT_MESSAGE_CLEAR_MS)
             return
         }
 
@@ -392,7 +392,7 @@ object ScreenCompanionController {
         if (followUpTask.isNullOrBlank()) {
             if (recognizedText.isNotBlank() && aiReply.isBlank()) {
                 Log.i(TAG, "Voice result has STT text but no aiReply/directAction, fallback to AgentLoop")
-                appendAssistantMessage(currentSessionId, "已收到，正在继续处理")
+                appendAssistantMessage(currentSessionId, "Got it, continuing to process")
                 launchAgentTask(recognizedText)
             }
             return
@@ -427,10 +427,10 @@ object ScreenCompanionController {
                 updateState {
                     it.copy(
                         isAgentRunning = true,
-                        statusText = "正在执行"
+                        statusText = "Running"
                     )
                 }
-                showTransientMessage("已收到，正在继续处理")
+                showTransientMessage("Got it, continuing to process")
 
                 MainEntryNew.runWithSession(
                     userInput = task,
@@ -450,7 +450,7 @@ object ScreenCompanionController {
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to launch companion agent task", e)
-                showTransientMessage("任务执行失败: ${e.message}", durationMs = TRANSIENT_MESSAGE_CLEAR_MS)
+                showTransientMessage("Task failed: ${e.message}", durationMs = TRANSIENT_MESSAGE_CLEAR_MS)
             } finally {
                 if (taskCompleted) {
                     finalizeCompletedTask()
@@ -460,9 +460,9 @@ object ScreenCompanionController {
                         it.copy(
                             isAgentRunning = false,
                             statusText = when {
-                                it.isListening -> "松开结束"
-                                it.isProcessing -> "正在识别，等待结果"
-                                else -> "按住说话"
+                                it.isListening -> "Release to finish"
+                                it.isProcessing -> "Recognising, waiting for a result"
+                                else -> "Hold to speak"
                             }
                         )
                     }

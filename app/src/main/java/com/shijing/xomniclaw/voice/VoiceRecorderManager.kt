@@ -132,7 +132,7 @@ class VoiceRecorderManager(private val context: Context) {
 
         val bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT)
         if (bufferSize == AudioRecord.ERROR || bufferSize == AudioRecord.ERROR_BAD_VALUE) {
-            _error.value = "音频参数不支持"
+            _error.value = "Unsupported audio parameters"
             _voiceResultEvents.tryEmit(
                 VoiceProcessingResult(
                     stage = VoiceProcessingStage.FAILED,
@@ -162,7 +162,7 @@ class VoiceRecorderManager(private val context: Context) {
             )
 
             if (audioRecord?.state != AudioRecord.STATE_INITIALIZED) {
-                _error.value = "录音器初始化失败"
+                _error.value = "Failed to initialise the recorder"
                 Log.e(TAG, "AudioRecord failed to initialize")
                 audioRecord?.release()
                 audioRecord = null
@@ -194,7 +194,7 @@ class VoiceRecorderManager(private val context: Context) {
                 }
             }
         } catch (e: SecurityException) {
-            _error.value = "录音权限不足"
+            _error.value = "Recording permission not granted"
             _voiceResultEvents.tryEmit(
                 VoiceProcessingResult(
                     stage = VoiceProcessingStage.FAILED,
@@ -207,7 +207,7 @@ class VoiceRecorderManager(private val context: Context) {
             )
             Log.e(TAG, "SecurityException: ${e.message}")
         } catch (e: Exception) {
-            _error.value = "录音启动失败: ${e.message}"
+            _error.value = "Failed to start recording: ${e.message}"
             _voiceResultEvents.tryEmit(
                 VoiceProcessingResult(
                     stage = VoiceProcessingStage.FAILED,
@@ -249,7 +249,7 @@ class VoiceRecorderManager(private val context: Context) {
 
         if (pcmData == null || pcmData.size < 3200) {
             // 16kHz * 2bytes * 0.1s = 3200, 太短的录音忽略
-            _error.value = "录音太短"
+            _error.value = "Recording too short"
             _isProcessing.value = false
             _voiceResultEvents.tryEmit(
                 VoiceProcessingResult(
@@ -331,7 +331,7 @@ class VoiceRecorderManager(private val context: Context) {
             )
 
             if (json.optString("status", "") == "error") {
-                _error.value = json.optString("error", "本地语音管线失败")
+                _error.value = json.optString("error", "Local voice pipeline failed")
                 _voiceResultEvents.emit(
                     VoiceProcessingResult(
                         stage = VoiceProcessingStage.FAILED,
@@ -349,7 +349,7 @@ class VoiceRecorderManager(private val context: Context) {
             val reply = json.optString("reply", "").trim()
 
             if (text.isEmpty()) {
-                _error.value = json.optString("error", "未识别到语音").ifBlank { "未识别到语音" }
+                _error.value = json.optString("error", "No speech recognised").ifBlank { "No speech recognised" }
                 Log.w(TAG, "STT empty, json=$json")
                 _voiceResultEvents.emit(
                     VoiceProcessingResult(
@@ -386,7 +386,7 @@ class VoiceRecorderManager(private val context: Context) {
                 )
             }
         } catch (e: Exception) {
-            _error.value = "语音处理失败: ${e.message}"
+            _error.value = "Voice processing failed: ${e.message}"
             _voiceResultEvents.emit(
                 VoiceProcessingResult(
                     stage = VoiceProcessingStage.FAILED,
