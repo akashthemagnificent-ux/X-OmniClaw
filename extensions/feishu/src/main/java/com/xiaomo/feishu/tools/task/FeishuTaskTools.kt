@@ -39,7 +39,7 @@ class FeishuTaskTools(config: FeishuConfig, client: FeishuClient) {
  */
 class TaskCreateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_task_create"
-    override val description = "创建飞书任务"
+    override val description = "Create a Feishu task"
 
     override fun isEnabled() = config.enableTaskTools
 
@@ -87,10 +87,10 @@ class TaskCreateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBas
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "summary" to PropertySchema("string", "任务标题"),
-                    "description" to PropertySchema("string", "任务描述（可选）"),
-                    "due_date" to PropertySchema("string", "截止时间戳（可选）"),
-                    "collaborators" to PropertySchema("array", "协作者ID列表（可选）", items = PropertySchema("string", "协作者ID"))
+                    "summary" to PropertySchema("string", "task title"),
+                    "description" to PropertySchema("string", "task description (optional)"),
+                    "due_date" to PropertySchema("string", "due timestamp (optional)"),
+                    "collaborators" to PropertySchema("array", "collaborator IDs (optional)", items = PropertySchema("string", "collaborator ID"))
                 ),
                 required = listOf("summary")
             )
@@ -103,7 +103,7 @@ class TaskCreateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBas
  */
 class TaskUpdateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_task_update"
-    override val description = "更新飞书任务"
+    override val description = "Update a Feishu task"
 
     override fun isEnabled() = config.enableTaskTools
 
@@ -144,10 +144,10 @@ class TaskUpdateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBas
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "task_id" to PropertySchema("string", "任务ID"),
-                    "summary" to PropertySchema("string", "新标题（可选）"),
-                    "description" to PropertySchema("string", "新描述（可选）"),
-                    "due_date" to PropertySchema("string", "新截止时间戳（可选）")
+                    "task_id" to PropertySchema("string", "task ID"),
+                    "summary" to PropertySchema("string", "new title (optional)"),
+                    "description" to PropertySchema("string", "new description (optional)"),
+                    "due_date" to PropertySchema("string", "new due timestamp (optional)")
                 ),
                 required = listOf("task_id")
             )
@@ -160,7 +160,7 @@ class TaskUpdateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBas
  */
 class TaskListTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_task_list"
-    override val description = "列出飞书任务"
+    override val description = "List Feishu tasks"
 
     override fun isEnabled() = config.enableTaskTools
 
@@ -208,7 +208,7 @@ class TaskListTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "completed" to PropertySchema("boolean", "筛选已完成任务（可选）"),
+                    "completed" to PropertySchema("boolean", "filter by completed (optional)"),
                     "page_size" to PropertySchema("number", "每页数量（默认50）")
                 ),
                 required = emptyList()
@@ -222,7 +222,7 @@ class TaskListTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(
  */
 class TaskCompleteTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_task_complete"
-    override val description = "标记飞书任务为已完成"
+    override val description = "Mark a Feishu task as completed"
 
     override fun isEnabled() = config.enableTaskTools
 
@@ -255,7 +255,7 @@ class TaskCompleteTool(config: FeishuConfig, client: FeishuClient) : FeishuToolB
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "task_id" to PropertySchema("string", "任务ID")
+                    "task_id" to PropertySchema("string", "task ID")
                 ),
                 required = listOf("task_id")
             )

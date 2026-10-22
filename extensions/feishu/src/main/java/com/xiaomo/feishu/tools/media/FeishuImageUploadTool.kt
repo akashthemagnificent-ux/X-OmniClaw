@@ -54,7 +54,7 @@ class FeishuImageUploadTool(
 
     override val name = "feishu_upload_image"
 
-    override val description = "上传图片到飞书并返回 image_key,可用于后续发送消息"
+    override val description = "Upload an image to Feishu and return image_key, usable for later messages"
 
     override fun isEnabled() = true
 
@@ -69,7 +69,7 @@ class FeishuImageUploadTool(
                     properties = mapOf(
                         "image_path" to PropertySchema(
                             type = "string",
-                            description = "图片文件的绝对路径 (支持 PNG, JPG, JPEG, GIF, BMP)"
+                            description = "Absolute path to the image file (PNG, JPG, JPEG, GIF, BMP)"
                         )
                     ),
                     required = listOf("image_path")
@@ -80,7 +80,7 @@ class FeishuImageUploadTool(
 
     override suspend fun execute(args: Map<String, Any?>): ToolResult {
         val imagePath = args["image_path"] as? String
-            ?: return ToolResult.error("缺少参数: image_path")
+            ?: return ToolResult.error("Missing parameter: image_path")
 
         Log.i(TAG, "开始上传图片: $imagePath")
 
@@ -117,13 +117,13 @@ class FeishuImageUploadTool(
                         Thread.sleep(RETRY_DELAY_MS * attempt) // 递增延迟
                     } else {
                         return@withContext ToolResult.error(
-                            "图片上传失败 (已重试 $MAX_RETRIES 次): ${e.message}"
+                            "Image upload failed (retried $MAX_RETRIES times): ${e.message}"
                         )
                     }
                 }
             }
 
-            ToolResult.error("图片上传失败: 超过最大重试次数")
+            ToolResult.error("Image upload failed: retry limit exceeded")
         }
     }
 
@@ -133,27 +133,27 @@ class FeishuImageUploadTool(
     private fun validateImageFile(file: File): ToolResult {
         // 检查文件是否存在
         if (!file.exists()) {
-            return ToolResult.error("文件不存在: ${file.absolutePath}")
+            return ToolResult.error("File does not exist: ${file.absolutePath}")
         }
 
         if (!file.isFile) {
-            return ToolResult.error("不是文件: ${file.absolutePath}")
+            return ToolResult.error("Not a file: ${file.absolutePath}")
         }
 
         if (!file.canRead()) {
-            return ToolResult.error("文件不可读: ${file.absolutePath}")
+            return ToolResult.error("File is not readable: ${file.absolutePath}")
         }
 
         // 检查文件大小
         val fileSizeBytes = file.length()
         if (fileSizeBytes == 0L) {
-            return ToolResult.error("文件为空: ${file.absolutePath}")
+            return ToolResult.error("File is empty: ${file.absolutePath}")
         }
 
         val fileSizeMB = fileSizeBytes / (1024.0 * 1024.0)
         if (fileSizeMB > MAX_FILE_SIZE_MB) {
             return ToolResult.error(
-                "文件过大: %.2fMB > %dMB".format(fileSizeMB, MAX_FILE_SIZE_MB)
+                "File too large: %.2fMB > %dMB".format(fileSizeMB, MAX_FILE_SIZE_MB)
             )
         }
 
@@ -166,7 +166,7 @@ class FeishuImageUploadTool(
             !fileName.endsWith(".bmp")
         ) {
             return ToolResult.error(
-                "不支持的图片格式,仅支持: PNG, JPG, JPEG, GIF, BMP"
+                "Unsupported image format; supported: PNG, JPG, JPEG, GIF, BMP"
             )
         }
 
@@ -183,7 +183,7 @@ class FeishuImageUploadTool(
         // 1. 获取 access token
         Log.d(TAG, "步骤 1: 获取 tenant_access_token")
         val token = client.getTenantAccessTokenSync()
-            ?: throw IOException("获取 token 失败")
+            ?: throw IOException("Failed to get token")
         Log.d(TAG, "✅ Token 获取成功")
 
         // 2. 构建请求
@@ -220,30 +220,30 @@ class FeishuImageUploadTool(
 
             // 4. 检查 HTTP 状态码
             if (!response.isSuccessful) {
-                throw IOException("HTTP 请求失败 [$statusCode]: $responseBody")
+                throw IOException("HTTP request failed [$statusCode]: $responseBody")
             }
 
             // 5. 解析响应
             Log.d(TAG, "步骤 4: 解析响应 JSON")
             val json = gson.fromJson(responseBody, JsonObject::class.java)
-                ?: throw IOException("响应 JSON 为空")
+                ?: throw IOException("Response JSON is empty")
 
             // 检查 code 字段
             val code = json.get("code")?.asInt ?: -1
             if (code != 0) {
-                val msg = json.get("msg")?.asString ?: "未知错误"
-                throw IOException("飞书 API 错误 [code=$code]: $msg")
+                val msg = json.get("msg")?.asString ?: "unknown error"
+                throw IOException("Feishu API error [code=$code]: $msg")
             }
 
             // 提取 image_key
             val data = json.getAsJsonObject("data")
-                ?: throw IOException("响应缺少 data 字段")
+                ?: throw IOException("Response is missing the data field")
 
             val imageKey = data.get("image_key")?.asString
-                ?: throw IOException("响应缺少 image_key 字段")
+                ?: throw IOException("Response is missing the image_key field")
 
             if (imageKey.isEmpty()) {
-                throw IOException("image_key 为空")
+                throw IOException("image_key is empty")
             }
 
             return imageKey

@@ -28,23 +28,23 @@ object DeeplinkSkillExporter {
      * App 包名 -> (emoji, 中文名称) 映射
      */
     private val appMapping = mapOf(
-        "com.sankuai.meituan" to ("🍜" to "美团"),
-        "com.taobao.taobao" to ("🛒" to "淘宝"),
-        "com.xunmeng.pinduoduo" to ("🍊" to "拼多多"),
-        "com.ss.android.ugc.aweme" to ("🎵" to "抖音"),
-        "com.smile.gifmaker" to ("🎬" to "快手"),
-        "com.zhihu.android" to ("💡" to "知乎"),
-        "com.xingin.xhs" to ("📕" to "小红书"),
-        "tv.danmaku.bili" to ("📺" to "哔哩哔哩"),
-        "com.autonavi.minimap" to ("🗺️" to "高德"),
-        "com.tencent.qqmusic" to ("🎶" to "QQ音乐"),
-        "com.eg.android.AlipayGphone" to ("💰" to "支付宝"),
-        "com.baidu.searchbox" to ("🔍" to "百度"),
-        "com.dianping.v1" to ("🍜" to "大众点评"),
-        "com.jingdong.app.mall" to ("🛍️" to "京东"),
-        "com.tencent.mm" to ("💬" to "微信"),
-        "com.alibaba.android.rimet" to ("💼" to "钉钉"),
-        "com.ss.android.lark" to ("🐦" to "飞书")
+        "com.sankuai.meituan" to ("🍜" to "Meituan"),
+        "com.taobao.taobao" to ("🛒" to "Taobao"),
+        "com.xunmeng.pinduoduo" to ("🍊" to "Pinduoduo"),
+        "com.ss.android.ugc.aweme" to ("🎵" to "Douyin"),
+        "com.smile.gifmaker" to ("🎬" to "Kuaishou"),
+        "com.zhihu.android" to ("💡" to "Zhihu"),
+        "com.xingin.xhs" to ("📕" to "Xiaohongshu"),
+        "tv.danmaku.bili" to ("📺" to "Bilibili"),
+        "com.autonavi.minimap" to ("🗺️" to "Amap"),
+        "com.tencent.qqmusic" to ("🎶" to "QQ Music"),
+        "com.eg.android.AlipayGphone" to ("💰" to "Alipay"),
+        "com.baidu.searchbox" to ("🔍" to "Baidu"),
+        "com.dianping.v1" to ("🍜" to "Dianping"),
+        "com.jingdong.app.mall" to ("🛍️" to "JD"),
+        "com.tencent.mm" to ("💬" to "WeChat"),
+        "com.alibaba.android.rimet" to ("💼" to "DingTalk"),
+        "com.ss.android.lark" to ("🐦" to "Feishu")
     )
 
     /**
@@ -84,12 +84,12 @@ object DeeplinkSkillExporter {
             }
             else -> {
                 // 兜底：使用 appName + 页面
-                "${appName}页面"
+                "${appName} page"
             }
         }
 
-        // 确保不超过10个字符
-        return skillName.take(10)
+        // 10 was tuned for CJK; English app names need more room before truncating
+        return skillName.take(24)
     }
 
     /**
@@ -102,12 +102,12 @@ object DeeplinkSkillExporter {
         if (dataUri.contains("meituan")) {
             return when {
                 dataUri.contains("seckill", ignoreCase = true) || 
-                    dataUri.contains("SECOND_KILL") -> "秒杀"
-                dataUri.contains("deal-detail") -> "团购"
-                dataUri.contains("food", ignoreCase = true) -> "美食"
-                dataUri.contains("hotel", ignoreCase = true) -> "酒店"
-                dataUri.contains("movie", ignoreCase = true) -> "电影"
-                dataUri.contains("shop", ignoreCase = true) -> "商家"
+                    dataUri.contains("SECOND_KILL") -> "flash sale"
+                dataUri.contains("deal-detail") -> "group buy"
+                dataUri.contains("food", ignoreCase = true) -> "food"
+                dataUri.contains("hotel", ignoreCase = true) -> "hotel"
+                dataUri.contains("movie", ignoreCase = true) -> "movie"
+                dataUri.contains("shop", ignoreCase = true) -> "merchant"
                 else -> ""
             }
         }
@@ -115,10 +115,10 @@ object DeeplinkSkillExporter {
         // 淘宝相关
         if (dataUri.contains("taobao") || dataUri.contains("tb.cn")) {
             return when {
-                dataUri.contains("search") -> "搜索"
-                dataUri.contains("detail") -> "商品"
-                dataUri.contains("shop") -> "店铺"
-                dataUri.contains("cart") -> "购物车"
+                dataUri.contains("search") -> "search"
+                dataUri.contains("detail") -> "product"
+                dataUri.contains("shop") -> "store"
+                dataUri.contains("cart") -> "cart"
                 else -> ""
             }
         }
@@ -126,9 +126,9 @@ object DeeplinkSkillExporter {
         // 抖音相关
         if (dataUri.contains("douyin")) {
             return when {
-                dataUri.contains("video") -> "视频"
-                dataUri.contains("live") -> "直播"
-                dataUri.contains("user") -> "主页"
+                dataUri.contains("video") -> "video"
+                dataUri.contains("live") -> "live"
+                dataUri.contains("user") -> "home page"
                 else -> ""
             }
         }
@@ -147,7 +147,7 @@ object DeeplinkSkillExporter {
             return ExportResult(
                 success = false,
                 skillName = skillName,
-                message = "该收藏没有有效的 Deeplink，无法导出为 Skill"
+                message = "This bookmark has no valid Deeplink and cannot be exported as a Skill"
             )
         }
 
@@ -166,13 +166,13 @@ object DeeplinkSkillExporter {
                 skillName = skillName,
                 skillDir = skillDir,
                 skillFile = skillFile,
-                message = "已成功创建快捷指令「$skillName」"
+                message = "Created shortcut \"$skillName\""
             )
         } catch (e: Exception) {
             ExportResult(
                 success = false,
                 skillName = skillName,
-                message = "导出失败: ${e.message}"
+                message = "Export failed: ${e.message}"
             )
         }
     }
@@ -202,8 +202,8 @@ object DeeplinkSkillExporter {
             appendLine("---")
             appendLine("name: $skillName")
             appendLine("description: |")
-            appendLine("  一键直达${appDisplayName}指定页面的快捷指令。从 Deeplink 收藏自动创建。")
-            appendLine("  当用户说\"打开$skillName\"、\"使用$skillName\"、\"$skillName\"时激活。")
+            appendLine("  Shortcut that jumps straight to a specific ${appDisplayName} page. Auto-created from a Deeplink bookmark.")
+            appendLine("  Activated when the user says \"open $skillName\", \"use $skillName\", or just \"$skillName\".")
             appendLine("metadata:")
             appendLine("  {")
             appendLine("    \"xomniclaw\": {")
@@ -219,40 +219,40 @@ object DeeplinkSkillExporter {
             // 标题
             appendLine("# $skillName")
             appendLine()
-            appendLine("一键直达${appDisplayName}「$pageDesc」页面。")
+            appendLine("Jump straight to the \"$pageDesc\" page in ${appDisplayName}.")
             appendLine()
 
             // 跳转方式说明
             if (hasDeeplink) {
-                appendLine("## 🚫 绝对禁止（违反必失败 / 必崩溃）")
+                appendLine("## 🚫 Absolutely forbidden (violating this always fails / crashes)")
                 appendLine()
-                appendLine("> **禁令 1：exec / shell（含 `am start`）** —— 100% 报 SecurityException。")
+                appendLine("> **Ban 1: exec / shell (including `am start`)** — throws SecurityException 100% of the time.")
                 appendLine(">")
-                appendLine("> **禁令 2：`start_activity`（无论何种参数组合）** —— 这是本类技能最常见的失败模式。")
-                appendLine("> 该工具入参**无法承载 deeplink 的查询参数**（如 `mrn_biz` / `mrn_entry` / `mrn_component` / `poiidEncrypt` 等），")
-                appendLine("> 即使 `${bookmark.activityName}` 被成功启动，也只是该 Activity 的「裸壳」——")
-                appendLine("> 没有业务参数 → 回退到 ${appDisplayName} 默认页 / 首页，**看起来跳转成功，实则没到目标页**。")
+                appendLine("> **Ban 2: `start_activity` (any parameter combination)** — the most common failure mode for this kind of skill.")
+                appendLine("> The tool cannot carry the deeplink's query parameters (such as `mrn_biz` / `mrn_entry` / `mrn_component` / `poiidEncrypt`),")
+                appendLine("> so even if `${bookmark.activityName}` launches, it is only a bare shell of that Activity —")
+                appendLine("> with no business parameters it falls back to the ${appDisplayName} default/home page: **it looks like the jump worked, but you never reached the target page**.")
                 appendLine(">")
-                appendLine("> | 操作 | ✅ 必须使用 | ❌ 绝对禁止 |")
+                appendLine("> | Operation | ✅ Must use | ❌ Absolutely forbidden |")
                 appendLine("> |---|---|---|")
-                appendLine("> | 跳转到本快捷指令的目标页 | `device(action=\"open\", uri=\"<完整 deeplink>\", package_name=\"$packageName\")` | `start_activity(component=...)` / `start_activity(package=…, activity=…)` / `start_activity(uri=…)` / `am start …` |")
+                appendLine("> | Jump to this shortcut's target page | `device(action=\"open\", uri=\"<完整 deeplink>\", package_name=\"$packageName\")` | `start_activity(component=...)` / `start_activity(package=…, activity=…)` / `start_activity(uri=…)` / `am start …` |")
                 appendLine(">")
-                appendLine("> **✅ 唯一正确方式（必须带 package_name + 完整 uri）：**")
+                appendLine("> **✅ The only correct way (package_name + full uri required):**")
                 appendLine("> ```kotlin")
                 appendLine("> device(action = \"open\", uri = \"<完整 deeplink，包含 ?key=val&… 全部查询参数>\", package_name = \"$packageName\")")
                 appendLine("> ```")
                 appendLine(">")
-                appendLine("> **think → action 一致性自检（每次 emit function call 前再读一遍）**：")
-                appendLine("> 1. 即使 `<think>` 里写过\"使用 `device(action=\\\"open\\\")`\"，真正的 function call 也务必调 `device`，**不要换成 `start_activity`**。")
-                appendLine("> 2. uri 字段必须**原样复制**下方「Deeplink 详情」节里的完整字符串（含全部 `?key=val&…` 查询参数），")
-                appendLine(">    一个参数都不能省略——丢失任何一个都会 fallback 回 ${appDisplayName} 首页。")
+                appendLine("> **think → action consistency self-check (re-read before every function call emitted)**:")
+                appendLine("> 1. Even if `<think>` said to use `device(action=\\\"open\\\")`, the actual function call must be `device` — **never switch to `start_activity`**.")
+                appendLine("> 2. The uri field must **copy verbatim** the full string from the \"Deeplink details\" section below (including all `?key=val&…` query parameters);")
+                appendLine(">    do not omit a single parameter — losing any one of them falls back to the ${appDisplayName} home page.")
             } else {
-                appendLine("## ⚠️ Root 权限要求")
+                appendLine("## ⚠️ Root permission required")
                 appendLine()
-                appendLine("> 该页面没有 Deeplink，需要通过 **root shell** 启动指定 Activity。")
-                appendLine("> 请确保设备已获取 root 权限。")
+                appendLine("> This page has no Deeplink, so the target Activity must be launched through a **root shell**.")
+                appendLine("> Make sure the device has root.")
                 appendLine(">")
-                appendLine("> **✅ 跳转指定页面方式（use_root=true）：**")
+                appendLine("> **✅ How to jump to the target page (use_root=true):**")
                 appendLine("> ```kotlin")
                 appendLine("> device(action = \"open\", package_name = \"$packageName\", class_name = \"${bookmark.activityName}\", use_root = true)")
                 appendLine("> ```")
@@ -260,9 +260,9 @@ object DeeplinkSkillExporter {
             appendLine()
 
             // 执行步骤
-            appendLine("## 📋 执行步骤")
+            appendLine("## 📋 Execution steps")
             appendLine()
-            appendLine("### Step 1: 跳转目标页面")
+            appendLine("### Step 1: Jump to the target page")
             appendLine()
 
             if (hasDeeplink) {
@@ -271,42 +271,42 @@ object DeeplinkSkillExporter {
                 appendLine("```")
             } else {
                 appendLine("```kotlin")
-                appendLine("// 该页面没有 Deeplink，通过 root shell 启动指定 Activity")
+                appendLine("// This page has no Deeplink; launch the target Activity through a root shell")
                 appendLine("device(action = \"open\", package_name = \"$packageName\", class_name = \"${bookmark.activityName}\", use_root = true)")
                 appendLine("```")
             }
             appendLine()
 
-            appendLine("### Step 2: 结束任务")
+            appendLine("### Step 2: Finish the task")
             appendLine()
-            appendLine("跳转完成后，**直接向用户回复**：")
+            appendLine("Once the jump completes, **reply to the user directly**:")
             appendLine()
             appendLine("```")
-            appendLine("已跳转到${appDisplayName}「${pageDesc}」页面。")
+            appendLine("Jumped to the \"${pageDesc}\" page in ${appDisplayName}.")
             appendLine("```")
             appendLine()
-            appendLine("> **⚠️ 重要：不要执行 snapshot 或其他后续操作，任务到此结束。**")
+            appendLine("> **⚠️ Important: do not run snapshot or any follow-up action — the task ends here.**")
             appendLine()
 
             // 注意事项
-            appendLine("## ⚠️ 注意事项")
+            appendLine("## ⚠️ Notes")
             appendLine()
             if (hasDeeplink) {
-                appendLine("- 必须使用 `device(action=\"open\", uri=\"...\", package_name=\"$packageName\")` 跳转，不带 package_name 会跳浏览器")
-                appendLine("- ⛔ 下方记录的 `Activity：${bookmark.activityName}` **仅用于审计溯源**，不是给模型调用的入口；")
-                appendLine("  绝不要根据这一行去 `start_activity(component=…/${bookmark.activityName.substringAfterLast('.')})` —— 那只会启动空参数的 Activity 并 fallback 回 ${appDisplayName} 首页。")
+                appendLine("- Use `device(action=\"open\", uri=\"...\", package_name=\"$packageName\")`; without package_name it opens the browser")
+                appendLine("- ⛔ The `Activity: ${bookmark.activityName}` recorded below is **for audit provenance only**, not an entry point for the model;")
+                appendLine("  never call `start_activity(component=…/${bookmark.activityName.substringAfterLast('.')})` from that line — it launches the Activity with no parameters and falls back to the ${appDisplayName} home page.")
             } else {
-                appendLine("- 该页面无 Deeplink，必须使用 `device(action=\"open\", ..., use_root=true)` 通过 root shell 跳转")
-                appendLine("- 需要设备已获取 root 权限，否则无法启动该 Activity")
+                appendLine("- This page has no Deeplink; use `device(action=\"open\", ..., use_root=true)` to jump through a root shell")
+                appendLine("- The device must have root, otherwise the Activity cannot be launched")
             }
-            appendLine("- 原始来源：${bookmark.sourceActionSummary.ifBlank { "Deeplink 收藏导出" }}")
-            appendLine("- 原始页面：${bookmark.appName} / ${bookmark.displayName}")
+            appendLine("- Original source: ${bookmark.sourceActionSummary.ifBlank { "Deeplink bookmark export" }}")
+            appendLine("- Original page: ${bookmark.appName} / ${bookmark.displayName}")
             appendLine("- Activity：${bookmark.activityName}")
-            appendLine("- 创建时间：$createdDate")
+            appendLine("- Created at: $createdDate")
 
             if (hasDeeplink) {
                 appendLine()
-                appendLine("### Deeplink 详情")
+                appendLine("### Deeplink details")
                 appendLine()
                 appendLine("```")
                 appendLine(uri)

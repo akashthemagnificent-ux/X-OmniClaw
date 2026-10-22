@@ -90,7 +90,7 @@ class SelfControlRegistry(private val context: Context) {
             skill.execute(args)
         } catch (e: Exception) {
             Log.e(TAG, "Self-control skill execution failed: $name", e)
-            SkillResult.error("Skill 执行失败: ${e.message}")
+            SkillResult.error("Skill execution failed: ${e.message}")
         }
     }
 
@@ -115,7 +115,7 @@ class SelfControlRegistry(private val context: Context) {
         return buildString {
             appendLine("=== Self-Control Skills ===")
             appendLine()
-            appendLine("PhoneForClaw 自我控制能力（共 ${skills.size} 个）：")
+            appendLine("PhoneForClaw self-control capabilities (${skills.size}):")
             appendLine()
 
             skills.values.forEach { skill ->
@@ -123,17 +123,17 @@ class SelfControlRegistry(private val context: Context) {
             }
 
             appendLine()
-            appendLine("使用这些工具可以让 AI Agent：")
-            appendLine("1. 导航到应用内各个页面进行配置")
-            appendLine("2. 读取和修改运行时配置参数")
-            appendLine("3. 控制悬浮窗显示/隐藏（如截图前隐藏）")
-            appendLine("4. 查询运行日志进行自我诊断")
+            appendLine("These tools let the AI Agent:")
+            appendLine("1. Navigate to pages in the app to configure it")
+            appendLine("2. Read and modify runtime configuration")
+            appendLine("3. Show/hide the floating window (e.g. hide it before a screenshot)")
+            appendLine("4. Query runtime logs for self-diagnosis")
             appendLine()
-            appendLine("典型使用流程：")
-            appendLine("1. navigate_app → config (打开配置页面)")
-            appendLine("2. manage_config → get/set (查看/修改配置)")
-            appendLine("3. control_service → hide_float (截图前隐藏悬浮窗)")
-            appendLine("4. query_logs → level=E (查看错误日志)")
+            appendLine("Typical flow:")
+            appendLine("1. navigate_app -> config (open the config page)")
+            appendLine("2. manage_config -> get/set (view/change config)")
+            appendLine("3. control_service -> hide_float (hide the floating window before a screenshot)")
+            appendLine("4. query_logs -> level=E (view error logs)")
         }
     }
 }

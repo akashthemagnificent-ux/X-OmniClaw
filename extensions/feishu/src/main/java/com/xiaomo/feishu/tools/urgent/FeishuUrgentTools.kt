@@ -37,7 +37,7 @@ class FeishuUrgentTools(config: FeishuConfig, client: FeishuClient) {
  */
 class UrgentSendTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_urgent_send"
-    override val description = "发送飞书加急消息（会向用户发送电话提醒）"
+    override val description = "Send a Feishu urgent message (triggers a phone reminder for the user)"
 
     override fun isEnabled() = config.enableUrgentTools
 
@@ -75,8 +75,8 @@ class UrgentSendTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBas
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "message_id" to PropertySchema("string", "要加急的消息ID"),
-                    "user_ids" to PropertySchema("array", "要提醒的用户ID列表", items = PropertySchema("string", "用户ID"))
+                    "message_id" to PropertySchema("string", "message ID to escalate"),
+                    "user_ids" to PropertySchema("array", "user IDs to notify", items = PropertySchema("string", "用户ID"))
                 ),
                 required = listOf("message_id", "user_ids")
             )
@@ -89,7 +89,7 @@ class UrgentSendTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBas
  */
 class UrgentAppTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_urgent_app"
-    override val description = "对飞书应用消息进行加急（电话/短信提醒）"
+    override val description = "Escalate a Feishu app message (phone/SMS reminder)"
 
     override fun isEnabled() = config.enableUrgentTools
 
@@ -130,11 +130,11 @@ class UrgentAppTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "message_id" to PropertySchema("string", "要加急的消息ID"),
-                    "user_ids" to PropertySchema("array", "要提醒的用户ID列表", items = PropertySchema("string", "用户ID")),
+                    "message_id" to PropertySchema("string", "message ID to escalate"),
+                    "user_ids" to PropertySchema("array", "user IDs to notify", items = PropertySchema("string", "用户ID")),
                     "urgent_type" to PropertySchema(
                         "string",
-                        "加急类型（app/sms/phone，默认app）",
+                        "escalation type (app/sms/phone, default app)",
                         enum = listOf("app", "sms", "phone")
                     )
                 ),

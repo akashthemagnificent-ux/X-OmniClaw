@@ -52,25 +52,25 @@ class NavigationSkill(private val context: Context) : Skill {
     override val name = "navigate_app"
 
     override val description = """
-        导航到 PhoneForClaw 应用内的各个页面。
+        Navigate to the pages inside the PhoneForClaw app.
 
-        可用页面：
-        - main: 主界面
-        - config: 配置页面（API、模型设置）
-        - permissions: 权限管理页面
-        - chat_history: 对话历史记录
-        - chat_log: 详细对话日志
-        - feishu: 飞书通道配置
-        - channels: 通道列表管理
-        - result: 结果展示页面
+        Available pages:
+        - main: main screen
+        - config: config page (API, model settings)
+        - permissions: permission management
+        - chat_history: conversation history
+        - chat_log: detailed conversation log
+        - feishu: Feishu channel configuration
+        - channels: channel list management
+        - result: result page
 
-        使用场景：
-        - 修改应用配置
-        - 检查权限状态
-        - 查看运行日志
-        - 管理通道连接
+        Use cases:
+        - change app configuration
+        - check permission status
+        - view runtime logs
+        - manage channel connections
 
-        注意：需要应用在前台或有悬浮窗权限。
+        Note: the app must be in the foreground or have overlay permission.
     """.trimIndent()
 
     override fun getToolDefinition(): ToolDefinition {
@@ -84,7 +84,7 @@ class NavigationSkill(private val context: Context) : Skill {
                     properties = mapOf(
                         "page" to PropertySchema(
                             type = "string",
-                            description = "目标页面名称",
+                            description = "target page name",
                             enum = listOf(
                                 Pages.MAIN,
                                 Pages.CONFIG,
@@ -98,7 +98,7 @@ class NavigationSkill(private val context: Context) : Skill {
                         ),
                         "extras" to PropertySchema(
                             type = "object",
-                            description = "可选的 Intent extras（JSON 对象）"
+                            description = "optional Intent extras (JSON object)"
                         )
                     ),
                     required = listOf("page")
@@ -136,7 +136,7 @@ class NavigationSkill(private val context: Context) : Skill {
             Log.d(TAG, "Successfully navigated to page: $page")
 
             SkillResult.success(
-                "已跳转到页面: $page",
+                "Navigated to page: $page",
                 mapOf(
                     "page" to page,
                     "extras" to (extras ?: emptyMap<String, Any>())
@@ -144,7 +144,7 @@ class NavigationSkill(private val context: Context) : Skill {
             )
         } catch (e: Exception) {
             Log.e(TAG, "Failed to navigate to page: $page", e)
-            SkillResult.error("页面跳转失败: ${e.message}")
+            SkillResult.error("Page navigation failed: ${e.message}")
         }
     }
 

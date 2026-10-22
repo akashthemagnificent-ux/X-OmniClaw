@@ -42,8 +42,8 @@ class LocalVoiceVisionHub(
         private const val ORCHESTRATION_PROMPT_ASSET = "bootstrap/VOICE_VISION_ORCHESTRATION_PROMPT.md"
 
         // 兜底文案仅在 assets 文件丢失时生效，主配置应维护在 bootstrap markdown 中。
-        private const val DEFAULT_SYSTEM_PROMPT_FALLBACK = "你是 X-OmniClaw Android 助手，结合语音与截图理解意图；单步任务可输出 JSON 指令，多步任务优先输出 agent_task。"
-        private const val DEFAULT_ORCHESTRATION_PROMPT_FALLBACK = "当前任务交由主 AgentLoop 执行，请输出给 Agent 的执行提示（任务理解/执行约束/完成标准），不要直接给最终答案。"
+        private const val DEFAULT_SYSTEM_PROMPT_FALLBACK = "You are the X-OmniClaw Android assistant. Understand intent from voice and screenshots; for single-step tasks output a JSON command, for multi-step tasks prefer agent_task."
+        private const val DEFAULT_ORCHESTRATION_PROMPT_FALLBACK = "This task is handed to the main AgentLoop. Output an execution hint for the Agent (task understanding / execution constraints / completion criteria) rather than the final answer."
     }
 
     /** 每个 Hub 实例维护独立短期会话，避免跨会话串话。 */
@@ -85,7 +85,7 @@ class LocalVoiceVisionHub(
             val sttProvider = loadProvider("stt")
                 ?: run {
                     out.put("status", "error")
-                    out.put("error", "缺少 STT provider 配置（models.providers.stt）")
+                    out.put("error", "Missing STT provider configuration (models.providers.stt)")
                     return@withContext out
                 }
             val sttKey = sttProvider.apiKey.orEmpty()
@@ -95,7 +95,7 @@ class LocalVoiceVisionHub(
                 out.put("status", "error")
                 out.put(
                     "error",
-                    "缺少 STT provider 配置（需 models.providers.stt.apiKey/baseUrl/models[0].id）"
+                    "Missing STT provider configuration (needs models.providers.stt.apiKey/baseUrl/models[0].id)"
                 )
                 return@withContext out
             }
@@ -118,7 +118,7 @@ class LocalVoiceVisionHub(
      */
     suspend fun transcribeAudio(wavBytes: ByteArray): String = withContext(Dispatchers.IO) {
         val sttProvider = loadProvider("stt")
-            ?: throw IllegalStateException("未配置 STT provider（models.providers.stt）")
+            ?: throw IllegalStateException("STT provider not configured (models.providers.stt)")
         transcribeAudio(wavBytes, sttProvider)
     }
 
@@ -145,7 +145,7 @@ class LocalVoiceVisionHub(
         out.put("text", sttText)
         if (sttText.isBlank()) {
             out.put("status", "ok")
-            out.put("error", "未识别到语音")
+            out.put("error", "No speech recognized")
             return@withContext out
         }
 
@@ -229,7 +229,7 @@ class LocalVoiceVisionHub(
         if (!isMultiStep && VoiceIntentAtoms.looksLikeWeatherQuery(userInput)) {
             trace("rule", "weather_query -> agent_task")
             return finalize(
-                "我来让主助手在本机帮你查看实时天气。",
+                "I will have the main assistant check the live weather on this device.",
                 buildWeatherAgentTask(userInput),
                 ts,
                 userInput
@@ -237,7 +237,7 @@ class LocalVoiceVisionHub(
         }
 
         if (!requireVlm) {
-            return finalize("我不理解。", null, ts, userInput)
+            return finalize("I did not understand that.", null, ts, userInput)
         }
 
         val cameraRunningNow = CameraFramePusher.isAnyCameraRunning()
@@ -470,12 +470,12 @@ class LocalVoiceVisionHub(
             when {
                 cmd?.optString("action", "") == "open" -> {
                     cmd = buildAgentTaskCommand(userInput)
-                    reply = "好的，我会继续完成搜索任务，并把结果告诉你"
+                    reply = "Okay, I will continue the search and report the results to you"
                     trace("fallback", "converted open -> agent_task for search intent")
                 }
                 cmd == null -> {
                     cmd = buildAgentTaskCommand(userInput)
-                    reply = "好的，我会按你的要求继续完成搜索并反馈结果"
+                    reply = "Okay, I will continue the search as you asked and report back"
                     trace("fallback", "no command -> agent_task for search intent")
                 }
             }
@@ -521,16 +521,16 @@ class LocalVoiceVisionHub(
      * 「默认全题 / 仅做单题」等策略只写在 agent_task 与提示词中供模型与 Agent 使用，不向用户念条件从句。
      */
     private fun generateOrchestrationUserAck(): String {
-        return "我已整理好执行计划，接下来由主助手按步骤完成操作。"
+        return "I have the execution plan ready; the main assistant will now carry out the steps."
     }
 
     private fun buildAgentTaskCommand(userInput: String): JSONObject {
         val appName = voiceShortcuts.appPackages.keys.firstOrNull { userInput.contains(it) }
         val query = extractSearchQuery(userInput).ifBlank { userInput.trim() }
         val task = if (!appName.isNullOrBlank()) {
-            "打开$appName，搜索$query，并整理关键信息后回复给我。"
+            "Open $appName, search for $query, and reply to me with the key information."
         } else {
-            "完成以下多步任务并回复结果：$userInput"
+            "Complete the following multi-step task and report the result: $userInput"
         }
         return JSONObject().put("action", "agent_task").put("task", task)
     }
@@ -549,14 +549,14 @@ class LocalVoiceVisionHub(
      */
     private fun buildWeatherAgentTask(userInput: String): JSONObject {
         val body = buildString {
-            append("【给主 AgentLoop】用户想查询天气，原话：").append(userInput.trim()).append("\n\n")
-            append("本机语音链路未接入气象服务，请用 device 工具完成：\n")
-            append("1) 优先打开系统「天气」应用或桌面/负一屏天气卡片；可尝试常见包名（按品牌择一，失败则应用列表搜「天气」）：")
+            append("[For the main AgentLoop] The user wants the weather. Original words: ").append(userInput.trim()).append("\n\n")
+            append("The voice pipeline has no weather service; complete this with the device tool:\n")
+            append("1) Prefer opening the system Weather app, or the home screen / left-most screen weather card; try common package names (pick by brand, and search the app drawer for \"weather\" if that fails):")
             append("com.huawei.android.totemweather、com.miui.weather2、com.coloros.weather2、")
             append("com.vivo.weather、com.oneplus.weather、com.samsung.android.weather 等。\n")
-            append("2) 若无法打开天气 App，用浏览器搜索「当前城市 今日天气」或系统搜索框检索天气。\n")
-            append("3) 每轮先 snapshot 再操作，禁止盲点击。\n")
-            append("完成标准：界面可见今日天气概况（阴晴、气温区间等）或明确说明无法打开的原因。")
+            append("2) If the weather app cannot be opened, search \"today weather <current city>\" in a browser or the system search box.\n")
+            append("3) Snapshot before acting each round; never tap blind.\n")
+            append("Completion criteria: today's weather summary is visible on screen (conditions, temperature range, etc.), or the reason it cannot be opened is clearly reported.")
         }
         return JSONObject().put("action", "agent_task").put("task", body)
     }
@@ -570,28 +570,28 @@ class LocalVoiceVisionHub(
         embeddedCommand: JSONObject?
     ): JSONObject {
         val body = StringBuilder()
-        body.append("【给主 AgentLoop 的执行提示】\n")
-        body.append("用户目标：").append(userInput.trim()).append("\n\n")
-        body.append("任务理解：\n")
-        body.append("- 当前请求来自屏内替身语音入口，需要主 Agent 使用 device 工具分步完成。\n")
-        body.append("- VLM 观察补充（供参考，执行以实时 snapshot 为准）：\n")
-        val summary = vlmSummary.trim().ifBlank { "（模型未给出额外文字说明）" }
+        body.append("[Execution hint for the main AgentLoop]\n")
+        body.append("User goal: ").append(userInput.trim()).append("\n\n")
+        body.append("Task understanding:\n")
+        body.append("- This request comes from the on-screen proxy voice entry; the main Agent must complete it step by step with the device tool.\n")
+        body.append("- Supplementary VLM observation (reference only; execute against a live snapshot):\n")
+        val summary = vlmSummary.trim().ifBlank { "(the model gave no extra text)" }
         body.append(summary).append("\n\n")
-        body.append("执行约束：\n")
-        body.append("1. 每一轮必须先 snapshot 再决策，禁止盲点按。\n")
-        body.append("2. 若遇到执行失败或页面异常，不要停止，尝试恢复后继续推进目标。\n")
-        body.append("3. 优先使用 accessibility ref；坐标仅作兜底。\n")
+        body.append("Execution constraints:\n")
+        body.append("1. Snapshot first each round, then decide; never tap blind.\n")
+        body.append("2. On failure or an abnormal page, do not stop; recover and keep advancing the goal.\n")
+        body.append("3. Prefer accessibility refs; use coordinates only as a fallback.\n")
         if (looksLikeQuizText(userInput) || looksLikeQuizText(vlmSummary)) {
-            body.append("4. 题型可能包含单选题、多选题、填空题，必须逐题阅读后再作答。\n")
-            body.append("5. 中途某题失败时不要中断，继续下一题，直到整题流程完成。\n")
-            body.append("6. 用户未明确“只做一道/只做第N题”时，默认完成全部题目。\n")
-            body.append("7. 全部完成后若还能继续下一组题目，先询问用户是否继续。\n")
+            body.append("4. Questions may be single-choice, multiple-choice, or fill-in; read each one before answering.\n")
+            body.append("5. If one question fails, do not stop; continue to the next until the whole set is done.\n")
+            body.append("6. Unless the user explicitly says \"only one question\" or \"only question N\", complete every question.\n")
+            body.append("7. After finishing, if another set is available, ask the user whether to continue.\n")
         }
         if (embeddedCommand != null) {
-            body.append("\n可参考的首轮动作建议（仅参考，不可跳过 snapshot 校验）：\n")
+            body.append("\nSuggested first-round action (reference only; never skip the snapshot check):\n")
             body.append(embeddedCommand.toString())
         }
-        body.append("\n\n完成标准：目标状态达成后，再向用户汇报结果。")
+        body.append("\n\nCompletion criteria: report to the user only after the target state is reached.")
         return JSONObject().put("action", "agent_task").put("task", body.toString())
     }
 
@@ -606,13 +606,16 @@ class LocalVoiceVisionHub(
             Regex("""只答(一道|这道|本题|第\d+题)""").containsMatchIn(normalized) ||
             Regex("""仅做(一道|这道|本题|第\d+题)""").containsMatchIn(normalized) ||
             Regex("""只需要做(一道|这道|本题|第\d+题)""").containsMatchIn(normalized) ||
-            Regex("""只做一题""").containsMatchIn(normalized)
+            Regex("""只做一题""").containsMatchIn(normalized) ||
+            Regex("""(?i)(only|just)\s+(do\s+)?(one|a single|this)\s+(question|quiz)""").containsMatchIn(userInput) ||
+            Regex("""(?i)only\s+question\s+\d+""").containsMatchIn(userInput)
     }
 
     private fun extractSearchQuery(userInput: String): String {
         val patterns = listOf(
             Regex("""(?:搜(?:索)?(?:一下|下)?|查(?:找|询)?(?:一下|下)?|找(?:一下|下)?|看看|检索)\s*(.+)$"""),
-            Regex("""(?:关于)\s*(.+)$""")
+            Regex("""(?:关于)\s*(.+)$"""),
+            Regex("""(?i)(?:search(?:\s+for)?|look\s+up|find|about)\s+(.+)$""")
         )
         for (re in patterns) {
             val m = re.find(userInput) ?: continue
@@ -706,7 +709,7 @@ class LocalVoiceVisionHub(
                     ?.let { "vlm/$it" }
             }
             if (!followAgent && vlmProvider != null && resolvedModelRef == null) {
-                trace("vlm_config_warn", "检测到独立 VLM provider，但未配置模型，回退到 Agent 默认模型")
+                trace("vlm_config_warn", "Separate VLM provider detected but no model configured; falling back to the Agent default model")
             }
             val response = llmProvider.chatWithTools(
                 messages = messages,
@@ -731,7 +734,7 @@ class LocalVoiceVisionHub(
             val main = response.content?.trim().orEmpty()
             val think = response.thinkingContent?.trim().orEmpty()
             if (main.isNotBlank() && think.isNotBlank()) {
-                trace("vlm_thinking_omitted", "omitted_len=${think.length} (主界面与朗读仅使用 content)")
+                trace("vlm_thinking_omitted", "omitted_len=${think.length} (UI and speech use content only)")
             }
             var merged = when {
                 main.isNotBlank() -> main
@@ -750,12 +753,12 @@ class LocalVoiceVisionHub(
             }
             if (merged.isBlank()) {
                 trace("vlm_empty", "unified provider returned empty content and empty thinkingContent")
-                "Error: VLM 返回内容为空"
+                "Error: VLM returned empty content"
             } else {
                 merged
             }
         } catch (e: Exception) {
-            val message = e.message ?: "VLM 请求失败"
+            val message = e.message ?: "VLM request failed"
             trace("vlm_provider_error", message.take(300))
             "Error: $message"
         }

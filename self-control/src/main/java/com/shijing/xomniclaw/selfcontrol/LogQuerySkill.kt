@@ -53,28 +53,28 @@ class LogQuerySkill(private val context: Context) : Skill {
     override val name = "query_logs"
 
     override val description = """
-        查询 PhoneForClaw 应用的运行日志。
+        Query PhoneForClaw runtime logs.
 
-        支持参数：
-        - level: 日志级别（V/D/I/W/E/F），默认 I（Info 及以上）
-        - filter: 过滤关键字（TAG 或消息内容）
-        - lines: 返回行数，默认 100（最多 200）
-        - source: 日志来源（logcat/file），默认 logcat
+        Parameters:
+        - level: log level (V/D/I/W/E/F), default I (Info and above)
+        - filter: keyword filter (TAG or message content)
+        - lines: number of lines, default 100 (max 200)
+        - source: log source (logcat/file), default logcat
 
-        日志级别：
-        - V: Verbose（详细）
-        - D: Debug（调试）
-        - I: Info（信息）
-        - W: Warning（警告）
-        - E: Error（错误）
-        - F: Fatal（致命）
+        Log levels:
+        - V: Verbose
+        - D: Debug
+        - I: Info
+        - W: Warning
+        - E: Error
+        - F: Fatal
 
-        示例：
-        - 查看最近错误: {"level": "E", "lines": 50}
-        - 搜索特定 TAG: {"filter": "AgentLoop", "lines": 100}
-        - 查看全部日志: {"level": "V", "lines": 200}
+        Examples:
+        - recent errors: {"level": "E", "lines": 50}
+        - search a TAG: {"filter": "AgentLoop", "lines": 100}
+        - all logs: {"level": "V", "lines": 200}
 
-        注意：需要 READ_LOGS 权限（System UID）。
+        Note: requires READ_LOGS (System UID).
     """.trimIndent()
 
     override fun getToolDefinition(): ToolDefinition {
@@ -88,7 +88,7 @@ class LogQuerySkill(private val context: Context) : Skill {
                     properties = mapOf(
                         "level" to PropertySchema(
                             type = "string",
-                            description = "日志级别",
+                            description = "log level",
                             enum = listOf(
                                 LogLevel.VERBOSE,
                                 LogLevel.DEBUG,
@@ -100,15 +100,15 @@ class LogQuerySkill(private val context: Context) : Skill {
                         ),
                         "filter" to PropertySchema(
                             type = "string",
-                            description = "过滤关键字（TAG 或消息内容）"
+                            description = "keyword filter (TAG or message content)"
                         ),
                         "lines" to PropertySchema(
                             type = "integer",
-                            description = "返回行数（1-200）"
+                            description = "number of lines (1-200)"
                         ),
                         "source" to PropertySchema(
                             type = "string",
-                            description = "日志来源",
+                            description = "log source",
                             enum = listOf("logcat", "file")
                         )
                     ),
@@ -132,7 +132,7 @@ class LogQuerySkill(private val context: Context) : Skill {
             }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to query logs", e)
-            SkillResult.error("日志查询失败: ${e.message}")
+            SkillResult.error("Log query failed: ${e.message}")
         }
     }
 
@@ -181,20 +181,20 @@ class LogQuerySkill(private val context: Context) : Skill {
 
             if (logLines.isEmpty()) {
                 return SkillResult.success(
-                    "没有找到匹配的日志${if (filter != null) "（过滤: $filter）" else ""}",
+                    "No matching logs found${if (filter != null) " (filter: $filter)" else ""}",
                     mapOf("count" to 0)
                 )
             }
 
             val summary = buildString {
-                appendLine("【日志查询结果】")
-                appendLine("级别: $level")
+                appendLine("[Log query result]")
+                appendLine("Level: $level")
                 if (filter != null) {
-                    appendLine("过滤: $filter")
+                    appendLine("Filter: $filter")
                 }
-                appendLine("行数: ${logLines.size}")
+                appendLine("Lines: ${logLines.size}")
                 appendLine()
-                appendLine("--- 日志内容 ---")
+                appendLine("--- Log content ---")
                 logLines.takeLast(lines).forEach { appendLine(it) }
             }
 
@@ -209,7 +209,7 @@ class LogQuerySkill(private val context: Context) : Skill {
             )
         } catch (e: Exception) {
             Log.e(TAG, "Failed to query logcat", e)
-            SkillResult.error("Logcat 查询失败: ${e.message}")
+            SkillResult.error("Logcat query failed: ${e.message}")
         }
     }
 
@@ -219,7 +219,7 @@ class LogQuerySkill(private val context: Context) : Skill {
             val logDir = File(context.getExternalFilesDir(null), "logs")
 
             if (!logDir.exists() || !logDir.isDirectory) {
-                return SkillResult.error("日志目录不存在: ${logDir.absolutePath}")
+                return SkillResult.error("Log directory does not exist: ${logDir.absolutePath}")
             }
 
             val logFiles = logDir.listFiles { file ->
@@ -227,7 +227,7 @@ class LogQuerySkill(private val context: Context) : Skill {
             }?.sortedByDescending { it.lastModified() }
 
             if (logFiles.isNullOrEmpty()) {
-                return SkillResult.error("没有找到日志文件")
+                return SkillResult.error("No log files found")
             }
 
             // 读取最新的日志文件
@@ -244,22 +244,22 @@ class LogQuerySkill(private val context: Context) : Skill {
 
             if (logLines.isEmpty()) {
                 return SkillResult.success(
-                    "日志文件中没有找到匹配内容${if (filter != null) "（过滤: $filter）" else ""}",
+                    "No matching content in the log file${if (filter != null) " (filter: $filter)" else ""}",
                     mapOf("file" to latestLog.name, "count" to 0)
                 )
             }
 
             val summary = buildString {
-                appendLine("【日志文件查询结果】")
-                appendLine("文件: ${latestLog.name}")
-                appendLine("大小: ${latestLog.length() / 1024} KB")
-                appendLine("修改时间: ${java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(latestLog.lastModified())}")
+                appendLine("[Log file query result]")
+                appendLine("File: ${latestLog.name}")
+                appendLine("Size: ${latestLog.length() / 1024} KB")
+                appendLine("Modified: ${java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(latestLog.lastModified())}")
                 if (filter != null) {
-                    appendLine("过滤: $filter")
+                    appendLine("Filter: $filter")
                 }
-                appendLine("匹配行数: ${logLines.size}")
+                appendLine("Matching lines: ${logLines.size}")
                 appendLine()
-                appendLine("--- 日志内容（最后 $lines 行）---")
+                appendLine("--- Log content (last $lines lines) ---")
                 logLines.takeLast(lines).forEach { appendLine(it) }
             }
 
@@ -274,7 +274,7 @@ class LogQuerySkill(private val context: Context) : Skill {
             )
         } catch (e: Exception) {
             Log.e(TAG, "Failed to query log file", e)
-            SkillResult.error("日志文件查询失败: ${e.message}")
+            SkillResult.error("Log file query failed: ${e.message}")
         }
     }
 }

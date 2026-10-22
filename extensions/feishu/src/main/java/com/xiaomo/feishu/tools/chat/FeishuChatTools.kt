@@ -39,7 +39,7 @@ class FeishuChatTools(config: FeishuConfig, client: FeishuClient) {
  */
 class ChatCreateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_chat_create"
-    override val description = "创建飞书群聊"
+    override val description = "Create a Feishu group chat"
 
     override fun isEnabled() = config.enableChatTools
 
@@ -84,9 +84,9 @@ class ChatCreateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBas
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "name" to PropertySchema("string", "群聊名称"),
-                    "description" to PropertySchema("string", "群聊描述（可选）"),
-                    "user_ids" to PropertySchema("array", "初始成员ID列表（可选）", items = PropertySchema("string", "用户ID"))
+                    "name" to PropertySchema("string", "group name"),
+                    "description" to PropertySchema("string", "group description (optional)"),
+                    "user_ids" to PropertySchema("array", "initial member IDs (optional)", items = PropertySchema("string", "user ID"))
                 ),
                 required = listOf("name")
             )
@@ -99,7 +99,7 @@ class ChatCreateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBas
  */
 class ChatInfoTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_chat_info"
-    override val description = "获取飞书群聊信息"
+    override val description = "Get Feishu group chat info"
 
     override fun isEnabled() = config.enableChatTools
 
@@ -138,7 +138,7 @@ class ChatInfoTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "chat_id" to PropertySchema("string", "群聊ID")
+                    "chat_id" to PropertySchema("string", "chat ID")
                 ),
                 required = listOf("chat_id")
             )
@@ -151,7 +151,7 @@ class ChatInfoTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(
  */
 class ChatAddMemberTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_chat_add_member"
-    override val description = "添加飞书群聊成员"
+    override val description = "Add members to a Feishu group chat"
 
     override fun isEnabled() = config.enableChatTools
 
@@ -187,8 +187,8 @@ class ChatAddMemberTool(config: FeishuConfig, client: FeishuClient) : FeishuTool
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "chat_id" to PropertySchema("string", "群聊ID"),
-                    "user_ids" to PropertySchema("array", "要添加的用户ID列表", items = PropertySchema("string", "用户ID"))
+                    "chat_id" to PropertySchema("string", "chat ID"),
+                    "user_ids" to PropertySchema("array", "user IDs to add", items = PropertySchema("string", "user ID"))
                 ),
                 required = listOf("chat_id", "user_ids")
             )
@@ -201,7 +201,7 @@ class ChatAddMemberTool(config: FeishuConfig, client: FeishuClient) : FeishuTool
  */
 class ChatRemoveMemberTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_chat_remove_member"
-    override val description = "移除飞书群聊成员"
+    override val description = "Remove members from a Feishu group chat"
 
     override fun isEnabled() = config.enableChatTools
 
@@ -237,8 +237,8 @@ class ChatRemoveMemberTool(config: FeishuConfig, client: FeishuClient) : FeishuT
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "chat_id" to PropertySchema("string", "群聊ID"),
-                    "user_ids" to PropertySchema("array", "要移除的用户ID列表", items = PropertySchema("string", "用户ID"))
+                    "chat_id" to PropertySchema("string", "chat ID"),
+                    "user_ids" to PropertySchema("array", "user IDs to remove", items = PropertySchema("string", "user ID"))
                 ),
                 required = listOf("chat_id", "user_ids")
             )

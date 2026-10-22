@@ -41,7 +41,7 @@ class FeishuBitableTools(config: FeishuConfig, client: FeishuClient) {
  */
 class BitableCreateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_bitable_create"
-    override val description = "在飞书多维表格中创建记录"
+    override val description = "Create a record in a Feishu Bitable"
 
     override fun isEnabled() = config.enableBitableTools
 
@@ -84,9 +84,9 @@ class BitableCreateTool(config: FeishuConfig, client: FeishuClient) : FeishuTool
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "app_token" to PropertySchema("string", "多维表格appToken"),
-                    "table_id" to PropertySchema("string", "数据表ID"),
-                    "fields" to PropertySchema("object", "字段值对象，如 {\"字段1\": \"值1\", \"字段2\": \"值2\"}", properties = emptyMap())
+                    "app_token" to PropertySchema("string", "Bitable app token"),
+                    "table_id" to PropertySchema("string", "table ID"),
+                    "fields" to PropertySchema("object", "field-value object, e.g. {\"Field1\": \"Value1\", \"Field2\": \"Value2\"}", properties = emptyMap())
                 ),
                 required = listOf("app_token", "table_id", "fields")
             )
@@ -99,7 +99,7 @@ class BitableCreateTool(config: FeishuConfig, client: FeishuClient) : FeishuTool
  */
 class BitableReadTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_bitable_read"
-    override val description = "读取飞书多维表格记录"
+    override val description = "Read records from a Feishu Bitable"
 
     override fun isEnabled() = config.enableBitableTools
 
@@ -137,9 +137,9 @@ class BitableReadTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBa
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "app_token" to PropertySchema("string", "多维表格appToken"),
-                    "table_id" to PropertySchema("string", "数据表ID"),
-                    "record_id" to PropertySchema("string", "记录ID")
+                    "app_token" to PropertySchema("string", "Bitable app token"),
+                    "table_id" to PropertySchema("string", "table ID"),
+                    "record_id" to PropertySchema("string", "record ID")
                 ),
                 required = listOf("app_token", "table_id", "record_id")
             )
@@ -152,7 +152,7 @@ class BitableReadTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBa
  */
 class BitableUpdateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_bitable_update"
-    override val description = "更新飞书多维表格记录"
+    override val description = "Update a record in a Feishu Bitable"
 
     override fun isEnabled() = config.enableBitableTools
 
@@ -187,10 +187,10 @@ class BitableUpdateTool(config: FeishuConfig, client: FeishuClient) : FeishuTool
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "app_token" to PropertySchema("string", "多维表格appToken"),
-                    "table_id" to PropertySchema("string", "数据表ID"),
-                    "record_id" to PropertySchema("string", "记录ID"),
-                    "fields" to PropertySchema("object", "要更新的字段值对象", properties = emptyMap())
+                    "app_token" to PropertySchema("string", "Bitable app token"),
+                    "table_id" to PropertySchema("string", "table ID"),
+                    "record_id" to PropertySchema("string", "record ID"),
+                    "fields" to PropertySchema("object", "field values to update", properties = emptyMap())
                 ),
                 required = listOf("app_token", "table_id", "record_id", "fields")
             )
@@ -203,7 +203,7 @@ class BitableUpdateTool(config: FeishuConfig, client: FeishuClient) : FeishuTool
  */
 class BitableDeleteTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_bitable_delete"
-    override val description = "删除飞书多维表格记录"
+    override val description = "Delete a record from a Feishu Bitable"
 
     override fun isEnabled() = config.enableBitableTools
 
@@ -234,9 +234,9 @@ class BitableDeleteTool(config: FeishuConfig, client: FeishuClient) : FeishuTool
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "app_token" to PropertySchema("string", "多维表格appToken"),
-                    "table_id" to PropertySchema("string", "数据表ID"),
-                    "record_id" to PropertySchema("string", "记录ID")
+                    "app_token" to PropertySchema("string", "Bitable app token"),
+                    "table_id" to PropertySchema("string", "table ID"),
+                    "record_id" to PropertySchema("string", "record ID")
                 ),
                 required = listOf("app_token", "table_id", "record_id")
             )
@@ -249,7 +249,7 @@ class BitableDeleteTool(config: FeishuConfig, client: FeishuClient) : FeishuTool
  */
 class BitableQueryTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_bitable_query"
-    override val description = "查询飞书多维表格记录。注意：如果有 wiki URL，先用 feishu_bitable_get_meta 解析出正确的 app_token。"
+    override val description = "Search records in a Feishu Bitable. Note: if you have a wiki URL, first resolve the correct app_token with feishu_bitable_get_meta."
 
     override fun isEnabled() = config.enableBitableTools
 
@@ -303,10 +303,10 @@ class BitableQueryTool(config: FeishuConfig, client: FeishuClient) : FeishuToolB
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "app_token" to PropertySchema("string", "多维表格appToken"),
-                    "table_id" to PropertySchema("string", "数据表ID"),
-                    "filter" to PropertySchema("string", "筛选条件（可选）"),
-                    "page_size" to PropertySchema("number", "每页数量（默认100）")
+                    "app_token" to PropertySchema("string", "Bitable app token"),
+                    "table_id" to PropertySchema("string", "table ID"),
+                    "filter" to PropertySchema("string", "filter condition (optional)"),
+                    "page_size" to PropertySchema("number", "page size (default 100)")
                 ),
                 required = listOf("app_token", "table_id")
             )

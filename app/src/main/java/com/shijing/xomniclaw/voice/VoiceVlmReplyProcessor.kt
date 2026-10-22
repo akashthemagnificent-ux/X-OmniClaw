@@ -61,15 +61,15 @@ internal object VoiceVlmReplyProcessor {
             "agent_task" -> {
                 val task = command.optString("task", "").trim()
                 val short = if (task.length > 240) task.take(240) + "…" else task
-                "[指令预览|agent_task] ${short.ifBlank { "(task 为空)" }}"
+                "[command preview|agent_task] ${short.ifBlank { "(empty task)" }}"
             }
             "open" -> {
                 val pkg = command.optString("package_name", "").trim()
                 val uri = command.optString("uri", "").trim()
                 when {
-                    pkg.isNotBlank() -> "[指令预览|open] package_name=$pkg"
-                    uri.isNotBlank() -> "[指令预览|open] uri=${uri.take(160)}${if (uri.length > 160) "…" else ""}"
-                    else -> "[指令预览|open] (参数为空)"
+                    pkg.isNotBlank() -> "[command preview|open] package_name=$pkg"
+                    uri.isNotBlank() -> "[command preview|open] uri=${uri.take(160)}${if (uri.length > 160) "…" else ""}"
+                    else -> "[command preview|open] (no arguments)"
                 }
             }
             "act" -> {
@@ -77,12 +77,12 @@ internal object VoiceVlmReplyProcessor {
                 val ref = command.optString("ref", "").trim()
                 val target = command.optString("target", "").trim()
                 buildString {
-                    append("[指令预览|act] kind=").append(kind.ifBlank { "?" })
+                    append("[command preview|act] kind=").append(kind.ifBlank { "?" })
                     if (ref.isNotBlank()) append(" ref=").append(ref)
                     if (target.isNotBlank()) append(" target=").append(target.take(80))
                 }
             }
-            else -> "[指令预览|$action] ${command.toString().take(240)}"
+            else -> "[command preview|$action] ${command.toString().take(240)}"
         }
     }
 
@@ -102,8 +102,8 @@ internal object VoiceVlmReplyProcessor {
         }
         if (parsedCommand != null && base.isBlank()) {
             return when (parsedCommand.optString("action", "")) {
-                "agent_task" -> "好的，我来帮你完成这个任务"
-                else -> "好的，正在执行"
+                "agent_task" -> "Okay, I will complete this task for you"
+                else -> "Okay, executing now"
             }
         }
         return base
@@ -118,23 +118,23 @@ internal object VoiceVlmReplyProcessor {
         looksLikeQuiz: (String) -> Boolean,
     ): String {
         val plain = vlmPlainNoJson.trim()
-        if (plain.contains("任务理解") && plain.contains("执行约束")) return plain
+        if (plain.contains("Task understanding") && plain.contains("Execution constraints")) return plain
         val prompt = StringBuilder()
-        prompt.append("任务理解：\n")
-        prompt.append("- 用户希望我在当前屏幕上下文中完成目标：").append(userInput.trim()).append("\n\n")
-        prompt.append("执行约束：\n")
-        prompt.append("1. 每一轮先 snapshot 再决策，不可盲操作。\n")
+        prompt.append("Task understanding:\n")
+        prompt.append("- The user wants me to achieve this goal in the current screen context: ").append(userInput.trim()).append("\n\n")
+        prompt.append("Execution constraints:\n")
+        prompt.append("1. Snapshot first each round, then decide; never act blind.\n")
         if (looksLikeQuiz(userInput) || looksLikeQuiz(plain)) {
-            prompt.append("2. 题型可能包含单选/多选/填空，逐题阅读后再作答。\n")
-            prompt.append("3. 中途某题失败不要停止，继续下一题直到全部完成。\n")
-            prompt.append("4. 未明确“只做一道/只做第N题”时默认整题完成。\n")
-            prompt.append("5. 全部完成后若还能继续，先询问用户是否继续。\n")
-            prompt.append("6. 视觉补充信息（仅供参考）：").append(plain.ifBlank { "（无）" }).append("\n")
+            prompt.append("2. Questions may be single/multiple choice or fill-in; read each one before answering.\n")
+            prompt.append("3. If one question fails, do not stop; continue to the next until all are done.\n")
+            prompt.append("4. Unless told \"only one question\" or \"only question N\", complete the whole set.\n")
+            prompt.append("5. After finishing, if more can be done, ask the user whether to continue.\n")
+            prompt.append("6. Supplementary visual info (reference only): ").append(plain.ifBlank { "(none)" }).append("\n")
         } else {
-            prompt.append("2. 视觉补充信息（仅供参考）：").append(plain.ifBlank { "（无）" }).append("\n")
-            prompt.append("3. 遇到失败时执行恢复策略并继续推进目标。\n")
+            prompt.append("2. Supplementary visual info (reference only): ").append(plain.ifBlank { "(none)" }).append("\n")
+            prompt.append("3. On failure, run the recovery strategy and keep advancing the goal.\n")
         }
-        prompt.append("\n完成标准：达到目标状态后再向用户汇报结果。")
+        prompt.append("\nCompletion criteria: report to the user only after reaching the target state.")
         return prompt.toString()
     }
 
@@ -190,8 +190,8 @@ internal object VoiceVlmReplyProcessor {
         }
         val normalizedTask = buildString {
             append(originalTask.trim())
-            append("\n\n【答题范围默认规则】用户未明确要求“只做一道/只做第N题”，")
-            append("请默认完成当前流程中的全部题目（含翻页后的后续题目），直到整题流程结束。")
+            append("\n\n[Quiz scope default] Unless the user explicitly asks for \"only one question\" or \"only question N\", ")
+            append("complete every question in the current flow (including those after page turns) until the flow ends.")
         }
         val patchedCommand = JSONObject(command.toString()).put("task", normalizedTask)
         val normalizedReply = normalizeReplyForFullQuizScope(currentReply)
@@ -204,11 +204,11 @@ internal object VoiceVlmReplyProcessor {
     private fun normalizeReplyForFullQuizScope(reply: String): String {
         val text = reply.trim()
         if (text.isBlank()) {
-            return "好的，我来安排主助手执行。"
+            return "Okay, I will have the main assistant handle it."
         }
         return text
-            .replace("当前这道", "当前流程中的全部题目")
-            .replace("这道题", "整题流程")
-            .replace("本题", "整题流程")
+            .replace("this question", "every question in the current flow")
+            .replace("this question", "the whole set")
+            .replace("this question", "the whole set")
     }
 }

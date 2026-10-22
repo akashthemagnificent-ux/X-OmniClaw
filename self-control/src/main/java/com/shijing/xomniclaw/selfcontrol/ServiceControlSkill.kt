@@ -49,21 +49,21 @@ class ServiceControlSkill(private val context: Context) : Skill {
     override val name = "control_service"
 
     override val description = """
-        控制 PhoneForClaw 的服务和 UI 组件。
+        Control PhoneForClaw services and UI components.
 
-        支持操作：
-        - show_float: 显示悬浮窗（不启动服务）
-        - hide_float: 隐藏悬浮窗（不停止服务）
-        - start_float: 启动悬浮窗服务
-        - stop_float: 停止悬浮窗服务
-        - check_status: 检查服务运行状态
+        Supported operations:
+        - show_float: show the floating window (does not start the service)
+        - hide_float: hide the floating window (does not stop the service)
+        - start_float: start the floating window service
+        - stop_float: stop the floating window service
+        - check_status: check service status
 
-        使用场景：
-        - 截图前需要隐藏悬浮窗: {"operation": "hide_float"}
-        - 任务完成后显示结果: {"operation": "show_float"}
-        - 清理后台服务: {"operation": "stop_float"}
+        Use cases:
+        - hide the floating window before a screenshot: {"operation": "hide_float"}
+        - show results after a task: {"operation": "show_float"}
+        - clean up background services: {"operation": "stop_float"}
 
-        注意：部分操作需要悬浮窗权限。
+        Note: some operations require overlay permission.
     """.trimIndent()
 
     override fun getToolDefinition(): ToolDefinition {
@@ -77,7 +77,7 @@ class ServiceControlSkill(private val context: Context) : Skill {
                     properties = mapOf(
                         "operation" to PropertySchema(
                             type = "string",
-                            description = "操作类型",
+                            description = "operation type",
                             enum = listOf(
                                 Operations.SHOW_FLOAT,
                                 Operations.HIDE_FLOAT,
@@ -88,7 +88,7 @@ class ServiceControlSkill(private val context: Context) : Skill {
                         ),
                         "delay_ms" to PropertySchema(
                             type = "integer",
-                            description = "延迟执行时间（毫秒），用于 show/hide 操作"
+                            description = "delay in milliseconds for show/hide"
                         )
                     ),
                     required = listOf("operation")
@@ -114,7 +114,7 @@ class ServiceControlSkill(private val context: Context) : Skill {
             }
         } catch (e: Exception) {
             Log.e(TAG, "Service control failed: $operation", e)
-            SkillResult.error("服务控制失败: ${e.message}")
+            SkillResult.error("Service control failed: ${e.message}")
         }
     }
 
@@ -133,12 +133,12 @@ class ServiceControlSkill(private val context: Context) : Skill {
             method.invoke(null, true, delayMs, "SelfControl: show_float", null)
 
             SkillResult.success(
-                "悬浮窗已显示${if (delayMs > 0) "（延迟 ${delayMs}ms）" else ""}",
+                "Floating window shown${if (delayMs > 0) " (delayed ${delayMs}ms)" else ""}",
                 mapOf("operation" to "show_float", "delay_ms" to delayMs)
             )
         } catch (e: Exception) {
             Log.e(TAG, "Failed to show floating window", e)
-            SkillResult.error("显示悬浮窗失败: ${e.message}")
+            SkillResult.error("Failed to show the floating window: ${e.message}")
         }
     }
 
@@ -156,12 +156,12 @@ class ServiceControlSkill(private val context: Context) : Skill {
             method.invoke(null, false, delayMs, "SelfControl: hide_float", null)
 
             SkillResult.success(
-                "悬浮窗已隐藏${if (delayMs > 0) "（延迟 ${delayMs}ms）" else ""}",
+                "Floating window hidden${if (delayMs > 0) " (delayed ${delayMs}ms)" else ""}",
                 mapOf("operation" to "hide_float", "delay_ms" to delayMs)
             )
         } catch (e: Exception) {
             Log.e(TAG, "Failed to hide floating window", e)
-            SkillResult.error("隐藏悬浮窗失败: ${e.message}")
+            SkillResult.error("Failed to hide the floating window: ${e.message}")
         }
     }
 
@@ -172,12 +172,12 @@ class ServiceControlSkill(private val context: Context) : Skill {
             context.startService(intent)
 
             SkillResult.success(
-                "悬浮窗服务已启动",
+                "Floating window service started",
                 mapOf("operation" to "start_float")
             )
         } catch (e: Exception) {
             Log.e(TAG, "Failed to start floating window service", e)
-            SkillResult.error("启动悬浮窗服务失败: ${e.message}")
+            SkillResult.error("Failed to start the floating window service: ${e.message}")
         }
     }
 
@@ -188,12 +188,12 @@ class ServiceControlSkill(private val context: Context) : Skill {
             context.stopService(intent)
 
             SkillResult.success(
-                "悬浮窗服务已停止",
+                "Floating window service stopped",
                 mapOf("operation" to "stop_float")
             )
         } catch (e: Exception) {
             Log.e(TAG, "Failed to stop floating window service", e)
-            SkillResult.error("停止悬浮窗服务失败: ${e.message}")
+            SkillResult.error("Failed to stop the floating window service: ${e.message}")
         }
     }
 
@@ -212,9 +212,9 @@ class ServiceControlSkill(private val context: Context) : Skill {
             }
 
             val status = buildString {
-                appendLine("【服务状态】")
-                appendLine("悬浮窗服务: ${if (floatingWindowRunning) "运行中 ✓" else "已停止 ✗"}")
-                appendLine("无障碍服务: ${if (accessibilityRunning) "运行中 ✓" else "已停止 ✗"}")
+                appendLine("[Service status]")
+                appendLine("Floating window service: ${if (floatingWindowRunning) "running ✓" else "stopped ✗"}")
+                appendLine("Accessibility service: ${if (accessibilityRunning) "running ✓" else "stopped ✗"}")
             }
 
             SkillResult.success(
@@ -226,7 +226,7 @@ class ServiceControlSkill(private val context: Context) : Skill {
             )
         } catch (e: Exception) {
             Log.e(TAG, "Failed to check service status", e)
-            SkillResult.error("检查服务状态失败: ${e.message}")
+            SkillResult.error("Failed to check service status: ${e.message}")
         }
     }
 }

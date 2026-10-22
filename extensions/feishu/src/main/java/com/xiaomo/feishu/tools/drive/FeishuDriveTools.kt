@@ -40,7 +40,7 @@ class FeishuDriveTools(config: FeishuConfig, client: FeishuClient) {
  */
 class DriveUploadTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_drive_upload"
-    override val description = "上传文件到飞书云文档"
+    override val description = "Upload a file to Feishu Drive"
 
     override fun isEnabled() = config.enableDriveTools
 
@@ -92,10 +92,10 @@ class DriveUploadTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBa
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "file_path" to PropertySchema("string", "本地文件路径"),
-                    "file_name" to PropertySchema("string", "上传后的文件名（可选）"),
-                    "parent_type" to PropertySchema("string", "父节点类型（explorer/doc_node，默认explorer）"),
-                    "parent_node" to PropertySchema("string", "父节点token（默认根目录）")
+                    "file_path" to PropertySchema("string", "local file path"),
+                    "file_name" to PropertySchema("string", "file name after upload (optional)"),
+                    "parent_type" to PropertySchema("string", "parent node type (explorer/doc_node, default explorer)"),
+                    "parent_node" to PropertySchema("string", "parent node token (default: root)")
                 ),
                 required = listOf("file_path")
             )
@@ -108,7 +108,7 @@ class DriveUploadTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBa
  */
 class DriveDownloadTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_drive_download"
-    override val description = "从飞书云文档下载文件"
+    override val description = "Download a file from Feishu Drive"
 
     override fun isEnabled() = config.enableDriveTools
 
@@ -146,8 +146,8 @@ class DriveDownloadTool(config: FeishuConfig, client: FeishuClient) : FeishuTool
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "file_token" to PropertySchema("string", "文件token"),
-                    "save_path" to PropertySchema("string", "保存路径")
+                    "file_token" to PropertySchema("string", "file token"),
+                    "save_path" to PropertySchema("string", "save path")
                 ),
                 required = listOf("file_token", "save_path")
             )
@@ -160,7 +160,7 @@ class DriveDownloadTool(config: FeishuConfig, client: FeishuClient) : FeishuTool
  */
 class DriveListTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_drive_list"
-    override val description = "列出飞书云文档文件"
+    override val description = "List files in Feishu Drive"
 
     override fun isEnabled() = config.enableDriveTools
 
@@ -204,8 +204,8 @@ class DriveListTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "folder_token" to PropertySchema("string", "文件夹token（默认根目录）"),
-                    "page_size" to PropertySchema("number", "每页数量（默认50）")
+                    "folder_token" to PropertySchema("string", "folder token (default: root)"),
+                    "page_size" to PropertySchema("number", "page size (default 50)")
                 ),
                 required = emptyList()
             )
@@ -218,7 +218,7 @@ class DriveListTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase
  */
 class DriveDeleteTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_drive_delete"
-    override val description = "删除飞书云文档文件"
+    override val description = "Delete a file from Feishu Drive"
 
     override fun isEnabled() = config.enableDriveTools
 
@@ -248,8 +248,8 @@ class DriveDeleteTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBa
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "file_token" to PropertySchema("string", "文件token"),
-                    "type" to PropertySchema("string", "类型（file/folder，默认file）")
+                    "file_token" to PropertySchema("string", "file token"),
+                    "type" to PropertySchema("string", "type (file/folder, default file)")
                 ),
                 required = listOf("file_token")
             )

@@ -39,7 +39,7 @@ class FeishuWikiTools(config: FeishuConfig, client: FeishuClient) {
  */
 class WikiCreateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_wiki_create"
-    override val description = "创建飞书知识库"
+    override val description = "Create a Feishu wiki space"
 
     override fun isEnabled() = config.enableWikiTools
 
@@ -78,8 +78,8 @@ class WikiCreateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBas
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "name" to PropertySchema("string", "知识库名称"),
-                    "description" to PropertySchema("string", "知识库描述（可选）")
+                    "name" to PropertySchema("string", "wiki space name"),
+                    "description" to PropertySchema("string", "wiki space description (optional)")
                 ),
                 required = listOf("name")
             )
@@ -92,7 +92,7 @@ class WikiCreateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBas
  */
 class WikiReadTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_wiki_read"
-    override val description = "读取飞书知识库信息"
+    override val description = "Read Feishu wiki space info"
 
     override fun isEnabled() = config.enableWikiTools
 
@@ -131,7 +131,7 @@ class WikiReadTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "space_id" to PropertySchema("string", "知识库ID")
+                    "space_id" to PropertySchema("string", "wiki space ID")
                 ),
                 required = listOf("space_id")
             )
@@ -144,7 +144,7 @@ class WikiReadTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(
  */
 class WikiUpdateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_wiki_update"
-    override val description = "更新飞书知识库信息"
+    override val description = "Update Feishu wiki space info"
 
     override fun isEnabled() = config.enableWikiTools
 
@@ -183,9 +183,9 @@ class WikiUpdateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBas
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "space_id" to PropertySchema("string", "知识库ID"),
-                    "name" to PropertySchema("string", "新名称（可选）"),
-                    "description" to PropertySchema("string", "新描述（可选）")
+                    "space_id" to PropertySchema("string", "wiki space ID"),
+                    "name" to PropertySchema("string", "new name (optional)"),
+                    "description" to PropertySchema("string", "new description (optional)")
                 ),
                 required = listOf("space_id")
             )
@@ -198,7 +198,7 @@ class WikiUpdateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBas
  */
 class WikiListTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_wiki_list"
-    override val description = "列出飞书知识库节点"
+    override val description = "List nodes in a Feishu wiki space"
 
     override fun isEnabled() = config.enableWikiTools
 
@@ -247,8 +247,8 @@ class WikiListTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "space_id" to PropertySchema("string", "知识库ID"),
-                    "parent_node_token" to PropertySchema("string", "父节点token（可选，不传则列出根节点）")
+                    "space_id" to PropertySchema("string", "wiki space ID"),
+                    "parent_node_token" to PropertySchema("string", "parent node token (optional; root nodes if omitted)")
                 ),
                 required = listOf("space_id")
             )
