@@ -107,9 +107,9 @@ fun CameraPreviewOverlay(
     }
 
     val sourceLabel = when (source) {
-        VisionFrameSource.CAMERA_BACK -> "后置摄像头"
-        VisionFrameSource.CAMERA_FRONT -> "前置摄像头"
-        VisionFrameSource.SCREEN_CAPTURE -> "屏幕画面"
+        VisionFrameSource.CAMERA_BACK -> "Rear camera"
+        VisionFrameSource.CAMERA_FRONT -> "Front camera"
+        VisionFrameSource.SCREEN_CAPTURE -> "Screen capture"
     }
 
     Box(

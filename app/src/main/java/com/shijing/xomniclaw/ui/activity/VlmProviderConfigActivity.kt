@@ -84,7 +84,7 @@ class VlmProviderConfigActivity : AppCompatActivity() {
             if (followAgent) {
                 val synced = buildVlmProviderFromAgent(config, providers)
                 if (synced == null) {
-                    Toast.makeText(this, "保存失败：无法解析 Agent 当前模型配置", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Save failed: could not resolve Agent model", Toast.LENGTH_LONG).show()
                     return
                 }
                 providers[VLM_PROVIDER_ID] = synced
@@ -113,9 +113,7 @@ class VlmProviderConfigActivity : AppCompatActivity() {
                     else -> existing?.models?.firstOrNull()?.id ?: defaultModelId
                 }
                 // 仅在候选模型为空时兜底默认模型，避免覆盖用户显式选择的 mimimax 默认模型。
-                val normalizedModelId = rawModel.ifBlank { defaultModelId }.let { candidate ->
-                    candidate
-                }
+                val normalizedModelId = rawModel.ifBlank { defaultModelId }
                 val provider = ProviderConfig(
                     baseUrl = resolvedBaseUrl,
                     apiKey = resolvedApiKey,
@@ -145,13 +143,13 @@ class VlmProviderConfigActivity : AppCompatActivity() {
                 )
             )
             if (!saved) {
-                Toast.makeText(this, "保存失败：配置文件写入失败", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Save failed: config file write error", Toast.LENGTH_LONG).show()
                 return
             }
-            Toast.makeText(this, "VLM Provider 已保存", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "VLM Provider saved", Toast.LENGTH_SHORT).show()
             finish()
         } catch (e: Exception) {
-            Toast.makeText(this, "保存失败: ${e.message}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Save failed: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -176,10 +174,10 @@ class VlmProviderConfigActivity : AppCompatActivity() {
             )
             val saved = configLoader.saveOmniClawConfig(updated)
             if (!saved) {
-                Toast.makeText(this, "跟随开关保存失败：配置写入失败", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Follow flag save failed: config write error", Toast.LENGTH_LONG).show()
             }
         }.onFailure { e ->
-            Toast.makeText(this, "跟随开关保存失败: ${e.message}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Follow flag save failed: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 

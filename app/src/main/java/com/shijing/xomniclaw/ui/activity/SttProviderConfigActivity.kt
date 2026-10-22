@@ -13,11 +13,11 @@ import com.shijing.xomniclaw.config.ProviderConfig
 import com.shijing.xomniclaw.databinding.ActivitySttProviderConfigBinding
 
 /**
- * STT Provider 独立配置页。
+ * STT Provider config page.
  *
- * 目标：
- * - 与 OpenRouter 等 provider 的配置体验保持一致（独立页面 + 教程 + 保存）
- * - 专门维护 models.providers.stt，避免入口分散
+ * Goals:
+ * - Consistent config UX with OpenRouter etc. (dedicated page + tutorial + save)
+ * - Maintains models.providers.stt separately
  */
 class SttProviderConfigActivity : AppCompatActivity() {
 
@@ -47,7 +47,7 @@ class SttProviderConfigActivity : AppCompatActivity() {
     }
 
     /**
-     * 打开页面时回显当前 STT Provider 配置，便于用户确认是否已配置。
+     * Load current STT Provider config on open so user can verify.
      */
     private fun loadCurrentConfig() {
         try {
@@ -59,7 +59,7 @@ class SttProviderConfigActivity : AppCompatActivity() {
             val modelId = sttProvider?.models?.firstOrNull()?.id?.ifBlank { STT_DEFAULT_MODEL } ?: STT_DEFAULT_MODEL
             binding.etSttModel.setText(modelId)
         } catch (e: Exception) {
-            Log.w(TAG, "加载 STT Provider 配置失败", e)
+            Log.w(TAG, "Failed to load STT Provider config", e)
             binding.etSttApiKey.setText("")
             binding.etSttUrl.setText(STT_DEFAULT_URL)
             binding.etSttModel.setText(STT_DEFAULT_MODEL)
@@ -71,7 +71,7 @@ class SttProviderConfigActivity : AppCompatActivity() {
             try {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(TUTORIAL_URL)))
             } catch (e: Exception) {
-                Toast.makeText(this, "无法打开浏览器", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Could not open browser", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -81,7 +81,7 @@ class SttProviderConfigActivity : AppCompatActivity() {
     }
 
     /**
-     * 保存 STT 配置到 models.providers.stt。
+     * Save STT config to models.providers.stt.
      */
     private fun saveSttKey() {
         val inputKey = binding.etSttApiKey.text?.toString()?.trim().orEmpty()
@@ -126,13 +126,13 @@ class SttProviderConfigActivity : AppCompatActivity() {
                 )
             )
             configLoader.saveOmniClawConfig(updatedConfig)
-            Toast.makeText(this, "STT Provider 已保存", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "STT Provider saved", Toast.LENGTH_SHORT).show()
             // 显式回传成功结果，便于调用页按“已保存”语义刷新状态。
             setResult(RESULT_OK)
             finish()
         } catch (e: Exception) {
-            Log.e(TAG, "保存 STT Key 失败", e)
-            Toast.makeText(this, "保存失败: ${e.message}", Toast.LENGTH_LONG).show()
+            Log.e(TAG, "Failed to save STT Key", e)
+            Toast.makeText(this, "Save failed: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 }

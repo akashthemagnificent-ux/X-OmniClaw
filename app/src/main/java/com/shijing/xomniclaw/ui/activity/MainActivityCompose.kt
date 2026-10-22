@@ -350,9 +350,9 @@ class MainActivityCompose : ComponentActivity() {
                     }
 
                     androidx.appcompat.app.AlertDialog.Builder(this@MainActivityCompose)
-                        .setTitle("发现新版本")
+                        .setTitle("New version")
                         .setMessage(message)
-                        .setPositiveButton("立即更新") { _, _ ->
+                        .setPositiveButton("Update Now") { _, _ ->
                             lifecycleScope.launch {
                                 val success = updater.downloadAndInstall(info.downloadUrl, info.latestVersion)
                                 if (!success) {
@@ -638,7 +638,7 @@ fun MainScreen(
     val voiceError by voiceManager.error.collectAsState()
     LaunchedEffect(voiceError) {
         voiceError?.let {
-            android.widget.Toast.makeText(context, "语音识别: $it", android.widget.Toast.LENGTH_SHORT).show()
+            android.widget.Toast.makeText(context, "Voice recognition: $it", android.widget.Toast.LENGTH_SHORT).show()
         }
     }
     DisposableEffect(voiceManager, tts) {
@@ -672,15 +672,15 @@ fun MainScreen(
             onDismissRequest = {
                 // 首次提醒保持显眼，不允许点遮罩直接关闭。
             },
-            title = { Text("首次使用请先开启权限") },
+            title = { Text("Please enable permissions before first use") },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Text("为了保证功能正常，请先完成以下授权：")
-                    Text("1) 无障碍与关键系统权限（进入权限页开启）")
+                    Text("To make sure everything works, please grant the following permissions first:")
+                    Text("1) Accessibility and other key system permissions (enable them on the permission page)")
                     Text(
-                        text = "2) 相册读取权限（用于图片/相册相关能力）${if (albumPermissionGranted) "：已授权" else "：未授权"}"
+                        text = "2) Album read permission (used for image/gallery features)${if (albumPermissionGranted) ": Granted" else ": Not granted"}"
                     )
-                    Text("该提示仅首次展示一次。")
+                    Text("This notice is only shown once.")
                 }
             },
             confirmButton = {
@@ -694,7 +694,7 @@ fun MainScreen(
                         showFirstLaunchPermissionAlert = false
                     }
                 ) {
-                    Text("去开启权限")
+                    Text("Enable Permissions")
                 }
             },
             dismissButton = {
@@ -791,13 +791,13 @@ fun ChatTab(
             val allGranted = missing.isEmpty()
             permissionStatusHealthy = allGranted
             permissionStatusInfo = if (allGranted) {
-                "权限状态：全部已授权（$grantedCount/7）"
+                "Permission status: All permissions granted ($grantedCount/7)"
             } else {
-                "权限状态：未全部授权（$grantedCount/7）｜缺失：${missing.joinToString("、")}"
+                "Permission status: Not all permissions granted ($grantedCount/7) | Missing: ${missing.joinToString(",")}"
             }
         } catch (e: Exception) {
             permissionStatusHealthy = false
-            permissionStatusInfo = "权限状态：检查失败"
+            permissionStatusInfo = "Permission status: Check failed"
             Log.e("ChatTab", "refreshChatPermissionStatus failed", e)
         }
     }
@@ -808,7 +808,7 @@ fun ChatTab(
             val providers = config.resolveProviders()
             val defaultRef = config.resolveDefaultModel().trim()
             if (defaultRef.isBlank()) {
-                currentModelInfo = "当前模型：未配置"
+                currentModelInfo = "Current model: Not configured"
                 return
             }
 
@@ -823,11 +823,11 @@ fun ChatTab(
             val agentDisplay = if (modelName.isBlank() || modelName == modelId) modelId else modelName
             val sttModelId = providers["stt"]?.models?.firstOrNull()?.id.orEmpty()
             val vlmModelId = providers["vlm"]?.models?.firstOrNull()?.id.orEmpty()
-            val sttDisplay = if (sttModelId.isBlank()) "未配置" else "stt/$sttModelId"
-            val vlmDisplay = if (vlmModelId.isBlank()) "跟随 Agent" else "vlm/$vlmModelId"
-            currentModelInfo = "当前模型：Agent $agentDisplay｜STT $sttDisplay｜VLM $vlmDisplay"
+            val sttDisplay = if (sttModelId.isBlank()) "Not configured" else "stt/$sttModelId"
+            val vlmDisplay = if (vlmModelId.isBlank()) "Follow Agent" else "vlm/$vlmModelId"
+            currentModelInfo = "Current model: Agent $agentDisplay｜STT $sttDisplay｜VLM $vlmDisplay"
         } catch (e: Exception) {
-            currentModelInfo = "当前模型：读取失败"
+            currentModelInfo = "Current model: Read failed"
             Log.e("ChatTab", "refreshCurrentModelInfo failed", e)
         }
     }
@@ -907,13 +907,13 @@ fun ChatTab(
                     sessionId = currentSession.id,
                     visionConfig = currentVisionConfig
                 )
-                val message = if (entered) "已进入屏内替身模式" else "进入替身模式失败"
+                val message = if (entered) "Entered screen companion mode" else "Failed to enter companion mode"
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(context, "应用上下文异常，无法进入替身模式", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Application context is abnormal, cannot enter companion mode", Toast.LENGTH_SHORT).show()
             }
         } else {
-            Toast.makeText(context, "需要录屏权限以采集屏幕画面", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Screen capture permission is required to capture the screen", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -930,7 +930,7 @@ fun ChatTab(
         if (granted) {
             showCameraPreview = true
         } else {
-            Toast.makeText(context, "需要摄像头权限", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Camera permission required", Toast.LENGTH_SHORT).show()
         }
     }
     // 统一摄像头入口，具体前后切换交给预览层中的翻转按钮。
@@ -967,7 +967,7 @@ fun ChatTab(
             VoiceRoundDisclosureHint.visionOverlayActiveForNextRecording = updatedShowCameraPreview.value
             voiceManager.startListening()
         } else {
-            android.widget.Toast.makeText(context, "需要录音权限", android.widget.Toast.LENGTH_SHORT).show()
+            android.widget.Toast.makeText(context, "Recording permission required", android.widget.Toast.LENGTH_SHORT).show()
         }
     }
     // 必须稳定引用：否则 pointerInput 会因 key 变化在重组时取消，导致「松手不 stop」、录音一直开着。
