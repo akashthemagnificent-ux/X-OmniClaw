@@ -1170,7 +1170,7 @@ class ConfigLoader(private val context: Context) {
                     if (providerId != null) {
                         unresolvedKnown.add(varName)
                         Log.w(TAG, "⚠️ 环境变量 \${$varName} (provider: $providerId) 未设置。" +
-                            "请在配置中直接填入 API Key。")
+                            "Put the API key directly in the config.")
                     } else {
                         Log.w(TAG, "⚠️ 未知环境变量: \${$varName}")
                     }
@@ -1211,8 +1211,8 @@ class ConfigLoader(private val context: Context) {
             if (badId || badSecret) {
                 Log.w(
                     TAG,
-                    "channels.feishu 已启用但 appId/appSecret 未配置或为 \${...} 占位符，" +
-                        "已自动关闭飞书，避免整条配置被拒绝加载。"
+                    "channels.feishu is enabled but appId/appSecret is missing or still a \${...} placeholder; " +
+                        "Feishu was disabled automatically so the rest of the config still loads."
                 )
                 result = result.copy(
                     channels = result.channels.copy(feishu = feishu.copy(enabled = false))
@@ -1222,14 +1222,14 @@ class ConfigLoader(private val context: Context) {
 
         result.resolveProviders().forEach { (name, provider) ->
             require(provider.baseUrl.isNotBlank()) {
-                "Provider '$name' 缺少 baseUrl"
+                "Provider '$name' is missing baseUrl"
             }
             val def = ProviderRegistry.findById(name)
             if (def?.keyRequired == true && provider.apiKey.isNullOrBlank()) {
                 Log.w(
                     TAG,
-                    "⚠️ Provider '${def.name}' 需要 API Key 但未配置。" +
-                        "请在设置中填入 API Key，否则请求会返回 401。"
+                    "⚠️ Provider '${def.name}' requires an API key but none is configured. " +
+                        "Add one in Settings, otherwise requests will return 401."
                 )
             }
         }
