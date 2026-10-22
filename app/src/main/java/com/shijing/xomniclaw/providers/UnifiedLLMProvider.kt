@@ -207,15 +207,15 @@ class UnifiedLLMProvider(private val context: Context) {
                 forceMimimaxToImageApi -> {
                     Log.w(
                         TAG,
-                        "⚠️ provider=mimimax 且本次请求包含图片，自动将 API 切到 minimax-images-understand。"
+                        "⚠️ provider=mimimax and this request contains images; switching the API to minimax-images-understand."
                     )
                     ModelApi.MINIMAX_IMAGES_UNDERSTAND
                 }
                 fallbackMiniMaxImageToOpenAI -> {
                     Log.w(
                         TAG,
-                        "⚠️ API=minimax-images-understand 但当前请求无图片，" +
-                            "自动回退到 openai-completions，避免纯文本误走 /images/understand。"
+                        "⚠️ API=minimax-images-understand but this request has no images; " +
+                            "falling back to openai-completions so plain text does not hit /images/understand."
                     )
                     ModelApi.OPENAI_COMPLETIONS
                 }
@@ -461,8 +461,8 @@ class UnifiedLLMProvider(private val context: Context) {
                 Log.w(
                     TAG,
                     "Prompt dump disabled (logging.dumpPrompt=${logging.dumpPrompt}, " +
-                        "settings.switch=$settingsEnabled). 在设置页开启“Prompt Dumps”且 logging.dumpPrompt=true 后，" +
-                        "每次请求会写入 /sdcard/.xomniclaw/workspace/logs/prompt-dumps/。"
+                        "settings.switch=$settingsEnabled). Enable \"Prompt Dumps\" on the settings page and set " +
+                        "logging.dumpPrompt=true to write each request to /sdcard/.xomniclaw/workspace/logs/prompt-dumps/."
                 )
             }
             return
