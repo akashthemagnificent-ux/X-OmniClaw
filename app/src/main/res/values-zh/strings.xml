@@ -42,7 +42,7 @@
     <string name="code_hint">Pairing code</string>
 
     <string name="pair_title">Pairing information</string>
-    <string name="pair_message">You must connect this device to X-OmniClaw using the pairing code shown on the “Wireless debugging” page in Developer settings. If you haven't done this before, tap “Help” to view the tutorial.</string>
+    <string name="pair_message">You must connect this device to X-OmniClaw using the pairing code shown on the “Wireless debugging” page in Developer settings. If you haven\'t done this before, tap “Help” to view the tutorial.</string>
 
     <!-- 设置相关 -->
     <string name="settings">Settings</string>
@@ -75,10 +75,10 @@
 
     <!-- 错误信息 -->
     <string name="error_waiting_title">Stuck on “Waiting”</string>
-    <string name="error_waiting_summary">Either the pairing information is incorrect or your device isn't being detected. First, make sure wireless debugging is actually enabled. If that doesn't work, try “Factory reset” in X-OmniClaw to pair again.</string>
+    <string name="error_waiting_summary">Either the pairing information is incorrect or your device isn\'t being detected. First, make sure wireless debugging is actually enabled. If that doesn\'t work, try “Factory reset” in X-OmniClaw to pair again.</string>
 
     <string name="error_no_wireless_debugging_title">No “Wireless debugging” option</string>
-    <string name="error_no_wireless_debugging_summary">Your device doesn't natively support wireless debugging, which X-OmniClaw requires. Alternatively you can enable this feature with a PC, even on unsupported devices. It lasts until the next reboot. Connect the device to a PC and run: adb tcpip 5555</string>
+    <string name="error_no_wireless_debugging_summary">Your device doesn\'t natively support wireless debugging, which X-OmniClaw requires. Alternatively you can enable this feature with a PC, even on unsupported devices. It lasts until the next reboot. Connect the device to a PC and run: adb tcpip 5555</string>
 
     <!-- 关于页面 -->
     <string name="developer_title">Developer</string>
