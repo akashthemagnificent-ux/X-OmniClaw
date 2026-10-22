@@ -70,7 +70,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
     private val _memoryWindowInfo = MutableStateFlow(
-        "当前保底可记忆会话轮数：0（保底${ConversationMemoryPolicy.HARD_KEEP_RECENT_DIALOG_TURNS}轮）"
+        "Guaranteed memory turns right now: 0 (floor ${ConversationMemoryPolicy.HARD_KEEP_RECENT_DIALOG_TURNS} turns)"
     )
     val memoryWindowInfo: StateFlow<String> = _memoryWindowInfo.asStateFlow()
     private val _runningTasks = MutableStateFlow<List<RunningTaskStatus>>(emptyList())
@@ -224,13 +224,13 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         val totalTurns = messages.count { it.isUser }
         val rememberable = ConversationMemoryPolicy.rememberableTurns(totalTurns)
         _memoryWindowInfo.value = buildString {
-            append("当前保底可记忆会话轮数：")
+            append("Guaranteed memory turns: ")
             append(rememberable)
-            append("（会话")
+            append(" (session ")
             append(totalTurns)
-            append("轮，保底")
+            append(" turns, floor ")
             append(ConversationMemoryPolicy.HARD_KEEP_RECENT_DIALOG_TURNS)
-            append("轮）")
+            append(" turns)")
         }
     }
 
@@ -318,7 +318,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         // Auto-generate session title
-        if (currentSession.value.title == "新对话") {
+        if (currentSession.value.title == "New chat") {
             uiSessionManager.autoGenerateCurrentSessionTitle()
         }
     }
@@ -379,7 +379,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     fun addVoiceAlignedFrameMessage(alignedFramePath: String) {
         if (alignedFramePath.isBlank()) return
         val content = buildString {
-            append("本轮思考对齐截图：\n")
+            append("Screenshots aligned with this reasoning turn:\n")
             append(alignedFramePath)
         }
         uiSessionManager.addMessageToSession(

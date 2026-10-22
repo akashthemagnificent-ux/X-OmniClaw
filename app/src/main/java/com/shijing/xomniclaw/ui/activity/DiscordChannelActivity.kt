@@ -68,7 +68,7 @@ fun DiscordChannelScreen(
                 title = { Text("Discord Channel") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Filled.ArrowBack, "返回")
+                        Icon(Icons.Filled.ArrowBack, "Back")
                     }
                 },
                 actions = {
@@ -106,7 +106,7 @@ fun DiscordChannelScreen(
                             }
                         }
                     ) {
-                        Text("保存")
+                        Text("Save")
                     }
                 }
             )
@@ -120,7 +120,7 @@ fun DiscordChannelScreen(
                 Snackbar(
                     modifier = Modifier.padding(16.dp)
                 ) {
-                    Text("配置已保存，需要重启应用生效")
+                    Text("Configuration saved. Restart the app to apply.")
                 }
             }
         }
@@ -144,11 +144,11 @@ fun DiscordChannelScreen(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "启用 Discord Channel",
+                            text = "Enable Discord Channel",
                             style = MaterialTheme.typography.titleMedium
                         )
                         Text(
-                            text = "开启后将接收 Discord 消息",
+                            text = "Receive Discord messages when enabled",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -162,7 +162,7 @@ fun DiscordChannelScreen(
 
             // 基础配置
             Text(
-                text = "基础配置",
+                text = "Basic configuration",
                 style = MaterialTheme.typography.titleLarge
             )
 
@@ -178,7 +178,7 @@ fun DiscordChannelScreen(
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Bot Name (可选)") },
+                label = { Text("Bot Name (optional)") },
                 placeholder = { Text("OmniClaw Bot") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
@@ -186,7 +186,7 @@ fun DiscordChannelScreen(
 
             // DM 策略
             Text(
-                text = "DM (私聊) 策略",
+                text = "DM policy",
                 style = MaterialTheme.typography.titleLarge
             )
 
@@ -197,19 +197,19 @@ fun DiscordChannelScreen(
                 FilterChip(
                     selected = dmPolicy == "open",
                     onClick = { dmPolicy = "open" },
-                    label = { Text("Open - 接受所有 DM") },
+                    label = { Text("Open - accept all DMs") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 FilterChip(
                     selected = dmPolicy == "pairing",
                     onClick = { dmPolicy = "pairing" },
-                    label = { Text("Pairing - 需要管理员审批 (推荐)") },
+                    label = { Text("Pairing - requires admin approval (recommended)") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 FilterChip(
                     selected = dmPolicy == "allowlist",
                     onClick = { dmPolicy = "allowlist" },
-                    label = { Text("Allowlist - 仅允许白名单用户") },
+                    label = { Text("Allowlist - allowlisted users only") },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -218,7 +218,7 @@ fun DiscordChannelScreen(
                 OutlinedTextField(
                     value = allowFrom,
                     onValueChange = { allowFrom = it },
-                    label = { Text("白名单用户 ID (每行一个)") },
+                    label = { Text("Allowlisted user IDs (one per line)") },
                     placeholder = { Text("123456789012345678\n987654321098765432") },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -229,7 +229,7 @@ fun DiscordChannelScreen(
 
             // Guild (服务器) 策略
             Text(
-                text = "Guild (服务器) 策略",
+                text = "Guild (server) policy",
                 style = MaterialTheme.typography.titleLarge
             )
 
@@ -240,20 +240,20 @@ fun DiscordChannelScreen(
                 FilterChip(
                     selected = groupPolicy == "open",
                     onClick = { groupPolicy = "open" },
-                    label = { Text("Open - 接受所有频道 (需 @提及)") },
+                    label = { Text("Open - accept all channels (mention required)") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 FilterChip(
                     selected = groupPolicy == "allowlist",
                     onClick = { groupPolicy = "allowlist" },
-                    label = { Text("Allowlist - 仅允许配置的频道 (推荐)") },
+                    label = { Text("Allowlist - configured channels only (recommended)") },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
 
             // 回复模式
             Text(
-                text = "回复模式",
+                text = "Reply mode",
                 style = MaterialTheme.typography.titleLarge
             )
 
@@ -264,19 +264,19 @@ fun DiscordChannelScreen(
                 FilterChip(
                     selected = replyToMode == "off",
                     onClick = { replyToMode = "off" },
-                    label = { Text("Off - 不使用回复 (推荐)") },
+                    label = { Text("Off - do not use replies (recommended)") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 FilterChip(
                     selected = replyToMode == "always",
                     onClick = { replyToMode = "always" },
-                    label = { Text("Always - 总是使用回复") },
+                    label = { Text("Always - always use replies") },
                     modifier = Modifier.fillMaxWidth()
                 )
                 FilterChip(
                     selected = replyToMode == "threads",
                     onClick = { replyToMode = "threads" },
-                    label = { Text("Threads - 在线程中使用回复") },
+                    label = { Text("Threads - use replies in threads") },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -293,16 +293,16 @@ fun DiscordChannelScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "⚠️ 配置说明",
+                        text = "⚠️ Setup notes",
                         style = MaterialTheme.typography.titleSmall
                     )
                     Text(
                         text = """
-                            1. 需要先在 Discord Developer Portal 创建 Bot
-                            2. 启用 MESSAGE CONTENT INTENT (特权 Intent)
-                            3. 获取 Bot Token 并填入上方
-                            4. 将 Bot 邀请到你的服务器
-                            5. 详细配置参见：extensions/discord/SETUP_GUIDE.md
+                            1. Create a bot in the Discord Developer Portal first
+                            2. Enable MESSAGE CONTENT INTENT (privileged intent)
+                            3. Copy the bot token into the field above
+                            4. Invite the bot to your server
+                            5. See extensions/discord/SETUP_GUIDE.md for details
                         """.trimIndent(),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant

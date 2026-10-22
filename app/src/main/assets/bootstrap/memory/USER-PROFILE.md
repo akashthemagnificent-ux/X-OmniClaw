@@ -13,12 +13,12 @@ confidence: low
 - preferred_topics: []
 - content_preferences: []
 - important_context: []
-- risks: [证件号, 支付细节, 验证码]
+- risks: [ID number, payment details, verification code]
 
 ## Recent
 - focus_7d: []
-- gallery_summary: 暂无图片记忆同步结果。
-- task_memory_summary: 暂无任务记忆沉淀。
+- gallery_summary: No image-memory sync results yet.
+- task_memory_summary: No task memory accumulated yet.
 
 ## Sources
 - image_memories_count: 0
@@ -27,4 +27,3 @@ confidence: low
 
 ## Recent Signals Details
 - unknown
-

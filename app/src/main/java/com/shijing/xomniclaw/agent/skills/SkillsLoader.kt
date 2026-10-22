@@ -109,7 +109,7 @@ class SkillsLoader(private val context: Context) {
         if (cacheValid && currentFingerprint != lastUserDirsFingerprint) {
             Log.i(
                 TAG,
-                "检测到 Managed/Workspace skills 目录变化 (fp: $lastUserDirsFingerprint -> $currentFingerprint)，重新扫描"
+                "Detected a Managed/Workspace skills directory change (fp: $lastUserDirsFingerprint -> $currentFingerprint); rescanning"
             )
         }
 
@@ -604,20 +604,20 @@ class SkillsLoader(private val context: Context) {
                 } catch (e: Exception) {
                     Log.w(
                         TAG,
-                        "⚠️ Bundled skill「$dir」缺少或无法读取 assets/$skillPath（${e.javaClass.simpleName}: ${e.message}）。请检查 APK 内是否包含 $SKILL_FILE_NAME。"
+                        "⚠️ Bundled skill \"$dir\" is missing or unreadable at assets/$skillPath (${e.javaClass.simpleName}: ${e.message}). Check that $SKILL_FILE_NAME is packaged in the APK."
                     )
                 }
             }
             if (loadedNames.isNotEmpty()) {
                 Log.i(
                     TAG,
-                    "Bundled skills 已从 APK 加载 ${loadedNames.size} 个: ${loadedNames.sorted().joinToString(", ")}"
+                    "Loaded ${loadedNames.size} bundled skills from the APK: ${loadedNames.sorted().joinToString(", ")}"
                 )
             } else {
-                Log.w(TAG, "Bundled skills: 0 个成功解析（APK 的 assets/$BUNDLED_SKILLS_PATH 下无有效 SKILL.md）")
+                Log.w(TAG, "Bundled skills: 0 parsed successfully (no valid SKILL.md under assets/$BUNDLED_SKILLS_PATH in the APK)")
             }
         } catch (e: Exception) {
-            Log.e(TAG, "扫描 Bundled Skills 失败", e)
+            Log.e(TAG, "Failed to scan bundled skills", e)
         }
 
         return count
@@ -675,7 +675,7 @@ class SkillsLoader(private val context: Context) {
                                 skills[skill.name] = skill
                                 count++
 
-                                val action = if (isOverride) "覆盖" else "新增"
+                                val action = if (isOverride) "override" else "add"
                                 Log.d(TAG, "✅ Plugin/$pluginName ($action): ${skill.name}")
                             } catch (e: Exception) {
                                 // Not a valid skill dir, skip
@@ -736,13 +736,13 @@ class SkillsLoader(private val context: Context) {
                         false
                     }
                     val bundledHint = if (matchesBundledAssetName) {
-                        " [bundled 同名：APK 内有该技能，多为 Managed 补拷不完整；重启应用触发 ensureBundledSkills]"
+                        " [same name as a bundled skill: the APK has this skill; the Managed copy is usually incomplete — restart the app to trigger ensureBundledSkills]"
                     } else {
                         ""
                     }
                     Log.w(
                         TAG,
-                        "⚠️ ${source.displayName} 技能目录「${skillDir.name}」存在但缺少 $SKILL_FILE_NAME: " +
+                        "⚠️ ${source.displayName} skill directory \"${skillDir.name}\" exists but is missing $SKILL_FILE_NAME: " +
                             "${skillDir.absolutePath}.$bundledHint"
                     )
                 }
@@ -758,10 +758,10 @@ class SkillsLoader(private val context: Context) {
                 skills[skill.name] = skill
                 count++
 
-                val action = if (isOverride) "覆盖" else "新增"
+                val action = if (isOverride) "override" else "add"
                 Log.d(TAG, "✅ ${source.displayName} ($action): ${skill.name}")
             } catch (e: Exception) {
-                Log.w(TAG, "❌ 加载 ${source.displayName} Skill 失败: ${skillDir.name} - ${e.message}")
+                Log.w(TAG, "❌ Failed to load ${source.displayName} skill: ${skillDir.name} - ${e.message}")
             }
         }
 
@@ -782,11 +782,14 @@ class SkillsLoader(private val context: Context) {
                 hasGalleryMemoryMaintenanceIntent(keywords)
             }
             "capcut-theme-video" -> {
-                keywords.contains("主题") && (keywords.contains("一键成片") || keywords.contains("剪映") || keywords.contains("capcut")) ||
+                (keywords.contains("主题") || keywords.contains("theme")) &&
+                    (keywords.contains("一键成片") || keywords.contains("剪映") || keywords.contains("capcut") ||
+                        keywords.contains("one-tap") || keywords.contains("auto edit")) ||
                     keywords.contains("a_latest") ||
                     keywords.contains("image-memories") ||
                     keywords.contains("相册记忆") ||
-                    (keywords.contains("风景") && (keywords.contains("成片") || keywords.contains("剪映")))
+                    (keywords.contains("风景") || keywords.contains("scenery") || keywords.contains("landscape")) &&
+                    (keywords.contains("成片") || keywords.contains("剪映") || keywords.contains("video"))
             }
             "taobao-search" -> {
                 // skill name 是英文 token，纯中文 query 走不到通用 nameTokens 兜底，
@@ -796,6 +799,8 @@ class SkillsLoader(private val context: Context) {
                         "搜", "搜索", "查", "查找", "找", "看看",
                         "比价", "购物", "买", "下单",
                         "新款", "型号", "价格", "多少钱", "商品",
+                        "search", "find", "compare", "shop", "buy", "order",
+                        "price", "how much", "product", "new model",
                     ).any { keywords.contains(it) }
             }
             else -> false
@@ -822,9 +827,11 @@ class SkillsLoader(private val context: Context) {
             "抖音", "快手", "小红书", "红书",
             "哔哩哔哩", "b站", "bilibili",
             "知乎", "百度",
-            "oppo音乐", "oppo软件商店", "软件商店", "应用商店"
+            "oppo音乐", "oppo软件商店", "软件商店", "应用商店",
+            "pinduoduo", "meituan", "amap", "douyin", "kuaishou", "xiaohongshu",
+            "bilibili", "zhihu", "baidu", "app store", "play store"
         )
-        val appSearchIntentHints = listOf("搜", "搜索", "查", "查找", "找")
+        val appSearchIntentHints = listOf("搜", "搜索", "查", "查找", "找", "search", "find", "look up", "browse")
         if (appSearchAppHints.any { keywords.contains(it.lowercase()) } &&
             appSearchIntentHints.any { keywords.contains(it) }) {
             recommendedSkills.add("app-search")
@@ -839,6 +846,8 @@ class SkillsLoader(private val context: Context) {
             "搜", "搜索", "查", "查找", "找", "看看",
             "比价", "购物", "买", "下单",
             "新款", "型号", "价格", "多少钱", "商品",
+            "search", "find", "compare", "shop", "buy", "order",
+            "price", "how much", "product", "new model",
         )
         if ((keywords.contains("淘宝") || keywords.contains("taobao")) &&
             taobaoIntentHints.any { keywords.contains(it) }
@@ -856,7 +865,11 @@ class SkillsLoader(private val context: Context) {
             keywords.contains("中午") || keywords.contains("凌晨") ||
             keywords.contains("闹钟") || keywords.contains("准时") ||
             keywords.contains("按时") || keywords.contains("定点") ||
-            keywords.contains("提醒我打开") || keywords.contains("自动打开")) {
+            keywords.contains("提醒我打开") || keywords.contains("自动打开") ||
+            keywords.contains("schedule") || keywords.contains("every day") ||
+            keywords.contains("daily") || keywords.contains("every night") ||
+            keywords.contains("every morning") || keywords.contains("alarm") ||
+            keywords.contains("remind me") || keywords.contains("auto open")) {
             recommendedSkills.add("scheduled-automation")
         }
 
@@ -869,10 +882,12 @@ class SkillsLoader(private val context: Context) {
         }
 
         if (keywords.contains("剪映") || keywords.contains("capcut") ||
-            keywords.contains("一键成片") || keywords.contains("jianying")) {
+            keywords.contains("一键成片") || keywords.contains("jianying") ||
+            keywords.contains("one-tap") || keywords.contains("auto edit")) {
             val themeIntent = keywords.contains("主题") || keywords.contains("风景") ||
                 keywords.contains("image-memories") || keywords.contains("相册记忆") ||
-                keywords.contains("a_latest")
+                keywords.contains("a_latest") || keywords.contains("theme") ||
+                keywords.contains("scenery") || keywords.contains("landscape")
             if (themeIntent) {
                 recommendedSkills.add(0, "capcut-theme-video")
             }
@@ -888,7 +903,10 @@ class SkillsLoader(private val context: Context) {
         return keywords.contains("相册") || keywords.contains("照片") ||
             keywords.contains("图片") || keywords.contains("截图") ||
             keywords.contains("相片") || keywords.contains("拍了") ||
-            keywords.contains("拍过") || keywords.contains("拍的")
+            keywords.contains("拍过") || keywords.contains("拍的") ||
+            keywords.contains("album") || keywords.contains("photo") ||
+            keywords.contains("image") || keywords.contains("screenshot") ||
+            keywords.contains("picture") || keywords.contains("camera roll")
     }
 
     /**
@@ -900,7 +918,13 @@ class SkillsLoader(private val context: Context) {
             keywords.contains("归档") ||
             keywords.contains("复制") ||
             keywords.contains("移动") ||
-            keywords.contains("添加")
+            keywords.contains("添加") ||
+            keywords.contains("folder") ||
+            keywords.contains("album") ||
+            keywords.contains("archive") ||
+            keywords.contains("copy") ||
+            keywords.contains("move") ||
+            keywords.contains("add")
         return (hasPhotoRelatedTerms(keywords) || hasOrganizationWords) &&
             !hasGalleryMemoryMaintenanceIntent(keywords)
     }
@@ -918,6 +942,15 @@ class SkillsLoader(private val context: Context) {
             keywords.contains("用户画像") ||
             keywords.contains("清空") ||
             keywords.contains("重置") ||
+            keywords.contains("scan album") ||
+            keywords.contains("sync album") ||
+            keywords.contains("sync photos") ||
+            keywords.contains("rescan") ||
+            keywords.contains("rebuild profile") ||
+            keywords.contains("update profile") ||
+            keywords.contains("user profile") ||
+            keywords.contains("clear") ||
+            keywords.contains("reset") ||
             keywords.contains("gallery_memory") ||
             keywords.contains("ocr")
     }
@@ -977,16 +1010,16 @@ sealed class RequirementsCheckResult {
         fun getErrorMessage(): String {
             val parts = mutableListOf<String>()
             if (missingBins.isNotEmpty()) {
-                parts.add("缺少二进制工具: ${missingBins.joinToString()}")
+                parts.add("Missing binary tools: ${missingBins.joinToString()}")
             }
             if (missingAnyBins.isNotEmpty()) {
-                parts.add("至少需要一个: ${missingAnyBins.joinToString()}")
+                parts.add("At least one required: ${missingAnyBins.joinToString()}")
             }
             if (missingEnv.isNotEmpty()) {
-                parts.add("缺少环境变量: ${missingEnv.joinToString()}")
+                parts.add("Missing environment variables: ${missingEnv.joinToString()}")
             }
             if (missingConfig.isNotEmpty()) {
-                parts.add("缺少配置项: ${missingConfig.joinToString()}")
+                parts.add("Missing configuration: ${missingConfig.joinToString()}")
             }
             return parts.joinToString("; ")
         }
@@ -1005,11 +1038,11 @@ data class SkillsStatistics(
 ) {
     fun getReport(): String {
         return """
-Skills 统计:
-  - 总计: $totalSkills 个
-  - Always: $alwaysSkills 个
-  - On-Demand: $onDemandSkills 个
-  - Token 总量: $totalTokens tokens
+Skills statistics:
+  - Total: $totalSkills
+  - Always: $alwaysSkills
+  - On-Demand: $onDemandSkills
+  - Total tokens: $totalTokens tokens
   - Always Token: $alwaysTokens tokens
         """.trimIndent()
     }

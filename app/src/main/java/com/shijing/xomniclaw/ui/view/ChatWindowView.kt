@@ -222,7 +222,7 @@ class ChatWindowView @JvmOverloads constructor(
 
                 etInput = EditText(context).apply {
                     layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-                    hint = "💬 输入指令..."
+                    hint = "💬 Enter a command..."
                     setTextColor(android.graphics.Color.WHITE)
                     setHintTextColor(android.graphics.Color.parseColor("#718096"))
                     setBackgroundColor(android.graphics.Color.TRANSPARENT)
@@ -287,7 +287,7 @@ class ChatWindowView @JvmOverloads constructor(
         btnStopGeneration.setOnClickListener {
             Log.d(TAG, "停止生成")
             MainEntryNew.cancelCurrentJob(false)
-            Toast.makeText(context, "已停止生成", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Generation stopped", Toast.LENGTH_SHORT).show()
         }
 
         // Minimize window
@@ -585,7 +585,7 @@ class ChatMessageAdapter(
 
                     val tvReasoningHeader = TextView(context).apply {
                         id = R.id.tvReasoningHeader
-                        text = "🧠 推理过程"
+                        text = "🧠 Reasoning"
                         textSize = 13f
                         setTextColor(android.graphics.Color.parseColor("#C084FC"))
                         setTypeface(null, android.graphics.Typeface.BOLD)
@@ -654,13 +654,13 @@ class ChatMessageAdapter(
                 ).apply {
                     gravity = android.view.Gravity.CENTER_HORIZONTAL
                 }
-                text = "今天 14:30"
+                text = "Today 14:30"
                 textSize = 12f
                 setTextColor(android.graphics.Color.parseColor("#888888"))
                 setPadding(dpToPx(4, context), dpToPx(4, context), dpToPx(4, context), dpToPx(4, context))
                 visibility = View.GONE
             }
-            addView(tvTimeDivider, 0) // 添加到顶部
+            addView(tvTimeDivider, 0) // insert at the top
         }
     }
 
@@ -702,9 +702,9 @@ class ChatMessageAdapter(
 
             // 角色
             tvRole.text = when (message.role) {
-                "user" -> "👤 用户"
-                "assistant" -> "🤖 AI 助手"
-                "tool" -> "🔧 工具"
+                "user" -> "👤 User"
+                "assistant" -> "🤖 AI Assistant"
+                "tool" -> "🔧 Tool"
                 else -> message.role
             }
 
@@ -778,7 +778,7 @@ class ChatMessageAdapter(
                 val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 val clip = ClipData.newPlainText("message", message.content)
                 clipboard.setPrimaryClip(clip)
-                Toast.makeText(context, "已复制", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Copied", Toast.LENGTH_SHORT).show()
             }
 
             // 时间分隔线（简化版，暂时隐藏）

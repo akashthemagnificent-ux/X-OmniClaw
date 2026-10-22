@@ -68,11 +68,11 @@ class ModelSetupActivity : AppCompatActivity() {
                 api = "openai-completions",
                 hint = "OpenRouter aggregates Claude, GPT, Gemini and more — one key unlocks them all.\nFree to register, no top-up required.",
                 models = listOf(
-                    ModelPreset("moonshotai/kimi-k2.6", "Kimi K2.6 (付费)", reasoning = true, contextWindow = 262144, maxTokens = 16384),
-                    ModelPreset("z-ai/glm-5v-turbo", "GLM 5V Turbo (付费)", contextWindow = 131072, maxTokens = 8192),
-                    ModelPreset("qwen/qwen3.6-flash", "Qwen 3.6 Flash (付费，推荐)", reasoning = true, contextWindow = 200000, maxTokens = 16384),
-                    ModelPreset("xiaomi/mimo-v2.5", "Xiaomi Mimo v2.5 (付费)", contextWindow = 200000, maxTokens = 16384),
-                    ModelPreset("openai/gpt-5.5", "GPT-5.5 (付费)", reasoning = true, contextWindow = 1048576, maxTokens = 32768),
+                    ModelPreset("moonshotai/kimi-k2.6", "Kimi K2.6 (paid)", reasoning = true, contextWindow = 262144, maxTokens = 16384),
+                    ModelPreset("z-ai/glm-5v-turbo", "GLM 5V Turbo (paid)", contextWindow = 131072, maxTokens = 8192),
+                    ModelPreset("qwen/qwen3.6-flash", "Qwen 3.6 Flash (paid, recommended)", reasoning = true, contextWindow = 200000, maxTokens = 16384),
+                    ModelPreset("xiaomi/mimo-v2.5", "Xiaomi Mimo v2.5 (paid)", contextWindow = 200000, maxTokens = 16384),
+                    ModelPreset("openai/gpt-5.5", "GPT-5.5 (paid)", reasoning = true, contextWindow = 1048576, maxTokens = 32768),
                 ),
                 authHeader = true
             ),
@@ -82,9 +82,9 @@ class ModelSetupActivity : AppCompatActivity() {
                 api = "anthropic-messages",
                 hint = "Anthropic official API, direct Claude access. Register at console.anthropic.com",
                 models = listOf(
-                    ModelPreset("claude-sonnet-4-20250514", "Claude Sonnet 4 (推荐)"),
+                    ModelPreset("claude-sonnet-4-20250514", "Claude Sonnet 4 (recommended)"),
                     ModelPreset("claude-opus-4-20250514", "Claude Opus 4"),
-                    ModelPreset("claude-haiku-3-5-20241022", "Claude 3.5 Haiku (快速)")
+                    ModelPreset("claude-haiku-3-5-20241022", "Claude 3.5 Haiku (fast)")
                 )
             ),
             "openai" to ProviderPreset(
@@ -93,9 +93,9 @@ class ModelSetupActivity : AppCompatActivity() {
                 api = "openai-completions",
                 hint = "OpenAI official API. Register at platform.openai.com",
                 models = listOf(
-                    ModelPreset("gpt-4.1", "GPT-4.1 (推荐)"),
-                    ModelPreset("gpt-4.1-mini", "GPT-4.1 Mini (快速)"),
-                    ModelPreset("o3", "o3 (推理)")
+                    ModelPreset("gpt-4.1", "GPT-4.1 (recommended)"),
+                    ModelPreset("gpt-4.1-mini", "GPT-4.1 Mini (fast)"),
+                    ModelPreset("o3", "o3 (reasoning)")
                 )
             )
         )
@@ -136,7 +136,7 @@ class ModelSetupActivity : AppCompatActivity() {
             try {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://openrouter.ai/keys")))
             } catch (e: Exception) {
-                Toast.makeText(this, "无法打开浏览器", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Cannot open browser", Toast.LENGTH_SHORT).show()
             }
         }
     }

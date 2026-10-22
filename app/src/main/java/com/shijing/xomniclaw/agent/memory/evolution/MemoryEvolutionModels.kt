@@ -33,10 +33,10 @@ data class MemoryEvolutionReport(
 )
 
 enum class MemoryCategory(val sectionTitle: String) {
-    USER_PREFERENCE("## 用户偏好与习惯"),
-    TASK_WORKFLOW("## X-OmniClaw 任务经验与工作流"),
-    FAILURE_LESSON("## 失败经验与绕过方式"),
-    PROJECT_CONTEXT("## 长期项目上下文")
+    USER_PREFERENCE("## User preferences and habits"),
+    TASK_WORKFLOW("## X-OmniClaw task experience and workflows"),
+    FAILURE_LESSON("## Failure lessons and workarounds"),
+    PROJECT_CONTEXT("## Long-term project context")
 }
 
 data class MemoryEvolutionStatus(

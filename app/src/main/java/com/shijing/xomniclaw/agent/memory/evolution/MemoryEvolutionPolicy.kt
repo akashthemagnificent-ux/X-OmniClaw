@@ -28,28 +28,28 @@ object MemoryEvolutionPolicy {
             if (line.startsWith("## ")) {
                 currentSection = line
                 sectionItems.getOrPut(line) { mutableListOf() }
-            } else if (line.startsWith("- ") && currentSection != null && !line.contains("暂无稳定记忆")) {
+            } else if (line.startsWith("- ") && currentSection != null && !line.contains("No stable memory yet")) {
                 sectionItems.getOrPut(currentSection!!) { mutableListOf() }.add(line)
             }
         }
 
         val requiredSkeleton = buildString {
-            appendLine("# X-OmniClaw 全局记忆")
+            appendLine("# X-OmniClaw global memory")
             appendLine()
-            appendLine("此文件已按预算压缩，仅保留最近和最稳定的任务记忆。")
+            appendLine("This file was compressed to budget; only the most recent and most stable task memories are kept.")
             MemoryCategory.values().forEach { category ->
                 appendLine()
                 appendLine(category.sectionTitle)
-                appendLine("- 暂无稳定记忆。")
+                appendLine("- No stable memory yet.")
             }
         }.trim()
         if (requiredSkeleton.length >= maxChars) {
             return requiredSkeleton.take(maxChars)
         }
 
-        output += "# X-OmniClaw 全局记忆"
+        output += "# X-OmniClaw global memory"
         output += ""
-        output += "此文件已按预算压缩，仅保留最近和最稳定的任务记忆。"
+        output += "This file was compressed to budget; only the most recent and most stable task memories are kept."
         val categories = MemoryCategory.values().toList()
         categories.forEachIndexed { index, category ->
             output += ""
@@ -58,7 +58,7 @@ object MemoryEvolutionPolicy {
             var wroteItem = false
             kept.forEach { item ->
                 val futureSkeleton = categories.drop(index + 1).joinToString("\n") { nextCategory ->
-                    "\n${nextCategory.sectionTitle}\n- 暂无稳定记忆。"
+                    "\n${nextCategory.sectionTitle}\n- No stable memory yet."
                 }
                 val candidate = (output + item).joinToString("\n")
                 if (candidate.length + futureSkeleton.length <= maxChars) {
@@ -67,7 +67,7 @@ object MemoryEvolutionPolicy {
                 }
             }
             if (!wroteItem) {
-                output += "- 暂无稳定记忆。"
+                output += "- No stable memory yet."
             }
         }
         return output.joinToString("\n").take(maxChars)

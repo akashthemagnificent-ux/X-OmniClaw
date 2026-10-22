@@ -755,9 +755,9 @@ object MainEntryNew {
                     bringMainUiToFrontAndNotify(
                         sessionId = effectiveSessionId,
                         notice = if (cancelledByUser) {
-                            "🛑 当前任务已停止，已返回主界面。"
+                            "🛑 Current task stopped. Returned to the main screen."
                         } else {
-                            "⚠️ 任务执行异常，已返回主界面，请查看对话详情。"
+                            "⚠️ Task execution error. Returned to the main screen — check the conversation for details."
                         }
                     )
                 }
@@ -981,17 +981,17 @@ object MainEntryNew {
                 logd("========== Iteration ${update.number} ==========")
                 sessionUiContext?.currentStepIndex?.set(update.number.toLong())
                 SessionFloatWindow.updateSessionInfo(
-                    title = "🤖 步骤 ${update.number}/$agentMaxIterations",
-                    content = "正在思考..."
+                    title = "🤖 Step ${update.number}/$agentMaxIterations",
+                    content = "Thinking..."
                 )
             }
 
             is ProgressUpdate.Thinking -> {
-                logd("💭 Thinking: 正在处理第 ${update.iteration} 步...")
+                logd("💭 Thinking: processing step ${update.iteration}...")
                 sessionUiContext?.currentStepIndex?.set(update.iteration.toLong())
                 SessionFloatWindow.updateSessionInfo(
-                    title = "🤖 步骤 ${update.iteration}/$agentMaxIterations",
-                    content = "正在思考..."
+                    title = "🤖 Step ${update.iteration}/$agentMaxIterations",
+                    content = "Thinking..."
                 )
             }
 
@@ -1005,7 +1005,7 @@ object MainEntryNew {
                         append(update.content)
                     }
                     SessionFloatWindow.updateSessionInfo(
-                        title = "思考完成（$stepTag）",
+                        title = "Thinking complete ($stepTag)",
                         content = indexedReasoning.take(100) + if (indexedReasoning.length > 100) "..." else ""
                     )
                     // 落盘到 Agent JSONL，冷启动后 sync 才能恢复主对话中的「思考过程」
@@ -1025,13 +1025,13 @@ object MainEntryNew {
                     emitProgressToUi(
                         ctx,
                         type = "reasoning",
-                        title = "思考过程（$stepTag）",
+                        title = "Thinking process ($stepTag)",
                         content = indexedReasoning
                     )
                 }
                 if (sessionUiContext == null) {
                     SessionFloatWindow.updateSessionInfo(
-                        title = "思考完成",
+                        title = "Thinking complete",
                         content = update.content.take(100) + if (update.content.length > 100) "..." else ""
                     )
                 }
@@ -1041,7 +1041,7 @@ object MainEntryNew {
                 logd("🔧 Tool: ${update.name}")
 
                 val argsText = if (update.arguments.isEmpty()) {
-                    "无参数"
+                    "No parameters"
                 } else {
                     update.arguments.entries.joinToString("\n") { (key, value) ->
                         "  • $key: $value"
@@ -1049,37 +1049,37 @@ object MainEntryNew {
                 }
 
                 SessionFloatWindow.updateSessionInfo(
-                    title = "🔧 执行: ${update.name}",
+                    title = "🔧 Running: ${update.name}",
                     content = argsText.take(100)
                 )
                 sessionUiContext?.let {
-                    emitProgressToUi(it, "tool_call", "执行: ${update.name}", argsText)
+                    emitProgressToUi(it, "tool_call", "Running: ${update.name}", argsText)
                 }
             }
 
             is ProgressUpdate.ToolResult -> {
                 logd("✅ Result: ${update.result.take(100)}, ${update.execDuration}ms")
                 SessionFloatWindow.updateSessionInfo(
-                    title = "执行完成",
+                    title = "Execution complete",
                     content = update.result.take(100) + if (update.result.length > 100) "..." else ""
                 )
                 sessionUiContext?.let {
-                    emitProgressToUi(it, "tool_result", "执行完成", update.result)
+                    emitProgressToUi(it, "tool_result", "Execution complete", update.result)
                 }
             }
 
             is ProgressUpdate.IterationComplete -> {
                 logd("🏁 Iteration ${update.number} complete: total=${update.iterationDuration}ms, llm=${update.llmDuration}ms, exec=${update.execDuration}ms")
                 SessionFloatWindow.updateSessionInfo(
-                    title = "✅ 步骤 ${update.number}/$agentMaxIterations 完成",
-                    content = "耗时: ${update.iterationDuration / 1000}s"
+                    title = "✅ Step ${update.number}/$agentMaxIterations complete",
+                    content = "Elapsed: ${update.iterationDuration / 1000}s"
                 )
             }
 
             is ProgressUpdate.ContextOverflow -> {
                 logw("🔄 Context overflow: ${update.message}")
                 SessionFloatWindow.updateSessionInfo(
-                    title = "上下文超限",
+                    title = "Context limit exceeded",
                     content = update.message
                 )
             }
@@ -1087,8 +1087,8 @@ object MainEntryNew {
             is ProgressUpdate.ContextRecovered -> {
                 logd("✅ Context recovered: ${update.strategy} (attempt ${update.attempt})")
                 SessionFloatWindow.updateSessionInfo(
-                    title = "上下文已恢复",
-                    content = "策略: ${update.strategy}"
+                    title = "Context recovered",
+                    content = "Strategy: ${update.strategy}"
                 )
             }
 
@@ -1096,8 +1096,8 @@ object MainEntryNew {
                 val logLevel = if (update.critical) "🚨" else "⚠️"
                 logw("$logLevel Loop detected: ${update.detector} (count: ${update.count})")
                 SessionFloatWindow.updateSessionInfo(
-                    title = "${if (update.critical) "严重" else "警告"}: 循环检测",
-                    content = "${update.detector}: ${update.count} 次"
+                    title = "${if (update.critical) "Critical" else "Warning"}: loop detected",
+                    content = "${update.detector}: ${update.count} times"
                 )
             }
 
@@ -1110,22 +1110,22 @@ object MainEntryNew {
             is ProgressUpdate.Error -> {
                 loge("❌ Error: ${update.message}")
                 SessionFloatWindow.updateSessionInfo(
-                    title = "错误",
+                    title = "Error",
                     content = update.message.take(100)
                 )
                 sessionUiContext?.let {
-                    emitProgressToUi(it, "error", "错误", update.message)
+                    emitProgressToUi(it, "error", "Error", update.message)
                 }
             }
 
             is ProgressUpdate.BlockReply -> {
                 logd("📤 Block reply: ${update.text.take(200)}")
                 SessionFloatWindow.updateSessionInfo(
-                    title = "中间回复",
+                    title = "Intermediate reply",
                     content = update.text.take(100) + if (update.text.length > 100) "..." else ""
                 )
                 sessionUiContext?.let {
-                    emitProgressToUi(it, "block_reply", "中间回复", update.text)
+                    emitProgressToUi(it, "block_reply", "Intermediate reply", update.text)
                     // 中间回复需要绑定到本次 run 的 session，不能再走全局 activeSessionId。
                     it.lastBlockReplyText.set(update.text)
                     com.shijing.xomniclaw.gateway.GatewayServer.broadcastChatMessage(
@@ -1301,8 +1301,8 @@ object MainEntryNew {
         if (samePrefixCount == 0 && contextHistory.isNotEmpty()) {
             Log.w(
                 TAG,
-                "extractRunDeltaMessages: 前缀仍为 0（history=${contextHistory.size}, tail=${resultTail.size}），" +
-                    "可能造成重复落盘；请检查 provider 是否改写了历史句内容。"
+                "extractRunDeltaMessages: prefix still 0 (history=${contextHistory.size}, tail=${resultTail.size}); " +
+                    "this may duplicate persisted messages — check whether the provider rewrote history content."
             )
         }
         return resultTail.drop(samePrefixCount)
@@ -1421,9 +1421,9 @@ object MainEntryNew {
             .take(3)
 
         val summaryLines = if (summaryMemory.isEmpty()) {
-            listOf("任务目标：${userGoal.take(60)}")
+            listOf("Task goal: ${userGoal.take(60)}")
         } else {
-            summaryMemory.map { "已执行：$it" }
+            summaryMemory.map { "Done: $it" }
         }
 
         return buildString {
@@ -1447,26 +1447,26 @@ object MainEntryNew {
     private fun inferIntentFromToolName(toolName: String, userGoal: String): String {
         val lower = toolName.lowercase()
         return when {
-            lower.contains("open") || lower.contains("launch") -> "打开目标应用并进入可操作页面"
-            lower.contains("tap") || lower.contains("click") -> "定位并触发页面元素"
-            lower.contains("input") || lower.contains("type") -> "输入查询词或表单内容"
-            lower.contains("swipe") || lower.contains("scroll") -> "浏览页面并发现目标区域"
-            lower.contains("back") -> "返回上一层并重新定位流程"
-            lower.contains("snapshot") || lower.contains("screenshot") || lower == "device" -> "观察当前页面状态以判断下一步"
-            else -> "推进用户目标：${userGoal.take(40)}"
+            lower.contains("open") || lower.contains("launch") -> "Open the target app and reach an operable page"
+            lower.contains("tap") || lower.contains("click") -> "Locate and trigger a page element"
+            lower.contains("input") || lower.contains("type") -> "Enter the query or form content"
+            lower.contains("swipe") || lower.contains("scroll") -> "Browse the page and find the target area"
+            lower.contains("back") -> "Go back one level and re-locate the flow"
+            lower.contains("snapshot") || lower.contains("screenshot") || lower == "device" -> "Observe the current page state to decide the next step"
+            else -> "Advance the user goal: ${userGoal.take(40)}"
         }
     }
 
     private fun inferExpectationFromToolName(toolName: String): String {
         val lower = toolName.lowercase()
         return when {
-            lower.contains("open") || lower.contains("launch") -> "看到目标应用首页或搜索入口"
-            lower.contains("tap") || lower.contains("click") -> "页面发生可见变化或进入下一层"
-            lower.contains("input") || lower.contains("type") -> "输入框内容更新并可继续提交"
-            lower.contains("swipe") || lower.contains("scroll") -> "可见区域变化，出现新候选信息"
-            lower.contains("back") -> "返回上一页并出现预期导航层级"
-            lower.contains("snapshot") || lower.contains("screenshot") || lower == "device" -> "获得可判断下一步的页面证据"
-            else -> "得到推进任务的可验证反馈"
+            lower.contains("open") || lower.contains("launch") -> "See the target app home page or search entry"
+            lower.contains("tap") || lower.contains("click") -> "A visible page change occurs or the next level opens"
+            lower.contains("input") || lower.contains("type") -> "The input field updates and submission can continue"
+            lower.contains("swipe") || lower.contains("scroll") -> "The visible area changes and new candidates appear"
+            lower.contains("back") -> "Return to the previous page at the expected navigation level"
+            lower.contains("snapshot") || lower.contains("screenshot") || lower == "device" -> "Obtain page evidence sufficient to decide the next step"
+            else -> "Get verifiable feedback that advances the task"
         }
     }
 

@@ -29,7 +29,7 @@ class SessionManager {
 
     data class Session(
         val id: String = UUID.randomUUID().toString(),
-        val title: String = "新对话",
+        val title: String = "New chat",
         val createdAt: Long = System.currentTimeMillis(),
         val messages: List<ChatMessage> = emptyList(),
         val isActive: Boolean = false
@@ -47,7 +47,7 @@ class SessionManager {
                     content
                 }
             } else {
-                "新对话 ${createdAt}"
+                "New chat ${createdAt}"
             }
         }
     }
@@ -76,7 +76,7 @@ class SessionManager {
         val welcomeMessage = getWelcomeMessage()
 
         return Session(
-            title = "新对话",
+            title = "New chat",
             messages = listOf(
                 ChatMessage(
                     content = welcomeMessage,
@@ -92,7 +92,7 @@ class SessionManager {
      * Whether a session is just the startup placeholder with no real conversation yet.
      */
     private fun isEphemeralDefaultSession(session: Session): Boolean {
-        return session.title == "新对话" &&
+        return session.title == "New chat" &&
             session.messages.size == 1 &&
             session.messages.firstOrNull()?.isUser == false
     }
@@ -110,34 +110,34 @@ class SessionManager {
 
         return if (isFirstRun) {
             """
-你好，我是你的 **Android 自动化助手**。
+Hi, I am your **Android automation assistant**.
 
-我可以理解文本、语音、图片和当前屏幕内容，帮你完成应用操作、信息检索、文档处理和自动化任务。
+I can understand text, voice, images, and what is on screen to help with app operations, information lookup, document handling, and automation.
 
-这是你第一次使用这套助手能力，我们先一起完成基础配置，让后续执行更稳定。
+This is your first time using this assistant. Let us finish the basic setup first so later runs are more reliable.
 
-## 📝 需要配置的文件
+## 📝 Files to configure
 
-你的 workspace 位于：`/sdcard/.xomniclaw/workspace/`
+Your workspace is at: `/sdcard/.xomniclaw/workspace/`
 
-### 1. **AGENTS.md** - Agent 大模型专属策略（仅 Agent 调用时生效）
-### 2. **OPS_GUIDE.md** - 通用执行手册（交互规范与设备执行规则）
+### 1. **AGENTS.md** - Agent-model-only policy (applies only to Agent calls)
+### 2. **OPS_GUIDE.md** - General operations guide (interaction rules and device execution rules)
 
-完成这些配置后，我们就可以正式开始协作。
+Once those are configured, we can get started.
 
-你可以试着对我说：`帮我打开小红书搜美食`，或者 `监控飞书消息并总结重点`
+Try saying: `Open Xiaohongshu and search for food`, or `Monitor Feishu messages and summarize the highlights`
             """.trimIndent()
         } else {
             """
-你好，我是你的 **Android 自动化助手**。
+Hi, I am your **Android automation assistant**.
 
-我可以帮你：
-- 控制和测试 Android 应用
-- 理解当前屏幕、图片与语音输入
-- 浏览网页、搜索信息和执行自动化任务
-- 处理设备操作、文件与工作流协作
+I can help you:
+- Control and test Android apps
+- Understand the current screen, images, and voice input
+- Browse the web, search for information, and run automation tasks
+- Handle device operations, files, and workflow collaboration
 
-告诉我你的目标，我会直接开始处理。
+Tell me your goal and I will get started.
             """.trimIndent()
         }
     }
@@ -166,9 +166,9 @@ class SessionManager {
                 if (backendSession != null) {
                     val type = when {
                         key.startsWith("discord_") -> "Discord"
-                        key.contains("_p2p") || key.contains("_group") -> "飞书"
+                        key.contains("_p2p") || key.contains("_group") -> "Feishu"
                         key.startsWith("session_") -> "WebSocket"
-                        else -> "其他"
+                        else -> "Other"
                     }
 
                     // Generate title
@@ -376,7 +376,7 @@ class SessionManager {
         val updatedSession = current.copy(
             messages = listOf(
                 ChatMessage(
-                    content = "聊天记录已清空。有什么可以帮到你的吗？",
+                    content = "Chat history cleared. How can I help?",
                     isUser = false,
                     kind = ChatMessageKind.SYSTEM
                 )

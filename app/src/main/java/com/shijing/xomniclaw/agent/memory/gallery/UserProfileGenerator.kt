@@ -28,31 +28,31 @@ class UserProfileGenerator(
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
         private val topicMapping = mapOf(
-            "work" to "工作",
-            "learning" to "学习",
-            "shopping" to "购物",
-            "travel" to "出行",
-            "social" to "社交",
-            "screenshot" to "截图整理",
-            "camera" to "拍照记录",
-            "uncategorized" to "日常内容"
+            "work" to "Work",
+            "learning" to "Learning",
+            "shopping" to "Shopping",
+            "travel" to "Travel",
+            "social" to "Social",
+            "screenshot" to "Screenshots",
+            "camera" to "Photos",
+            "uncategorized" to "Everyday content"
         )
 
         private val recurringNeedMapping = mapOf(
-            "work" to "信息总结",
-            "learning" to "知识整理",
-            "shopping" to "商品比较",
-            "travel" to "行程规划",
-            "social" to "消息整理",
-            "screenshot" to "截图归档"
+            "work" to "Summarize information",
+            "learning" to "Organize knowledge",
+            "shopping" to "Compare products",
+            "travel" to "Plan trips",
+            "social" to "Organize messages",
+            "screenshot" to "Archive screenshots"
         )
 
         private val roleMapping = mapOf(
-            "work" to "知识工作者",
-            "shopping" to "内容消费者",
-            "travel" to "旅行规划者",
-            "learning" to "持续学习者",
-            "social" to "社交沟通者"
+            "work" to "Knowledge worker",
+            "shopping" to "Content consumer",
+            "travel" to "Trip planner",
+            "learning" to "Continuous learner",
+            "social" to "Social communicator"
         )
     }
 
@@ -268,17 +268,17 @@ class UserProfileGenerator(
     private fun deriveResponseStyle(userContext: String, taskSignals: TaskMemorySignals): String {
         val normalized = userContext.lowercase(Locale.getDefault())
         val traits = mutableListOf<String>()
-        if (normalized.contains("brief")) traits += "简洁"
-        if (normalized.contains("clear")) traits += "结构化"
-        if (normalized.contains("success confirmations")) traits += "偏执行导向"
+        if (normalized.contains("brief")) traits += "Concise"
+        if (normalized.contains("clear")) traits += "Structured"
+        if (normalized.contains("success confirmations")) traits += "Execution-oriented"
         traits += taskSignals.responseStyleHints
-        return traits.distinct().joinToString(" / ").ifBlank { "结构化 / 偏执行导向" }
+        return traits.distinct().joinToString(" / ").ifBlank { "Structured / execution-oriented" }
     }
 
     private fun deriveLikelyRoles(topTags: List<Map.Entry<String, Int>>): List<String> {
         val roles = topTags.mapNotNull { roleMapping[it.key] }.distinct().toMutableList()
         if (roles.isEmpty()) {
-            roles += "个人设备用户"
+            roles += "Personal device user"
         }
         return roles.take(4)
     }
@@ -291,7 +291,7 @@ class UserProfileGenerator(
             .filter { it.isNotBlank() }
             .plus(taskSignals.preferredTaskTopics)
             .distinct()
-        return if (topics.isEmpty()) listOf("日常内容") else topics.take(5)
+        return if (topics.isEmpty()) listOf("Everyday content") else topics.take(5)
     }
 
     private fun deriveContentPreferences(
@@ -306,21 +306,21 @@ class UserProfileGenerator(
             val cameraBucketRatio = entries.count { (it.bucketName ?: "").contains("camera", ignoreCase = true) } / entries.size.toDouble()
 
             if (screenshotRatio >= 0.35 || topBuckets.firstOrNull()?.key?.contains("screenshot", ignoreCase = true) == true) {
-                preferences += "截图信息密集"
+                preferences += "Screenshot-heavy information"
             }
             if (extractedTextRatio >= 0.30) {
-                preferences += "偏文字内容"
+                preferences += "Prefers text content"
             }
             if (cameraBucketRatio >= 0.25) {
-                preferences += "偏拍照记录"
+                preferences += "Prefers photo records"
             }
             if (entries.any { it.summary.contains("新闻") || it.summary.contains("热点") || it.summary.contains("资讯") }) {
-                preferences += "偏资讯型内容"
+                preferences += "Prefers news-type content"
             }
         }
         preferences += taskSignals.contentPreferences
 
-        return preferences.distinct().ifEmpty { listOf("内容偏好多样") }.take(4)
+        return preferences.distinct().ifEmpty { listOf("Varied content preferences") }.take(4)
     }
 
     private fun deriveRecurringNeeds(
@@ -330,10 +330,10 @@ class UserProfileGenerator(
         val needs = topTags.mapNotNull { recurringNeedMapping[it.key] }.distinct().toMutableList()
         needs += taskSignals.recurringNeeds
         if (needs.isEmpty()) {
-            needs += "上下文补充"
+            needs += "Add context"
         }
-        if ("信息总结" in needs && "截图归档" !in needs) {
-            needs += "下一步建议"
+        if ("Summarize information" in needs && "Archive screenshots" !in needs) {
+            needs += "Next-step suggestions"
         }
         return needs.take(5)
     }
@@ -354,11 +354,11 @@ class UserProfileGenerator(
         ) } / timestamps.size.toDouble()
 
         val period = when {
-            averageHour >= 19 || averageHour < 6 -> "晚间活跃"
-            averageHour in 6.0..11.9 -> "上午活跃"
-            else -> "白天活跃"
+            averageHour >= 19 || averageHour < 6 -> "Active in the evening"
+            averageHour in 6.0..11.9 -> "Active in the morning"
+            else -> "Active during the day"
         }
-        val cadence = if (workdayRatio >= 0.65) "工作日高频" else "周内外均衡"
+        val cadence = if (workdayRatio >= 0.65) "Frequent on weekdays" else "Balanced across the week"
         return "$period / $cadence"
     }
 
@@ -368,10 +368,10 @@ class UserProfileGenerator(
     ): String {
         val tagKeys = topTags.map { it.key }
         return when {
-            "work" in tagKeys && "screenshot" in tagKeys -> "工作与工具类截图较多"
-            "travel" in tagKeys || "camera" in tagKeys -> "生活记录与出行内容较多"
-            topBuckets.any { it.key.contains("screenshot", ignoreCase = true) } -> "偏截图驱动的信息留存"
-            else -> "工作生活混合型使用"
+            "work" in tagKeys && "screenshot" in tagKeys -> "Many work and utility screenshots"
+            "travel" in tagKeys || "camera" in tagKeys -> "Much life-log and travel content"
+            topBuckets.any { it.key.contains("screenshot", ignoreCase = true) } -> "Screenshot-driven information capture"
+            else -> "Mixed work and personal use"
         }
     }
 
@@ -384,9 +384,9 @@ class UserProfileGenerator(
             it.summary.contains("安排") || it.summary.contains("待办") || it.summary.contains("提醒")
         }
         return when {
-            "work" in tagKeys || hasTaskSignals -> "偏任务驱动"
-            "travel" in tagKeys || "camera" in tagKeys -> "偏生活记录"
-            else -> "偏临时记录"
+            "work" in tagKeys || hasTaskSignals -> "Task-driven"
+            "travel" in tagKeys || "camera" in tagKeys -> "Prefers life logging"
+            else -> "Mostly ad-hoc notes"
         }
     }
 
@@ -400,17 +400,17 @@ class UserProfileGenerator(
         val tagKeys = topTags.map { it.key }
 
         if ("work" in tagKeys || "screenshot" in tagKeys) {
-            hints += "常保存工作截图与待处理信息，适合在任务执行时提供总结与下一步建议。"
+            hints += "Often saves work screenshots and pending items; during task execution, provide summaries and next-step suggestions."
         }
         if ("shopping" in tagKeys) {
-            hints += "若任务涉及购物或比价，可优先结合近期图片记忆判断关注点。"
+            hints += "For shopping or price-comparison tasks, use recent image memories to infer interests first."
         }
         if ("social" in tagKeys) {
-            hints += "近期有社交或聊天类内容时，任务执行前可优先检索相关图片记忆。"
+            hints += "When recent social or chat content exists, retrieve related image memories before executing the task."
         }
         if (hints.isEmpty() && entries.isNotEmpty()) {
-            val dominantBucket = topBuckets.firstOrNull()?.key ?: "相册"
-            hints += "当前画像主要来自 $dominantBucket 内容，建议在图片相关任务中结合 IMAGE-MEMORY.md 使用。"
+            val dominantBucket = topBuckets.firstOrNull()?.key ?: "album"
+            hints += "This profile is derived mainly from $dominantBucket content; for image-related tasks, combine it with IMAGE-MEMORY.md."
         }
         hints += taskSignals.importantHints
         return hints.distinct().take(6)
@@ -463,11 +463,11 @@ class UserProfileGenerator(
 
     private fun buildLastSyncSummary(entries: List<ParsedImageMemory>): String {
         if (entries.isEmpty()) {
-            return "暂无图片记忆同步结果。"
+            return "No image-memory sync results yet."
         }
         val latestEntry = entries.maxByOrNull { it.timestamp ?: LocalDateTime.MIN }
         val latestTimeText = latestEntry?.timestamp?.format(MEMORY_TIME_FORMATTER) ?: "unknown"
-        return "最近同步后共纳入 ${entries.size} 条图片记忆，最新图片时间为 $latestTimeText。"
+        return "Since the last sync, ${entries.size} image memories were included; newest image time is $latestTimeText."
     }
 
     private fun deriveRecentFocuses(
@@ -477,7 +477,7 @@ class UserProfileGenerator(
     ): List<String> {
         val focuses = entries.takeLast(3).map { it.summary }.filter { it.isNotBlank() }.toMutableList()
         if (recentLogs.isNotEmpty()) {
-            focuses += "近期日志存在 ${recentLogs.size} 份更新，可在需要时结合 daily log 获取更细上下文。"
+            focuses += "${recentLogs.size} recent log updates exist; consult the daily log for finer context when needed."
         }
         focuses += taskSignals.recentTaskHighlights
         return focuses.distinct().take(4)
@@ -495,28 +495,28 @@ class UserProfileGenerator(
         val importantHints = mutableListOf<String>()
         val riskNotes = mutableListOf<String>()
         val highlights = longTermMemory.lines()
-            .filter { it.startsWith("- ") && !it.contains("暂无稳定记忆") }
+            .filter { it.startsWith("- ") && !it.contains("No stable memory yet") }
             .takeLast(6)
             .map { it.removePrefix("- ").take(180) }
 
         if (combined.contains("小红书") || combined.contains("新闻") || combined.contains("资讯")) {
-            preferredTopics += "资讯总结"
-            recurringNeeds += "App 内搜索与总结"
-            contentPreferences += "偏资讯型内容"
+            preferredTopics += "News summarization"
+            recurringNeeds += "In-app search and summarization"
+            contentPreferences += "Prefers news-type content"
         }
         if (combined.contains("定时") || combined.contains("全局记忆进化")) {
-            recurringNeeds += "定时自动化"
-            importantHints += "用户会使用定时任务长期运行自动化，应优先保持任务指令可重复、可诊断。"
+            recurringNeeds += "Scheduled automation"
+            importantHints += "The user runs long-term automation via scheduled tasks; keep task instructions repeatable and diagnosable."
         }
         if (combined.contains("相册") || combined.contains("image-memories")) {
-            recurringNeeds += "相册记忆维护"
+            recurringNeeds += "Album memory maintenance"
         }
         if (combined.contains("简洁") || combined.contains("中文")) {
-            responseStyleHints += "中文 / 简洁"
+            responseStyleHints += "Chinese / concise"
         }
         if (combined.contains("coloros") || combined.contains("息屏") || combined.contains("权限")) {
-            riskNotes += "Android 权限、息屏和 ROM 后台限制"
-            importantHints += "涉及后台、息屏或跨 App 自动化时，需要优先检查权限和系统限制。"
+            riskNotes += "Android permissions, screen-off, and ROM background limits"
+            importantHints += "For background, screen-off, or cross-app automation, check permissions and system limits first."
         }
 
         return TaskMemorySignals(

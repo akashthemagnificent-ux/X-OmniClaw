@@ -24,7 +24,7 @@ class ResultActivity : AppCompatActivity() {
 
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
-            title = "结果记录"
+            title = "Result log"
         }
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)

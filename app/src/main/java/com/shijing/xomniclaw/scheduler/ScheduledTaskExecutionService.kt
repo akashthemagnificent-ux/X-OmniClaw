@@ -29,8 +29,8 @@ class ScheduledTaskExecutionService : Service() {
         private const val TAG = "ScheduledTaskExecSvc"
         private const val CHANNEL_ID = "scheduled_task_execution"
         private const val WAKE_CHANNEL_ID = "scheduled_task_wake"
-        private const val CHANNEL_NAME = "OmniClaw 定时任务执行"
-        private const val WAKE_CHANNEL_NAME = "OmniClaw 定时任务唤醒"
+        private const val CHANNEL_NAME = "OmniClaw scheduled task execution"
+        private const val WAKE_CHANNEL_NAME = "OmniClaw scheduled task wake"
         private const val NOTIFICATION_ID = 2002
         private const val WAKE_NOTIFICATION_ID = 2003
         private const val WAKE_FALLBACK_DELAY_MS = 8_000L
@@ -75,15 +75,15 @@ class ScheduledTaskExecutionService : Service() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 startForeground(
                     NOTIFICATION_ID,
-                    createNotification("正在准备执行定时任务"),
+                    createNotification("Preparing to run scheduled task"),
                     android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
                 )
             } else {
-                startForeground(NOTIFICATION_ID, createNotification("正在准备执行定时任务"))
+                startForeground(NOTIFICATION_ID, createNotification("Preparing to run scheduled task"))
             }
         } catch (e: Exception) {
             Log.w(TAG, "startForeground with type failed, fallback to basic mode", e)
-            startForeground(NOTIFICATION_ID, createNotification("正在准备执行定时任务"))
+            startForeground(NOTIFICATION_ID, createNotification("Preparing to run scheduled task"))
         }
     }
 
@@ -120,17 +120,17 @@ class ScheduledTaskExecutionService : Service() {
                 )
 
                 updateNotification(
-                    "正在唤醒执行环境",
+                    "Waking the execution environment",
                     buildString {
-                        append("任务 ID: ")
+                        append("Task ID: ")
                         append(taskId.take(8))
                         if (latenessMs != null) {
-                            append("，闹钟延迟 ${latenessMs}ms")
+                            append(", alarm lateness ${latenessMs}ms")
                         } else {
-                            append("，已进入执行阶段")
+                            append(", execution started")
                         }
-                        append("，服务启动耗时 ${now - alarmReceivedAtMs}ms")
-                        append("，唤醒策略 ${wakePreparation.plan.summary}")
+                        append(", service startup took ${now - alarmReceivedAtMs}ms")
+                        append(", wake strategy ${wakePreparation.plan.summary}")
                     }
                 )
                 showWakeNotification(
@@ -180,7 +180,7 @@ class ScheduledTaskExecutionService : Service() {
                 CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "承接 OmniClaw 定时任务的实际执行"
+                description = "Performs the actual execution of OmniClaw scheduled tasks"
                 setShowBadge(false)
                 enableLights(false)
                 enableVibration(false)
@@ -193,7 +193,7 @@ class ScheduledTaskExecutionService : Service() {
                 WAKE_CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "定时任务到点时用于亮屏并拉起执行页"
+                description = "Wakes the screen and opens the execution page when a scheduled task fires"
                 setShowBadge(false)
                 enableLights(true)
                 enableVibration(true)
@@ -211,7 +211,7 @@ class ScheduledTaskExecutionService : Service() {
 
     private fun createNotification(
         text: String,
-        title: String = "OmniClaw 定时任务执行中"
+        title: String = "OmniClaw scheduled task running"
     ): Notification {
         // 点击通知可快速回到应用主界面，方便查看任务执行状态。
         val launchIntent = packageManager.getLaunchIntentForPackage(packageName)?.apply {
@@ -270,8 +270,8 @@ class ScheduledTaskExecutionService : Service() {
             flags
         )
         val notification = NotificationCompat.Builder(this, WAKE_CHANNEL_ID)
-            .setContentTitle("OmniClaw 定时任务到点")
-            .setContentText("正在唤醒屏幕并准备执行任务")
+            .setContentTitle("OmniClaw scheduled task due")
+            .setContentText("Waking the screen and preparing to run the task")
             .setSmallIcon(R.drawable.ic_baseline_adb_24)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_ALARM)

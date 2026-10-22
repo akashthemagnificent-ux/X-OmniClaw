@@ -57,7 +57,7 @@
     <string name="restart_summary">Restart the ADB server to apply changed settings</string>
     <string name="restart_key">Restart</string>
 
-    <string name="auto_shell_title">Pair & shell</string>
+    <string name="auto_shell_title">Pair &amp; shell</string>
     <string name="auto_shell_summary">Automatically enter an ADB shell; disable to enter a regular, non-ADB shell without pairing</string>
     <string name="auto_shell_key">auto_shell</string>
 

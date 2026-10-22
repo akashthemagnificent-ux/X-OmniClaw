@@ -320,25 +320,25 @@ class MemoryManager(
 
     private fun createMemoryTemplate(): String {
         val template = loadBundledMemoryTemplate() ?: """
-# X-OmniClaw 全局记忆
+# X-OmniClaw global memory
 
-此文件保存用户使用 X-OmniClaw 执行任务过程中沉淀的长期记忆。
+Long-term memory accumulated while the user runs tasks with X-OmniClaw.
 
-## 用户偏好与习惯
+## User preferences and habits
 
-- 暂无稳定记忆。
+- No stable memory yet.
 
-## X-OmniClaw 任务经验与工作流
+## X-OmniClaw task experience and workflows
 
-- 暂无稳定记忆。
+- No stable memory yet.
 
-## 失败经验与绕过方式
+## Failure lessons and workarounds
 
-- 暂无稳定记忆。
+- No stable memory yet.
 
-## 长期项目上下文
+## Long-term project context
 
-- 暂无稳定记忆。
+- No stable memory yet.
         """.trimIndent()
         try { memoryFile.writeText(template) } catch (e: Exception) { Log.e(TAG, "Failed to create template", e) }
         return template

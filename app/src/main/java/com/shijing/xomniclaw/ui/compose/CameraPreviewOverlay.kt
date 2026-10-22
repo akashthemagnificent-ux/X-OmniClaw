@@ -154,10 +154,10 @@ fun CameraPreviewOverlay(
                 Spacer(modifier = Modifier.width(8.dp))
                 Column {
                     // 视频帧仅写入 VisionFrameBuffer，无远端 Hub
-                    val modeNote = "端侧缓冲"
+                    val modeNote = "on-device buffer"
                     Text(
                         text = when (source) {
-                            VisionFrameSource.SCREEN_CAPTURE -> "屏幕采集 → $modeNote"
+                            VisionFrameSource.SCREEN_CAPTURE -> "Screen capture → $modeNote"
                             else -> "$sourceLabel ${framePusher.fps}fps → $modeNote"
                         },
                         style = TextStyle(
@@ -168,8 +168,8 @@ fun CameraPreviewOverlay(
                     )
                     Text(
                         text = when (source) {
-                            VisionFrameSource.SCREEN_CAPTURE -> "右侧按住语音"
-                            else -> "已推送 $frameCount 帧 | ${lastPushMs}ms"
+                            VisionFrameSource.SCREEN_CAPTURE -> "Hold right side to talk"
+                            else -> "Pushed $frameCount frames | ${lastPushMs}ms"
                         },
                         style = TextStyle(
                             color = Color.White.copy(alpha = 0.75f),
@@ -214,7 +214,7 @@ fun CameraPreviewOverlay(
             ) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "关闭",
+                    contentDescription = "Close",
                     tint = Color.White,
                     modifier = Modifier.size(24.dp)
                 )
@@ -256,7 +256,7 @@ fun CameraPreviewOverlay(
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         imageVector = Icons.Default.Mic,
-                        contentDescription = if (isVoiceListening) "语音识别中" else "按住语音输入",
+                        contentDescription = if (isVoiceListening) "Listening" else "Hold to talk",
                         tint = Color.White,
                         modifier = Modifier.size(24.dp)
                     )

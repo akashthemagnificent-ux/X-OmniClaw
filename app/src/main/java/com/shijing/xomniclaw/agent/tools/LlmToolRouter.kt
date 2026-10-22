@@ -32,12 +32,12 @@ object LlmToolRouter {
     )
 
     fun systemPromptText(): String = """
-你是工具路由。你**没有** function 调用能力。根据用户问题与系统说明，在「可路由的按需工具名」中选出**本轮**最可能需要的子集(多为记忆/图库/排程/装包/系统设置等)；都不需要时 tools 为空。
+You are the tool router. You have **no** function-calling ability. Given the user question and the system notes, choose the subset of "routable on-demand tool names" most likely needed **this turn** (mostly memory/gallery/scheduling/app install/system settings); if none are needed, tools is empty.
 
-输出**且仅输出**一个 JSON 对象，禁止 Markdown/代码块/任何解释/前后缀。格式:
+Output **exactly one** JSON object and nothing else: no Markdown, no code fences, no explanation, no prefix or suffix. Format:
 {"tools":["name1",...] ,"hint":""}
-- tools: 仅允许出现在上文中「可路由工具名」列出的英文标识；[] 表示本轮不开启任何按需大工具
-- hint: 可选; 为后续主 Agent 提供的**极短**关键词或槽位(如搜索词、时间片、app 名猜词); 无则传空串
+- tools: only English identifiers listed under "routable tool names" above; [] means no on-demand large tools this turn
+- hint: optional; a **very short** keyword or slot for the main Agent to follow (e.g. search term, time slot, guessed app name); empty string if none
     """.trimIndent()
 
     fun buildRouterUserText(
@@ -45,14 +45,14 @@ object LlmToolRouter {
         userMessage: String,
         systemPromptSnippet: String
     ): String = buildString {
-        appendLine("【可路由的按需工具名】")
+        appendLine("[Routable on-demand tool names]")
         appendLine(routableNamesSorted.joinToString(", "))
         appendLine()
-        appendLine("【用户问题】")
+        appendLine("[User question]")
         appendLine(userMessage)
         if (systemPromptSnippet.isNotBlank()) {
             appendLine()
-            appendLine("【主系统提示(截断, 仅作语境)】")
+            appendLine("[Main system prompt (truncated, context only)]")
             append(systemPromptSnippet.take(SYS_SNIPPET_MAX))
         }
     }

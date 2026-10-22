@@ -96,19 +96,19 @@ fun DeeplinkBookmarksTab(modifier: Modifier = Modifier) {
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = "Deeplink 收藏",
+                                text = "Deeplink bookmarks",
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.height(6.dp))
                             Text(
-                                text = "先在视觉输入里启动“轨迹录制（支持 Deeplink 收藏）”，" +
-                                    "进入目标页面后点击悬浮窗收藏按钮，这里会保存可一键直达的页面记录。",
+                                text = "Start \"Trajectory recording (supports Deeplink bookmarks)\" in visual input, " +
+                                    "navigate to the target page, then tap the bookmark button in the floating window. One-tap direct links are saved here.",
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         }
                         IconButton(onClick = refreshRootState) {
-                            Icon(Icons.Default.Refresh, contentDescription = "刷新 root 状态")
+                            Icon(Icons.Default.Refresh, contentDescription = "Refresh root status")
                         }
                     }
                     Spacer(modifier = Modifier.height(12.dp))
@@ -117,11 +117,11 @@ fun DeeplinkBookmarksTab(modifier: Modifier = Modifier) {
                         label = {
                             Text(
                                 if (!rootChecked) {
-                                    "正在检测 root"
+                                    "Checking root"
                                 } else if (rootAvailable) {
-                                    "root 已开启"
+                                    "root enabled"
                                 } else {
-                                    "root 不可用"
+                                    "root unavailable"
                                 }
                             )
                         }
@@ -139,7 +139,7 @@ fun DeeplinkBookmarksTab(modifier: Modifier = Modifier) {
                     )
                 ) {
                     Text(
-                        text = "当前设备没有 root，按照你的要求，这个功能页不会对普通场景开放。请先确保 `su -c id` 可用。",
+                        text = "This device has no root. As requested, this page stays closed to ordinary use. Make sure `su -c id` works first.",
                         modifier = Modifier.padding(16.dp),
                         color = MaterialTheme.colorScheme.onErrorContainer
                     )
@@ -149,7 +149,7 @@ fun DeeplinkBookmarksTab(modifier: Modifier = Modifier) {
             item {
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = "还没有收藏记录。开始轨迹录制后，走到目标页面并点击悬浮窗里的收藏按钮，就会在这里生成 Deeplink 收藏。",
+                        text = "No bookmarks yet. Start trajectory recording, go to the target page, and tap the bookmark button in the floating window to create a Deeplink bookmark here.",
                         modifier = Modifier.padding(16.dp)
                     )
                 }
@@ -161,11 +161,11 @@ fun DeeplinkBookmarksTab(modifier: Modifier = Modifier) {
                     onLaunch = {
                         when (val result = DeeplinkLauncher.launch(context, bookmark)) {
                             DeeplinkLauncher.LaunchResult.RootSuccess -> {
-                                Toast.makeText(context, "已通过 root 直达目标页", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Opened the target page via root", Toast.LENGTH_SHORT).show()
                             }
 
                             DeeplinkLauncher.LaunchResult.DirectIntentSuccess -> {
-                                Toast.makeText(context, "已通过普通 Intent 尝试打开目标页", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Attempted to open the target page with a normal Intent", Toast.LENGTH_SHORT).show()
                             }
 
                             is DeeplinkLauncher.LaunchResult.Failed -> {
@@ -180,7 +180,7 @@ fun DeeplinkBookmarksTab(modifier: Modifier = Modifier) {
                             }
                             Toast.makeText(
                                 context,
-                                if (result.success) "✅ ${result.message}，下次说「${result.skillName}」即可直达"
+                                if (result.success) "✅ ${result.message}. Next time say \"${result.skillName}\" to jump straight there"
                                 else "❌ ${result.message}",
                                 Toast.LENGTH_LONG
                             ).show()
@@ -259,13 +259,13 @@ private fun DeeplinkBookmarkCard(
                 horizontalArrangement = Arrangement.End
             ) {
                 IconButton(onClick = onLaunch) {
-                    Icon(Icons.Default.OpenInNew, contentDescription = "一键直达")
+                    Icon(Icons.Default.OpenInNew, contentDescription = "Open directly")
                 }
                 IconButton(onClick = onExportSkill) {
-                    Icon(Icons.Default.SaveAlt, contentDescription = "导出为 Skill")
+                    Icon(Icons.Default.SaveAlt, contentDescription = "Export as Skill")
                 }
                 IconButton(onClick = onDelete) {
-                    Icon(Icons.Default.Delete, contentDescription = "删除收藏")
+                    Icon(Icons.Default.Delete, contentDescription = "Delete bookmark")
                 }
             }
         }

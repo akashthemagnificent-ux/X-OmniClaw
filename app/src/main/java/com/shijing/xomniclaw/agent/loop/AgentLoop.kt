@@ -158,10 +158,10 @@ class AgentLoop(
     ): String {
         val selectedToolNames = selectedToolDefinitions.map { it.function.name }.sorted()
         val shownTools = selectedToolNames.take(12).joinToString(", ")
-        val toolPreview = if (shownTools.isBlank()) "无" else shownTools
-        val hintPreview = decision.hint?.trim()?.take(160)?.ifBlank { "无" } ?: "无"
+        val toolPreview = if (shownTools.isBlank()) "none" else shownTools
+        val hintPreview = decision.hint?.trim()?.take(160)?.ifBlank { "none" } ?: "none"
         return buildString {
-            append("[第1步·工具路由] ")
+            append("[Step 1 · tool routing] ")
             append("source=${decision.source}; ")
             append("onDemand=${decision.onDemandNames.size}; ")
             append("selectedTools=${selectedToolDefinitions.size}; ")
@@ -219,21 +219,21 @@ class AgentLoop(
 
             val errorMessage = if (cancelled) {
                 buildString {
-                    append("🛑 已停止执行\n\n")
-                    append("你已手动取消当前任务，这不是系统错误。\n\n")
-                    append("你可以：\n")
-                    append("- 继续发送新的指令\n")
-                    append("- 或点击“新对话”开始新的会话")
+                    append("🛑 Execution stopped\n\n")
+                    append("You cancelled the current task manually; this is not a system error.\n\n")
+                    append("You can:\n")
+                    append("- Send a new instruction\n")
+                    append("- Or tap \"New chat\" to start a fresh session")
                 }
             } else {
                 buildString {
-                    append("❌ Agent 执行失败\n\n")
-                    append("**错误信息**: ${e.message ?: "未知错误"}\n\n")
-                    append("**错误类型**: ${e.javaClass.simpleName}\n\n")
-                    append("**建议**: \n")
-                    append("- 请检查网络连接\n")
-                    append("- 如果问题持续，请点击“新对话”重新开始\n")
-                    append("- 查看日志获取更多详细信息")
+                    append("❌ Agent execution failed\n\n")
+                    append("**Error**: ${e.message ?: "unknown error"}\n\n")
+                    append("**Type**: ${e.javaClass.simpleName}\n\n")
+                    append("**Suggestions**: \n")
+                    append("- Check your network connection\n")
+                    append("- If it persists, tap \"New chat\" to start over\n")
+                    append("- Check the logs for more detail")
                 }
             }
 
@@ -323,7 +323,7 @@ class AgentLoop(
         )
 
         val systemForAgent = if (!routeHint.isNullOrBlank()) {
-            systemPrompt + "\n\n[RouteHint 供主 Agent 参考, 非硬约束]\n" + routeHint.trim() + "\n"
+            systemPrompt + "\n\n[RouteHint for the main Agent, not a hard constraint]\n" + routeHint.trim() + "\n"
         } else {
             systemPrompt
         }
@@ -370,7 +370,7 @@ class AgentLoop(
                 object : TypeToken<Map<String, Any?>>() {}.type
             )
 
-            val finalContent = map["final_content"] as? String ?: "无响应"
+            val finalContent = map["final_content"] as? String ?: "No response"
             @Suppress("UNCHECKED_CAST")
             val toolsUsed = (map["tools_used"] as? List<String>) ?: emptyList()
             val iterations = (map["iterations"] as? Double)?.toInt() ?: 0
@@ -417,12 +417,12 @@ class AgentLoop(
         } catch (e: Exception) {
             Log.e(TAG, "Failed to parse Python result", e)
             AgentResult(
-                finalContent = "❌ 内部错误：无法解析执行结果",
+                finalContent = "❌ Internal error: could not parse the execution result",
                 toolsUsed = emptyList(),
                 messages = listOf(
                     Message(role = "system", content = systemPrompt),
                     Message(role = "user", content = userMessage),
-                    Message(role = "assistant", content = "❌ 内部错误：无法解析执行结果")
+                    Message(role = "assistant", content = "❌ Internal error: could not parse the execution result")
                 ),
                 iterations = 0,
                 tokenUsage = null

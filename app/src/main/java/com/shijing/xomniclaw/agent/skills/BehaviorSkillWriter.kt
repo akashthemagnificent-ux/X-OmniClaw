@@ -45,18 +45,18 @@ object BehaviorSkillWriter {
         events: List<AccessibilityEventDispatcher.RecordedAccessibilityEvent>
     ): String {
         val eventLines = if (events.isEmpty()) {
-            listOf("- 本次没有捕获到可用行为事件。")
+            listOf("- No usable behavior events were captured this time.")
         } else {
             events.mapIndexed { index, event ->
                 val timeLabel = readableFormatter.format(Date(event.timestampMs))
                 buildString {
-                    append("${index + 1}. 时间：$timeLabel")
-                    append("\n   - 动作：${event.actionSummary}")
-                    append("\n   - 事件类型：${event.eventTypeName}")
-                    append("\n   - 包名：${event.packageName.ifBlank { "(空)" }}")
-                    append("\n   - 页面类：${event.className.ifBlank { "(空)" }}")
-                    append("\n   - 文本：${event.text.ifBlank { "(空)" }}")
-                    append("\n   - 描述：${event.contentDescription.ifBlank { "(空)" }}")
+                    append("${index + 1}. Time: $timeLabel")
+                    append("\n   - Action: ${event.actionSummary}")
+                    append("\n   - Event type: ${event.eventTypeName}")
+                    append("\n   - Package: ${event.packageName.ifBlank { "(empty)" }}")
+                    append("\n   - Page class: ${event.className.ifBlank { "(empty)" }}")
+                    append("\n   - Text: ${event.text.ifBlank { "(empty)" }}")
+                    append("\n   - Description: ${event.contentDescription.ifBlank { "(empty)" }}")
                 }
             }
         }
@@ -64,26 +64,26 @@ object BehaviorSkillWriter {
         return buildString {
             appendLine("---")
             appendLine("name: $skillName")
-            appendLine("description: 用户行为记录自动生成技能，可用于复盘真实操作步骤。")
+            appendLine("description: Auto-generated from the user behavior log; use it to review real operation steps.")
             appendLine("---")
             appendLine()
-            appendLine("# 行为记录技能")
+            appendLine("# Behavior recording skill")
             appendLine()
-            appendLine("## 用途")
+            appendLine("## Purpose")
             appendLine()
-            appendLine("- 该技能由 OmniClaw 自动生成，用于复盘用户真实操作行为。")
-            appendLine("- 当后续任务与本次操作相似时，可以读取本技能，参考已记录的步骤、页面跳转和输入行为。")
+            appendLine("- This skill is generated automatically by OmniClaw to review the user's real operations.")
+            appendLine("- When a later task is similar to this one, read this skill to reference the recorded steps, screen transitions, and input behavior.")
             appendLine()
-            appendLine("## 记录结果")
+            appendLine("## Recorded result")
             appendLine()
             eventLines.forEach { line ->
                 appendLine(line)
                 appendLine()
             }
-            appendLine("## 使用提示")
+            appendLine("## Usage notes")
             appendLine()
-            appendLine("- 先按顺序理解记录中的页面切换、点击、输入与滚动。")
-            appendLine("- 若页面结构变化较大，应把本记录当作参考而不是绝对脚本。")
+            appendLine("- First follow the recorded screen changes, taps, input, and scrolling in order.")
+            appendLine("- If the UI structure changed a lot, treat this record as a reference, not an absolute script.")
         }
     }
 }

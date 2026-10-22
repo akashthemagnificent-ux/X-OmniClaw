@@ -241,7 +241,7 @@ class ContextBuilder(
         // 身份与叫法只写此处；语言/隐私/语气等一律见 AGENTS（全局交互准则），避免与 bootstrap 重复。
         return """
 ## Screen Interaction
-On-device Android automation assistant. Self-describe as "Android 助手" or "自动化助手"; do not use the legacy "OmniClaw" name unless the user asks. `device` is the main interaction tool. Language, privacy, user-visible tone, and task rules: follow currently loaded bootstrap policy files. AGENTS.md is Agent-model-only and should appear only in Agent-model scenarios.
+On-device Android automation assistant. Self-describe as "Android Assistant" or "automation assistant"; do not use the legacy "OmniClaw" name unless the user asks. `device` is the main interaction tool. Language, privacy, user-visible tone, and task rules: follow currently loaded bootstrap policy files. AGENTS.md is Agent-model-only and should appear only in Agent-model scenarios.
         """.trimIndent()
     }
 
@@ -493,9 +493,9 @@ Scope yourself to the user's request; on conflict pause and ask; respect stop/au
         // 进入首页再手动找搜索框，反复多轮也达不到 SKILL.md 里描述的直达效果。
         // 这里只在「淘宝 + 搜索/购物/比价类意图」时强制 read_file，避免把闲聊也卡死。
         val taobaoIntentHints = listOf(
-            "搜", "搜索", "查", "查找", "找", "看看",
-            "比价", "购物", "买", "下单",
-            "新款", "型号", "价格", "多少钱", "商品",
+            "搜", "搜索", "查", "查找", "找", "看看", "search", "look up", "find", "browse",
+            "比价", "购物", "买", "下单", "compare price", "shopping", "buy", "order",
+            "新款", "型号", "价格", "多少钱", "商品", "new model", "price", "how much", "product",
         )
         if ((q.contains("淘宝") || q.contains("taobao")) &&
             taobaoIntentHints.any { q.contains(it) }
@@ -544,7 +544,7 @@ Scope yourself to the user's request; on conflict pause and ask; respect stop/au
 
         return """
 ## Memory Recall
-默认只加载 `memory/USER-PROFILE.md` 的精简画像；`MEMORY.md` 与 `memory/IMAGE-MEMORY.md` 只在任务明确需要任务经验、历史偏好、照片或截图信息时通过 `memory_search` / `memory_get` 按需读取，严禁虚构。
+Only the condensed profile in `memory/USER-PROFILE.md` is loaded by default. Read `MEMORY.md` and `memory/IMAGE-MEMORY.md` on demand via `memory_search` / `memory_get` only when the task explicitly needs task experience, historical preferences, photos, or screenshot info. Never fabricate them.
         """.trimIndent()
     }
 
@@ -890,7 +890,15 @@ ALL internal reasoning MUST be inside <think>...</think>. Do not output any anal
             normalized.contains("图") ||
             normalized.contains("归档") ||
             normalized.contains("文件夹") ||
-            normalized.contains("相册里")
+            normalized.contains("相册里") ||
+            normalized.contains("album") ||
+            normalized.contains("photo") ||
+            normalized.contains("image") ||
+            normalized.contains("screenshot") ||
+            normalized.contains("picture") ||
+            normalized.contains("camera roll") ||
+            normalized.contains("archive") ||
+            normalized.contains("folder")
     }
 
     // buildRuntimeInfo() removed — inlined into buildRuntimeSection() for alignment with OmniClaw

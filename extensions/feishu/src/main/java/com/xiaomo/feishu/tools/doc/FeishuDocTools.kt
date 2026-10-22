@@ -46,7 +46,7 @@ class FeishuDocTools(config: FeishuConfig, client: FeishuClient) {
  */
 class DocCreateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_doc_create"
-    override val description = "创建飞书文档"
+    override val description = "Create a Feishu document"
 
     override fun isEnabled() = config.enableDocTools
 
@@ -94,9 +94,9 @@ class DocCreateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "title" to PropertySchema("string", "文档标题"),
-                    "content" to PropertySchema("string", "文档内容（可选）"),
-                    "folder_id" to PropertySchema("string", "文件夹ID（可选）")
+                    "title" to PropertySchema("string", "document title"),
+                    "content" to PropertySchema("string", "document content (optional)"),
+                    "folder_id" to PropertySchema("string", "folder ID (optional)")
                 ),
                 required = listOf("title")
             )
@@ -125,7 +125,7 @@ class DocCreateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase
  */
 class DocReadTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_doc_read"
-    override val description = "读取飞书文档内容"
+    override val description = "Read Feishu document content"
 
     override fun isEnabled() = config.enableDocTools
 
@@ -157,7 +157,7 @@ class DocReadTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(c
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "document_id" to PropertySchema("string", "文档ID")
+                    "document_id" to PropertySchema("string", "document ID")
                 ),
                 required = listOf("document_id")
             )
@@ -170,7 +170,7 @@ class DocReadTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(c
  */
 class DocUpdateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_doc_update"
-    override val description = "更新飞书文档内容"
+    override val description = "Update Feishu document content"
 
     override fun isEnabled() = config.enableDocTools
 
@@ -213,8 +213,8 @@ class DocUpdateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "document_id" to PropertySchema("string", "文档ID"),
-                    "content" to PropertySchema("string", "要添加的内容")
+                    "document_id" to PropertySchema("string", "document ID"),
+                    "content" to PropertySchema("string", "content to append")
                 ),
                 required = listOf("document_id", "content")
             )
@@ -227,7 +227,7 @@ class DocUpdateTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase
  */
 class DocDeleteTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase(config, client) {
     override val name = "feishu_doc_delete"
-    override val description = "删除飞书文档"
+    override val description = "Delete a Feishu document"
 
     override fun isEnabled() = config.enableDocTools
 
@@ -256,7 +256,7 @@ class DocDeleteTool(config: FeishuConfig, client: FeishuClient) : FeishuToolBase
             description = description,
             parameters = ParametersSchema(
                 properties = mapOf(
-                    "document_id" to PropertySchema("string", "文档ID")
+                    "document_id" to PropertySchema("string", "document ID")
                 ),
                 required = listOf("document_id")
             )

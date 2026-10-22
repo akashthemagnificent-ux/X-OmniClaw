@@ -1595,7 +1595,7 @@ fun MessageComposer(
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
                             imageVector = Icons.Default.Stop,
-                            contentDescription = "停止",
+                            contentDescription = "Stop",
                             tint = Color.White,
                             modifier = Modifier.size(22.dp)
                         )
@@ -1613,7 +1613,7 @@ fun MessageComposer(
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
                             imageVector = Icons.Default.Send,
-                            contentDescription = "发送",
+                            contentDescription = "Send",
                             tint = Color.White,
                             modifier = Modifier.size(20.dp)
                         )
@@ -1631,7 +1631,7 @@ fun MessageComposer(
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = "更多功能",
+                            contentDescription = "More actions",
                             tint = Color(0xFF666666),
                             modifier = Modifier.size(20.dp)
                         )

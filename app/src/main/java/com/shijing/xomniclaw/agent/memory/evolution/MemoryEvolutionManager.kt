@@ -264,12 +264,12 @@ class MemoryEvolutionManager(
         return buildString {
             appendLine(DEFAULT_MEMORY_HEADER)
             appendLine()
-            appendLine("此文件保存用户使用 X-OmniClaw 执行任务过程中沉淀的长期记忆。")
-            appendLine("相册内容写入 memory/IMAGE-MEMORY.md；用户画像写入 memory/USER-PROFILE.md。")
+            appendLine("Long-term memory accumulated while the user runs tasks with X-OmniClaw.")
+            appendLine("Gallery content goes to memory/IMAGE-MEMORY.md; the user profile goes to memory/USER-PROFILE.md.")
             appendLine()
             MemoryCategory.values().forEach { category ->
                 appendLine(category.sectionTitle)
-                appendLine("- 暂无稳定记忆。")
+                appendLine("- No stable memory yet.")
                 appendLine()
             }
         }.trim()
@@ -281,7 +281,7 @@ class MemoryEvolutionManager(
                 lines.add("")
             }
             lines.add(sectionTitle)
-            lines.add("- 暂无稳定记忆。")
+            lines.add("- No stable memory yet.")
         }
     }
 

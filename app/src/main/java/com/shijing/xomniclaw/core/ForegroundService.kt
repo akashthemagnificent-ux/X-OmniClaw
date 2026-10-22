@@ -36,7 +36,7 @@ class ForegroundService : Service() {
         private const val TAG = "ForegroundService"
         private const val NOTIFICATION_ID = 1
         private const val CHANNEL_ID = "omniclaw_service"
-        private const val CHANNEL_NAME = "OmniClaw 后台服务"
+        private const val CHANNEL_NAME = "OmniClaw background service"
         const val ACTION_START_ACTIVITY = "START_ACTIVITY"
         const val EXTRA_PACKAGE_NAME = "package_name"
         const val EXTRA_ACTIVITY_NAME = "activity_name"
@@ -129,7 +129,7 @@ class ForegroundService : Service() {
                 CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "保持 OmniClaw 后台运行"
+                description = "Keeps OmniClaw running in the background"
                 setShowBadge(false)
                 enableLights(false)
                 enableVibration(false)
@@ -164,8 +164,8 @@ class ForegroundService : Service() {
         )
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("OmniClaw 正在运行")
-            .setContentText("点击打开应用")
+            .setContentTitle("OmniClaw is running")
+            .setContentText("Tap to open the app")
             .setSmallIcon(R.drawable.ic_baseline_adb_24)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setShowWhen(true)

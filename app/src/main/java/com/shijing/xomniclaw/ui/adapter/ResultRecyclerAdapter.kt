@@ -22,7 +22,7 @@ class ResultRecyclerAdapter(val list: List<ResultBean>) :
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun onBind(result: ResultBean) {
             val textView = itemView.findViewById<TextView>(android.R.id.text1)
-            textView.text = result.action ?: "无操作"
+            textView.text = result.action ?: "No action"
         }
     }
 

@@ -486,8 +486,8 @@ class DeviceTool(private val context: Context) : Tool {
                     )
                 }
                 appendLine(
-                    "提示（剪映）：进入「一键成片」请优先使用带「一键成片」字样的 ref；若点到旁边大块空白 button，引擎会改点到文案命中区。" +
-                        "相册多选：大块无文案 button 多为缩略图（易进预览）；勾选圈多为 link（可 selected）。误点大图时引擎会尽量改点到同格右上角圈。"
+                    "Hint (CapCut): to enter \"One-tap smart cut\", prefer the ref whose label contains \"一键成片\"; if a nearby large blank button is tapped, the engine retargets to the label hit area." +
+                        "Album multi-select: large unlabeled buttons are usually thumbnails (they open the preview); selection circles are usually links (selectable). On a mistaken thumbnail tap the engine tries to retarget the circle in the top-right of the same cell."
                 )
             }
             append(body)
@@ -551,7 +551,7 @@ class DeviceTool(private val context: Context) : Tool {
         var query = (args["query"] as? String)?.trim().orEmpty()
 
         if (query.isBlank()) {
-            query = "分析当前界面并返回最显著交互目标。"
+            query = "Analyze the current screen and return the most prominent interaction target."
         }
 
         // 截一张图，获取当前画面和分辨率
@@ -572,7 +572,7 @@ class DeviceTool(private val context: Context) : Tool {
             target = query,
             preferVisual = true
         ) ?: return ToolResult.error(
-            "未能根据 query='$query' 定位到可点击目标。请改写更具体 query（如“右上角搜索按钮”）后重试。"
+            "Could not locate a clickable target for query='$query'. Rewrite the query more specifically (e.g. \"search button at top right\") and retry."
         )
 
         // Heuristic: Analysis Mode (see DualTrackDecisionEngine.callVlmGrounding systemPrompt).
@@ -790,12 +790,12 @@ class DeviceTool(private val context: Context) : Tool {
                             dualDecision.fusedNodeText ?: semanticTarget
                         )
                     } else {
-                        return ToolResult.error("${resolved.error}；双轨兜底未命中，请补充 target 或重新 snapshot。")
+                        return ToolResult.error("${resolved.error}; dual-track fallback missed — add a target or take a new snapshot.")
                     }
                 } else {
                     return ToolResult.error(
                         if (capcutTreeRefForced) {
-                            "${resolved.error}（已使用剪映树内 ref 优先路径，请勿依赖双轨；请先重新 snapshot 再 act。）"
+                            "${resolved.error} (used the CapCut in-tree ref priority path — do not rely on dual-track; take a new snapshot before act.)"
                         } else {
                             resolved.error
                         }
@@ -930,10 +930,10 @@ class DeviceTool(private val context: Context) : Tool {
                     append(" at (").append(x).append(", ").append(y).append(")")
                     if (adaptiveRedirected) {
                         when (tapAdjustTag) {
-                            "capcut_pair" -> append(" [capcut→同格link勾选]")
-                            "capcut_corner" -> append(" [capcut→圈坐标校正]")
+                            "capcut_pair" -> append(" [capcut→same-cell link selection]")
+                            "capcut_corner" -> append(" [capcut→circle coordinate correction]")
                             "settings_switch" -> append(" [adaptive-switch-target]")
-                            else -> append(" [tap坐标已校正]")
+                            else -> append(" [tap coordinates corrected]")
                         }
                     }
                     append(dualTrackHint)
@@ -941,11 +941,11 @@ class DeviceTool(private val context: Context) : Tool {
                     append(retryHint)
                     when {
                         feishuSendRefForced ->
-                            append(" [飞书：已强制发送按钮 ref，避免误点右下角非发送图标；请立即观察确认消息已发出]")
+                            append(" [Feishu: forced the send-button ref to avoid tapping a non-send icon at bottom right; verify the message was sent]")
                         capcutYijianRefForced ->
-                            append(" [剪映：树内「一键成片」ref 优先，未用双轨盲点]")
+                            append(" [CapCut: in-tree \"One-tap smart cut\" ref took priority, no dual-track blind tap]")
                         capcutPickerTabRefForced ->
-                            append(" [剪映：相册顶部「${semanticTarget.trim()}」Tab 已用语义树 ref，未用双轨]")
+                            append(" [CapCut: album top \"${semanticTarget.trim()}\" tab used the semantic-tree ref, not dual-track]")
                     }
                 }
                 ToolResult.success(resultText, metadata)
@@ -966,7 +966,7 @@ class DeviceTool(private val context: Context) : Tool {
             // 仅走无障碍聚焦路径，避免依赖特定输入法状态。
             val focused = AccessibilityProxy.tap(x, y)
             if (!focused) {
-                return ToolResult.error("输入失败：无障碍服务未开启或目标输入框无法聚焦。")
+                return ToolResult.error("Input failed: the accessibility service is off or the target field cannot take focus.")
             }
             delay(POST_ACTION_DELAY_MS)
         }
@@ -984,7 +984,7 @@ class DeviceTool(private val context: Context) : Tool {
                 if (hasNonAscii) {
                     // 中文/emoji 等非 ASCII 文本禁止使用 shell 兜底，避免“执行成功但内容错误”
                     return ToolResult.error(
-                        "中文输入失败：当前输入通道不支持非 ASCII 文本。请确认输入框已正确聚焦，并确保无障碍输入可用后重试。"
+                        "Non-ASCII input failed: the current input channel does not support it. Confirm the field has focus and that accessibility input works, then retry."
                     )
                 }
                 Log.w(TAG, "Falling back to shell 'input text' (ASCII only)")
@@ -1235,18 +1235,18 @@ class DeviceTool(private val context: Context) : Tool {
         val refs = parseRefsList(args["refs"]).distinct()
         if (refs.isEmpty()) {
             return ToolResult.error(
-                "multi_tap 需要 refs 数组（须与**当前** snapshot 一致，从左到右勾选圈 ref；编号无奇偶规律）。请先 snapshot 再 multi_tap。"
+                "multi_tap needs a refs array (must match the **current** snapshot; selection-circle refs left to right — numbering has no even/odd pattern). Take a snapshot first."
             )
         }
         if (refs.size > MULTI_TAP_MAX) {
             return ToolResult.error(
-                "multi_tap 单次最多 $MULTI_TAP_MAX 个 ref；请先选一批 → snapshot → 再 multi_tap 下一批。"
+                "multi_tap accepts at most $MULTI_TAP_MAX refs per call; select a batch → snapshot → next batch."
             )
         }
 
         if (refManager.isStale(REF_MAX_AGE_MS)) {
             return ToolResult.error(
-                "当前 snapshot 已过期（>${REF_MAX_AGE_MS}ms）。请先 device(action='snapshot') 再 multi_tap。"
+                "The current snapshot expired (>${REF_MAX_AGE_MS}ms). Run device(action='snapshot') before multi_tap."
             )
         }
 
@@ -1256,16 +1256,16 @@ class DeviceTool(private val context: Context) : Tool {
 
         for (ref in refs) {
             val node = refManager.getRefNode(ref)
-                ?: return ToolResult.error("Ref '$ref' 不在当前 snapshot。请重新 snapshot。")
+                ?: return ToolResult.error("Ref '$ref' is not in the current snapshot. Take a new snapshot.")
             if (!ignoreAd && AdUiGuard.isLikelyAdvertisement(node)) {
                 return ToolResult.error(
-                    "Ref '$ref' 疑似广告区域，已中止 multi_tap。请换 ref 或 ignore_ad_guard=true（慎用）。"
+                    "Ref '$ref' looks like an ad area; multi_tap aborted. Use another ref, or ignore_ad_guard=true (use with care)."
                 )
             }
             refForegroundPackageMismatchError(ref, node)?.let { return ToolResult.error(it) }
             val pt = refManager.resolveRefForTap(ref, dmGrid.widthPixels, dmGrid.heightPixels)
                 ?: refManager.resolveRef(ref)
-                ?: return ToolResult.error("无法解析 ref '$ref' 的坐标。")
+                ?: return ToolResult.error("Cannot resolve coordinates for ref '$ref'.")
             coords.add(MultiTapCoord(ref, pt.first, pt.second, node.text))
         }
 
@@ -1274,7 +1274,7 @@ class DeviceTool(private val context: Context) : Tool {
             val c = coords[i]
             val ok = AccessibilityProxy.tap(c.x, c.y)
             if (!ok) {
-                return ToolResult.error("multi_tap 第 ${i + 1}/${coords.size} 次失败: ref=${c.ref} at (${c.x},${c.y})")
+                return ToolResult.error("multi_tap ${i + 1}/${coords.size} failed: ref=${c.ref} at (${c.x},${c.y})")
             }
             summaries.add(
                 buildString {
@@ -1339,7 +1339,7 @@ class DeviceTool(private val context: Context) : Tool {
                         kotlinx.coroutines.delay(POST_OPEN_DELAY_MS)
                         return appendUiVerifyHintAfterOpen(
                             ToolResult.success(
-                                "Opened via browser redirect: $uriRaw (package=$explicitPackage 无法直接处理，已通过浏览器重定向打开)" +
+                                "Opened via browser redirect: $uriRaw (package=$explicitPackage cannot handle it directly; opened via browser redirect)" +
                                     (aliasNote?.let { " [$it]" } ?: ""),
                                 mapOf("uri" to uriRaw, "target_package" to "browser_redirect", "original_package" to explicitPackage)
                             )
@@ -1358,7 +1358,7 @@ class DeviceTool(private val context: Context) : Tool {
             }
 
             if (normalizedPackageName.isNullOrBlank()) {
-                return ToolResult.error("Provide package_name to launch an app, or uri/url for a deep link (e.g. 剪映 videocut://… + package_name com.lemon.lv).")
+                return ToolResult.error("Provide package_name to launch an app, or uri/url for a deep link (e.g. CapCut videocut://… + package_name com.lemon.lv).")
             }
 
             val launchCandidates = buildList {
@@ -1397,8 +1397,8 @@ class DeviceTool(private val context: Context) : Tool {
             }
         } catch (_: ActivityNotFoundException) {
             val pkg = normalizedPackageName ?: uriRaw?.let { Uri.parse(it).scheme?.takeIf { s -> s.equals("videocut", true) }?.let { "com.lemon.lv" } }
-            val hint = if (pkg != null) "package=$pkg 无法处理 uri=$uriRaw" else "无 Activity 可处理 uri=$uriRaw"
-            ToolResult.error("ActivityNotFound: $hint。请检查 URI 是否为可直接解析的 deep link（HTTP 短链需浏览器重定向，不能直接指定 package_name）。")
+            val hint = if (pkg != null) "package=$pkg cannot handle uri=$uriRaw" else "no Activity handles uri=$uriRaw"
+            ToolResult.error("ActivityNotFound: $hint. Check that the URI is a directly resolvable deep link (HTTP short links need a browser redirect and cannot take a package_name).")
         } catch (e: Exception) {
             ToolResult.error("Failed to open: ${e.message}")
         }
@@ -1414,7 +1414,7 @@ class DeviceTool(private val context: Context) : Tool {
         aliasNote: String?
     ): ToolResult {
         if (!com.shijing.xomniclaw.deeplink.RootShellExecutor.hasRootAccess()) {
-            return ToolResult.error("Root 不可用，无法通过 root shell 启动 Activity。请先获取 root 权限。")
+            return ToolResult.error("Root unavailable — cannot launch the Activity from a root shell. Obtain root first.")
         }
 
         val amCommand = "am start -n $packageName/$className"
@@ -1442,7 +1442,7 @@ class DeviceTool(private val context: Context) : Tool {
                 )
             )
         } else {
-            ToolResult.error("Root shell 启动失败: ${result.error.ifBlank { result.output }}")
+            ToolResult.error("Root shell launch failed: ${result.error.ifBlank { result.output }}")
         }
     }
 
@@ -1484,9 +1484,9 @@ class DeviceTool(private val context: Context) : Tool {
                 )
             )
         } catch (_: ActivityNotFoundException) {
-            ToolResult.error("ActivityNotFound: $packageName/$className 不存在或未导出。请检查 Activity 是否正确。")
+            ToolResult.error("ActivityNotFound: $packageName/$className does not exist or is not exported.")
         } catch (e: SecurityException) {
-            ToolResult.error("SecurityException: $packageName/$className 无法启动（可能未导出或需要权限）: ${e.message}")
+            ToolResult.error("SecurityException: cannot start $packageName/$className (not exported or missing permission): ${e.message}")
         } catch (e: Exception) {
             ToolResult.error("Failed to open $packageName/$className: ${e.message}")
         }
@@ -1558,7 +1558,7 @@ class DeviceTool(private val context: Context) : Tool {
 
     private fun isAdGuardBlockedError(error: String?): Boolean {
         val msg = error.orEmpty()
-        return msg.contains("疑似广告") || msg.contains("广告/推广区域")
+        return msg.contains("looks like an ad") || msg.contains("ad/promo area")
     }
 
     private fun looksLikeAdvertisementScreen(nodes: List<ViewNode>): Boolean {
@@ -1602,7 +1602,7 @@ class DeviceTool(private val context: Context) : Tool {
             HINT_BUTTON_KEYWORDS.any { kw -> lower.contains(kw.lowercase()) }
         } ?: return null
 
-        return "Ref '$ref' 疑似「提示/帮助」按钮（命中文案：'$hit'），已拦截以避免误触。请先重新 snapshot 并改选「确定/提交/下一题」对应 ref；确需点提示可传 ignore_hint_guard=true。"
+        return "Ref '$ref' looks like a hint/help button (matched text: '$hit') and was blocked to avoid a mis-tap. Take a new snapshot and pick the 'confirm/submit/next question' ref; to tap the hint anyway, pass ignore_hint_guard=true."
     }
 
     private suspend fun tryAutoDismissObstruction(
@@ -1785,14 +1785,14 @@ class DeviceTool(private val context: Context) : Tool {
             if (refManager.isStale(REF_MAX_AGE_MS)) {
                 return CoordinateResolveResult(
                     coordinate = null,
-                    error = "Ref '$ref' 已过期（${ageMs}ms，阈值=${REF_MAX_AGE_MS}ms）。请先调用 device(action='snapshot') 获取最新页面元素后再操作。"
+                    error = "Ref '$ref' expired (${ageMs}ms, limit=${REF_MAX_AGE_MS}ms). Run device(action='snapshot') for the latest elements before acting."
                 )
             }
 
             val originalNode = refManager.getRefNode(ref)
                 ?: return CoordinateResolveResult(
                     coordinate = null,
-                    error = "Ref '$ref' 不存在于最近一次 snapshot。请先 device(action='snapshot') 再操作。"
+                    error = "Ref '$ref' is not in the latest snapshot. Run device(action='snapshot') first."
                 )
 
             var effectiveRef = ref
@@ -1805,7 +1805,7 @@ class DeviceTool(private val context: Context) : Tool {
                 if (!refresh.success) {
                     return CoordinateResolveResult(
                         coordinate = null,
-                        error = "$mismatchError（自动刷新 snapshot 失败：${refresh.error}）"
+                        error = "$mismatchError (auto snapshot refresh failed: ${refresh.error})"
                     )
                 }
 
@@ -1825,7 +1825,7 @@ class DeviceTool(private val context: Context) : Tool {
                     } else {
                         return CoordinateResolveResult(
                             coordinate = null,
-                            error = "$mismatchError（已自动刷新 snapshot=${refresh.snapshotId} package=${refresh.packageName} refs=${refresh.refCount}，但未找到安全可重用 ref，请基于最新 snapshot 重试。）"
+                            error = "$mismatchError (auto-refreshed snapshot=${refresh.snapshotId} package=${refresh.packageName} refs=${refresh.refCount}, but found no safely reusable ref — retry against the latest snapshot.)"
                         )
                     }
                 }
@@ -1836,7 +1836,7 @@ class DeviceTool(private val context: Context) : Tool {
                 val hint = effectiveNode.text?.take(80)?.replace('\'', ' ') ?: ""
                 return CoordinateResolveResult(
                     coordinate = null,
-                    error = "Ref '$effectiveRef' 疑似广告/推广区域（text='$hint'），已拒绝操作。请优先选择「跳过/关闭/不感兴趣」等 ref，或关闭广告后重新 snapshot。确需操作可传 ignore_ad_guard=true（慎用）。"
+                    error = "Ref '$effectiveRef' looks like an ad/promo area (text='$hint'); operation refused. Prefer skip/close/not-interested refs, or dismiss the ad and take a new snapshot. To force it, pass ignore_ad_guard=true (use with care)."
                 )
             }
 

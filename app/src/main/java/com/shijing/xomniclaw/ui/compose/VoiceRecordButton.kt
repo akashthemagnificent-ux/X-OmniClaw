@@ -56,7 +56,7 @@ fun VoiceRecordButton(
         // "识别中..." 浮动提示
         if (isListening) {
             Text(
-                text = "识别中...",
+                text = "Recognizing...",
                 style = TextStyle(
                     fontSize = 11.sp,
                     color = Color(0xFFFF3B30),
@@ -86,7 +86,7 @@ fun VoiceRecordButton(
         ) {
             Icon(
                 imageVector = Icons.Default.Mic,
-                contentDescription = "语音输入",
+                contentDescription = "Voice input",
                 tint = iconTint,
                 modifier = Modifier.size(22.dp)
             )
