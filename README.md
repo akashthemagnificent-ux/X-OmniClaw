@@ -294,6 +294,54 @@ UI fields map to the JSON below; edit the file directly only for bulk migration,
 | `minimax` | `MiniMax-M2.5` |
 | `ollama` | No fixed ID (`/api/tags`) |
 
+### Local router (bansos / any OpenAI-compatible endpoint)
+
+The app can talk to a local model router instead of a cloud provider. On a
+Termux-hosted *bansos* router the endpoint is:
+
+```
+Base URL:  http://127.0.0.1:17070/v1
+API type:  OpenAI Compatible
+API key:   any non-empty string (the router is keyless)
+Model ID:  the exact id from `bansos models` (ids change often)
+```
+
+Two things already work without code changes and two need care:
+
+- `127.0.0.1`, `localhost` and `10.0.2.2` are in
+  `app/src/main/res/xml/network_security_config.xml`, so plain-HTTP local
+  endpoints are permitted. A router on another machine (`http://192.168.x.x:...`)
+  is **not** allowlisted — add that host there, or use HTTPS/a tunnel, or the
+  request fails on cleartext policy.
+- When Termux and the app run on the same phone, `127.0.0.1` is the phone
+  itself, so the router is reachable directly. From an emulator use `10.0.2.2`.
+- The router answers in ~20s and is slow to start; raise request timeouts rather
+  than concluding the model is broken.
+- Free router model ids churn (`mimo-v2.5-free` is gone; current is
+  `mimo-v2.6-flash-free`). Always read the live catalog before typing an id.
+
+Set it in-app under **Model configuration** → *Custom provider* → API type
+**OpenAI Compatible**, or in `xomniclaw.json`:
+
+```json
+{
+  "models": {
+    "providers": {
+      "bansos": {
+        "baseUrl": "http://127.0.0.1:17070/v1",
+        "api": "openai-completions",
+        "apiKey": "bansos-keyless",
+        "models": [{ "id": "mimo-v2.6-flash-free", "name": "MiMo 2.6 Flash", "contextWindow": 131072 }]
+      }
+    }
+  },
+  "agents": { "defaults": { "model": { "primary": "bansos/mimo-v2.6-flash-free" } } }
+}
+```
+
+The same custom-provider form also accepts **Anthropic Compatible** and
+**Ollama** endpoints, so any local gateway speaking one of those works too.
+
 ### Config snippet: Agent model
 
 Matches in-app provider / default model.
