@@ -29,7 +29,7 @@ object SnapshotFormatter {
 
     private fun textLooksLikeDuration(t: String): Boolean = t.trim().matches(DURATION_LIKE_TEXT)
 
-    /** 剪映勾选圈 link：无字，或选中顺序序号 '1'/'2'… */
+    /** CapCut grid checkbox link: empty text, or a selection ordinal like '1'/'2'… */
     private val CAPCUT_GRID_LINK_ORDINAL = Regex("^\\d{1,2}$")
 
     private fun isCapCutGridCheckboxLink(node: RefNode): Boolean {
@@ -38,7 +38,7 @@ object SnapshotFormatter {
         return t.isEmpty() || t.matches(CAPCUT_GRID_LINK_ORDINAL)
     }
 
-    /** 扁平遍历顺序下，各「无文案 button + 勾选 link」成对里的 link ref（左→右 ≈ 格序）。 */
+    /** In flat traversal order, the link ref of each (textless button + checkbox link) pair (left→right ≈ cell order). */
     private fun collectCapCutPairCheckboxLinkRefs(nodes: List<RefNode>): List<String> {
         val out = mutableListOf<String>()
         var i = 0
@@ -56,7 +56,8 @@ object SnapshotFormatter {
     }
 
     /**
-     * 主题相册 / 换来源：必须点 **link「照片视频」**，勿用顶部无文案 button（易被 RefManager 误判为缩略图并「圈坐标校正」）。
+     * Theme album / change source: tap the **link "照片视频" (Photos & videos)**; never the
+     * textless button above it, which RefManager may mistake for a thumbnail and "correct" by coordinates.
      */
     fun capCutAlbumSourceDropdownHint(nodes: List<RefNode>): String? {
         val n = nodes.firstOrNull { node ->
@@ -66,13 +67,13 @@ object SnapshotFormatter {
                 node.text?.contains("照片视频") == true
         } ?: return null
         val label = n.text?.trim().orEmpty().ifEmpty { "照片视频" }
-        return "[剪映·相册来源] 要选 **`A_latest`** 等相册：请 **tap** **link '$label' [ref=${n.ref}]**（ref **以当前 snapshot 为准**）。" +
-            "**禁止**用同区域 **无文案 `button`**（树上常在附近，如 **e5**）代替——易被引擎当作「大缩略图」触发 **圈坐标校正**，误点下面素材格的勾选圈。"
+        return "[CapCut·album source] To pick an album such as **`A_latest`**, **tap** the **link '$label' [ref=${n.ref}]** (ref **as of the current snapshot**). " +
+            "**Never** substitute the nearby **textless `button`** (often **e5** in the tree): the engine treats it as a large thumbnail, applies **coordinate correction**, and mis-taps the checkbox of the cell below."
     }
 
     /**
-     * 相册下拉列表里每行常为：`button`（整行）→ `text '相册名'` → `text '数量'`。
-     * 模型易把 **`text 'A_latest'` 下面下一行的 `button`** 当成 A_latest（实为 Camera 等下一相册）。
+     * Each row in the album dropdown is usually `button` (whole row) -> `text '<album>'` -> `text '<count>'`.
+     * Models tend to take the **`button` of the next row** as part of A_latest — it actually belongs to the next album.
      */
     fun capCutA_latestAlbumListRowHint(nodes: List<RefNode>): String? {
         val pkg = "com.lemon.lv"
@@ -88,16 +89,16 @@ object SnapshotFormatter {
             val nextBtn = nodes[idx + 2]
             if (nextBtn.role == "button" && nextBtn.clickable && nextBtn.packageName == pkg) {
                 val nextAlbumName = nodes.getOrNull(idx + 3)?.text?.trim().orEmpty()
-                nextRowWarn = " **勿点** 数量文案之后的 **`button [ref=${nextBtn.ref}]`**（下一相册整行" +
-                    (if (nextAlbumName.isNotEmpty()) "，约 **$nextAlbumName**" else "") + "）。"
+                nextRowWarn = " **Do not tap** the **`button [ref=${nextBtn.ref}]`** that follows the count text (the whole next row" +
+                    (if (nextAlbumName.isNotEmpty()) ", roughly **$nextAlbumName**" else "") + ")."
             }
         }
-        return "[剪映·选 A_latest 行] 在列表中找到 **`text 'A_latest' [ref=${nameNode.ref}]`**：**必须 `tap` 该行** **`button [ref=${rowButton.ref}]`**（在相册名**上一节点**，整行热区）。$nextRowWarn"
+        return "[CapCut·pick the A_latest row] Find **`text 'A_latest' [ref=${nameNode.ref}]`** in the list and **tap that row's `button [ref=${rowButton.ref}]`** (the node **before** the album name; it is the full-row hit area). $nextRowWarn"
     }
 
     /**
      * When many **content-area** nodes expose mm:ss (video thumb overlays), the picker is likely video-heavy.
-     * Excludes status bar clock (e.g. 19:22) and edge UI so 剪映 home does not falsely show this banner.
+     * Excludes the status-bar clock (e.g. 19:22) and edge UI so the CapCut home screen does not trigger this banner.
      */
     fun mediaPickerBannerIfNeeded(nodes: List<RefNode>, screenHeight: Int): String? {
         val durCount = nodes.count { n ->
@@ -105,15 +106,15 @@ object SnapshotFormatter {
             textLooksLikeDuration(t) && nodeCenterYInContentBand(n, screenHeight)
         }
         if (durCount < 2) return null
-        return "[素材网格] 当前可见 $durCount 处「分:秒」文案（如 00:22）→ 多为视频缩略图。" +
-            "若任务要静态照片：先点顶部「照片」分类再选。" +
-            "节点上 checked/selected 表示已选中；同一勾选区域再点一次常会取消选中。" +
-            "勿点大块无文案 button（多为整格缩略图，会进预览）；只点每格右上角小圈（剪映当前多为 link，可带 selected/序号）；" +
-            "每点一次后 snapshot 核对「下一步 (N)」的 N 是否增加。"
+        return "[Media grid] $durCount visible \"m:ss\" labels (e.g. 00:22) here, so most cells are video thumbnails. " +
+            "If the task needs still photos, tap the \"照片\" (Photos) tab at the top before selecting. " +
+            "checked/selected on a node means it is already selected; tapping the same checkbox again usually deselects. " +
+            "Do not tap the large textless button (it is the whole thumbnail and opens a preview); tap only the small circle at each cell's top-right (a link in current CapCut, possibly with selected/ordinal). " +
+            "After each tap, snapshot and check whether N in \"下一步 (N)\" (Next (N)) increased."
     }
 
     /**
-     * 当「分:秒」横幅已出现且顶部仍为「视频」Tab 时，强调格序上全是视频格，避免与 `list_gallery_images` 的 .jpg 任务混淆。
+     * When the m:ss banner is showing and the "视频" (Videos) tab is still active, stress that every cell is a video, so the .jpg order from `list_gallery_images` is not applied blindly.
      */
     fun capCutVideoTabSelectedPhotoReminder(nodes: List<RefNode>, screenHeight: Int): String? {
         if (mediaPickerBannerIfNeeded(nodes, screenHeight) == null) return null
@@ -123,11 +124,11 @@ object SnapshotFormatter {
             .minWithOrNull(
                 compareBy<RefNode> { if (it.role == "button") 0 else 1 }.thenBy { it.ref }
             )?.ref ?: return null
-        return "[剪映·静态图前置] 当前为 **视频** Tab，网格多为 **视频** 缩略图。若任务要 **照片**（如用户要今天拍的照、`list_gallery_images` 为 .jpg）：**禁止**直接按下方「格序」点 link（会选中视频）。**请先** `tap` 顶部「照片」Tab（例 **ref=$photoRef**），**再 snapshot** 确认 **`照片` 为选中态** 后再勾选。"
+        return "[CapCut·still-photo prerequisite] The **视频** (Videos) tab is active, so the grid is mostly **video** thumbnails. If the task needs **photos** (e.g. today's shots, `list_gallery_images` returned .jpg): **do not** follow the cell-order list below — that selects videos. **First** `tap` the **照片** (Photos) tab at the top (e.g. **ref=$photoRef**), **then snapshot** to confirm **照片 is selected** before ticking cells."
     }
 
     /**
-     * 剪映底部常出现「选择3个以上素材…」——模型易误以为选满 3 张即可下一步，与 `list_gallery_images` 的 K 不一致。
+     * CapCut shows "选择3个以上素材…" (pick 3+ items) at the bottom; models then think 3 is the target, which contradicts K from `list_gallery_images`.
      */
     fun capCutThreePlusSuggestionReminder(nodes: List<RefNode>): String? {
         val hit = nodes.any { n ->
@@ -135,26 +136,27 @@ object SnapshotFormatter {
             t.contains("3个以上") && (t.contains("素材") || t.contains("成片"))
         }
         if (!hit) return null
-        return "[剪映·目标张数] 界面「选择3个以上…」只是 **≥3 张的推荐**，**不是**任务结束条件。" +
-            "若已调用 `list_gallery_images`，目标 **K = 该次返回条数**（Skill §1）：**必须**继续勾选（可滚动后再 snapshot）直到 **`下一步 (N)` 的 N = K** 再点「下一步」；" +
-            "**禁止**在 **N < K** 时仅因「已 ≥3」就点「下一步」。"
+        return "[CapCut·target count] The on-screen \"选择3个以上…\" is only a **3-or-more recommendation**, **not** the completion condition. " +
+            "If `list_gallery_images` was called, the target is **K = the number of items it returned** (Skill §1): keep ticking (scroll and snapshot again as needed) until **N in `下一步 (N)` equals K**, then tap Next; " +
+            "**never** tap Next while **N < K** just because 3 or more are selected."
     }
 
     /**
-     * 剪映相册网格：常见为「无文案 button（整格）+ link（勾选圈）」成对出现。
-     * 勾选圈当前多为 link，但 **ref 编号无奇偶规律**；每次 snapshot 重排，须看树或「格序」行。
+     * The CapCut album grid usually alternates a textless button (whole cell) and a link (checkbox).
+     * The checkbox is usually a link, but **ref numbers carry no parity rule** and are renumbered on
+     * every snapshot — read the tree or the cell-order line.
      */
     fun capCutGridPairingHint(nodes: List<RefNode>): String? {
         if (nodes.size < 6) return null
         val linkRefs = collectCapCutPairCheckboxLinkRefs(nodes)
         if (linkRefs.size < 4) return null
-        return "[剪映选图] 网格多为「大块无文案 button + 小圈（多为 link）」成对；第 N 张 = **从左到右第 N 格**的小圈 ref（见下条「格序」）。" +
-            "**e 后数字奇偶与是否 link/button 无关**，每次 snapshot 都会变；勿把大块 button 当勾选、勿猜 ref 规律。" +
-            "圈上「1」仅表示**该格**已选，**非整行**；同排空圈仍未选，第2张多为**已选格右侧下一格**。"
+        return "[CapCut picker] Cells come in pairs: a large textless button plus a small circle (usually a link). Item N = the circle ref of the **Nth cell from the left** (see the cell-order line below). " +
+            "**Parity of the number after \"e\" says nothing about link vs button**, and it changes every snapshot — never treat the large button as the checkbox and never guess the ref pattern. " +
+            "A \"1\" on a circle means **that cell** is selected, **not the whole row**; empty circles in the same row are still unselected, and item 2 is usually **the cell to the right of the selected one**."
     }
 
     /**
-     * 列出前几格勾选 link 的 ref，避免模型把「第2张」点成第5格的 link（如误点 e25 而非 e19）。
+     * List the checkbox link refs of the first cells so the model does not tap cell 5 when asked for item 2 (e.g. e25 instead of e19).
      */
     fun capCutGridOrderedLinkRefsLine(nodes: List<RefNode>): String? {
         val list = collectCapCutPairCheckboxLinkRefs(nodes)
@@ -163,11 +165,11 @@ object SnapshotFormatter {
         val ellipsis = if (list.size > 8) "…" else ""
         val second = list[1]
         val antiConfuse = if (list.size >= 5) {
-            "第2张务必 **$second**，勿点 **${list[4]}**（第5格）。"
+            "For item 2 use **$second**, not **${list[4]}** (cell 5)."
         } else {
-            "第 M 张 = 上列第 M 个 ref。"
+            "Item M = the Mth ref above."
         }
-        return "[剪映选图·格序] 从左到右各格勾选 link：$head$ellipsis。$antiConfuse"
+        return "[CapCut picker·cell order] Checkbox links left to right: $head$ellipsis. $antiConfuse"
     }
 
     private fun formatVisibleText(node: RefNode, screenHeight: Int): String {
@@ -175,7 +177,7 @@ object SnapshotFormatter {
         if (text.isNullOrBlank()) return ""
         val t = text.trim().take(100)
         val hint = if (textLooksLikeDuration(t) && nodeCenterYInContentBand(node, screenHeight)) {
-            " [≈视频时长]"
+            " [≈video duration]"
         } else {
             ""
         }

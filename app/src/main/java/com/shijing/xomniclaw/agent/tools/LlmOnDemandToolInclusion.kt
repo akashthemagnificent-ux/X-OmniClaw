@@ -44,13 +44,13 @@ object LlmOnDemandToolInclusion {
     fun isOnDemandTool(name: String): Boolean = name in ON_DEMAND_LLM_TOOL_NAMES
 
     /**
-     * 轻量寒暄判断：
-     * - 命中后上游会直接采用 `tools=[]`，避免「你好」这类输入还带全套工具 schema。
+     * Lightweight greeting check.
+     * - On a hit the caller sends `tools=[]`, so "hello" does not drag the whole tool schema along.
      */
     fun isGreetingOnlyMessage(userMessage: String): Boolean {
         val raw = userMessage.trim()
         if (raw.isBlank()) return false
-        // 先去掉常见会话包裹（引用/标签/中括号标记），避免「[xxx] 你好」判成非寒暄。
+        // Strip common wrappers (quotes/tags/brackets) so "[xxx] hello" is still a greeting.
         val stripped = raw
             .replace(Regex("""\[[^\]]{1,80}]"""), " ")
             .replace(Regex("""<(?:[^>\n]{1,80})>"""), " ")
@@ -59,17 +59,21 @@ object LlmOnDemandToolInclusion {
             .lowercase()
             .replace(Regex("""[\s\p{Punct}，。！？、；：~～…]+"""), "")
         if (normalized.isBlank()) return false
-        if (normalized in setOf("你好", "您好", "嗨", "哈喽", "hi", "hello", "hey", "早上好", "下午好", "晚上好")) {
+        if (normalized in setOf(
+                "你好", "您好", "嗨", "哈喽", "早上好", "下午好", "晚上好",
+                "hi", "hello", "hey", "good morning", "good afternoon", "good evening", "yo"
+            )
+        ) {
             return true
         }
-        // 允许「你好呀」「hello啊」这类极短尾缀寒暄
+        // Allow very short greeting tail-particles such as "你好呀" and "hello啊".
         if ((normalized.startsWith("你好") || normalized.startsWith("hello") || normalized.startsWith("hi")) &&
             normalized.length <= 6
         ) {
             return true
         }
 
-        // 放宽：短句里仅包含寒暄词，不含任何任务操作词，也视为寒暄。
+        // Lenient: a short message that only contains a greeting and no action verb is a greeting.
         val hasGreeting = normalized.contains("你好") ||
             normalized.contains("您好") ||
             normalized.contains("hello") ||
@@ -83,7 +87,7 @@ object LlmOnDemandToolInclusion {
     }
 
     /**
-     * 返回**应当**在当轮 LLM `tools` 中额外包含的、按需类工具名集合。
+     * Return the on-demand tool names that **should** be added to this round's LLM `tools`.
      */
     fun resolveInclusions(systemPrompt: String, userMessage: String): Set<String> {
         val sys = systemPrompt
@@ -131,8 +135,8 @@ object LlmOnDemandToolInclusion {
         if (wantsInstallApp(u, low)) out.add("install_app")
         if (wantsListGallery(u, low)) out.add("list_gallery_images")
         if (wantsCopyImagesToAlbum(u, low)) out.add("copy_images_to_album")
-        // 只要本轮已注入 Skills 目录（代表至少命中 1 个 skill），就强制给 read_file，
-        // 保证模型可先读取对应 SKILL.md，而不是出现“推理想读 skill 但 tools 不可用”的断层。
+        // When the Skills catalog is injected (at least one skill matched), always expose
+        // read_file so the model can load the SKILL.md instead of hitting a missing tool mid-reasoning.
         if (sysLow.contains("## skills (mandatory)")) {
             out.add("read_file")
         }
@@ -142,6 +146,9 @@ object LlmOnDemandToolInclusion {
 
     private fun wantsUniversalFileOps(u: String, low: String): Boolean {
         if (u.contains("文件") || u.contains("目录") || u.contains("路径") || u.contains("读") || u.contains("写") || u.contains("编辑")) return true
+        if (low.contains("file") || low.contains("folder") || low.contains("directory") || low.contains("path") ||
+            low.contains("edit") || low.contains("write")
+        ) return true
         if (low.contains("read_file") || low.contains("write_file") || low.contains("edit_file") || low.contains("list_dir")) return true
         if (low.contains("open ") && low.contains("file")) return true
         if (low.contains("list ") && (low.contains("dir") || low.contains("folder"))) return true
@@ -150,6 +157,7 @@ object LlmOnDemandToolInclusion {
 
     private fun wantsUniversalExec(u: String, low: String): Boolean {
         if (u.contains("命令") || u.contains("终端") || u.contains("shell") || u.contains("执行")) return true
+        if (low.contains("command") || low.contains("terminal") || low.contains("shell")) return true
         if (low.contains("powershell") || low.contains("bash") || low.contains("cmd ") || low.contains("exec(")) return true
         if (low.contains("exec tool") || low.contains("run command")) return true
         return false
@@ -157,6 +165,9 @@ object LlmOnDemandToolInclusion {
 
     private fun wantsUniversalWebFetch(u: String, low: String): Boolean {
         if (u.contains("网页") || u.contains("网址") || u.contains("链接") || u.contains("抓取")) return true
+        if (low.contains("web page") || low.contains("webpage") || low.contains("url") ||
+            low.contains("link") || low.contains("scrape")
+        ) return true
         if (low.contains("http://") || low.contains("https://")) return true
         if (low.contains("web_fetch") || low.contains("fetch url")) return true
         return false
@@ -164,6 +175,9 @@ object LlmOnDemandToolInclusion {
 
     private fun wantsUniversalConfigOps(u: String, low: String): Boolean {
         if (u.contains("配置") || u.contains("config") || (u.contains("设置") && (u.contains("读取") || u.contains("修改")))) return true
+        if (low.contains("configuration") || (low.contains("setting") &&
+                (low.contains("get") || low.contains("set") || low.contains("change")))
+        ) return true
         if (low.contains("config_get") || low.contains("config_set")) return true
         if (low.contains("xomniclaw.json") || low.contains("channels.feishu") || low.contains("models.providers")) return true
         return false
@@ -173,6 +187,13 @@ object LlmOnDemandToolInclusion {
         if (u.contains("点击") || u.contains("滑动") || u.contains("输入") || u.contains("返回") || u.contains("主页")) return true
         if (u.contains("截图") || u.contains("界面") || u.contains("屏幕") || u.contains("控件")) return true
         if (u.contains("打开") && (u.contains("app") || u.contains("应用"))) return true
+        if (low.contains("tap") || low.contains("swipe") || low.contains("scroll") ||
+            low.contains("type") || low.contains("press back") || low.contains("home screen")
+        ) return true
+        if (low.contains("screenshot") || low.contains("screen") || low.contains("ui element") ||
+            low.contains("on screen")
+        ) return true
+        if (low.contains("open") && (low.contains("app") || low.contains("application"))) return true
         if (low.contains("snapshot") || low.contains("screenshot") || low.contains("device")) return true
         if (low.contains("tap") || low.contains("swipe") || low.contains("scroll")) return true
         return false
@@ -180,12 +201,14 @@ object LlmOnDemandToolInclusion {
 
     private fun wantsListInstalledApps(u: String, low: String): Boolean {
         if (u.contains("已安装") || u.contains("应用列表") || u.contains("app 列表") || u.contains("有哪些应用")) return true
+        if (low.contains("installed app") || low.contains("app list") || low.contains("which apps")) return true
         if (low.contains("list_installed_apps") || low.contains("installed apps")) return true
         return false
     }
 
     private fun wantsStartActivity(u: String, low: String): Boolean {
         if (u.contains("activity") || u.contains("组件") || u.contains("component") || u.contains("启动页面")) return true
+        if (low.contains("launch screen") || low.contains("start screen")) return true
         if (low.contains("start_activity") || low.contains("am start")) return true
         return false
     }
@@ -193,6 +216,10 @@ object LlmOnDemandToolInclusion {
     private fun wantsStopOrLog(u: String, low: String): Boolean {
         if (u.contains("停止") || u.contains("终止") || u.contains("取消任务")) return true
         if (u.contains("日志") || u.contains("记录")) return true
+        if (low.contains("stop") || low.contains("cancel") || low.contains("abort") ||
+            low.contains("terminate")
+        ) return true
+        if (low.contains("log") || low.contains("history")) return true
         if (low.contains("stop(") || low.contains("log(") || low.contains("tool stop")) return true
         return false
     }
@@ -205,6 +232,9 @@ object LlmOnDemandToolInclusion {
         if (u.contains("照片") || u.contains("截图") || u.contains("拍过") || u.contains("拍摄")) return true
         if (u.lowercase().let { it.contains("image-memory") || it.contains("image-memories") || it.contains("gallery-qa") }) return true
         if (low.contains("image memory") || low.contains("image-memory")) return true
+        if (low.contains("gallery") || low.contains("album") || low.contains("photo") ||
+            low.contains("picture") || low.contains("camera roll")
+        ) return true
         return false
     }
 
@@ -220,6 +250,10 @@ object LlmOnDemandToolInclusion {
         if (u.contains("profile", ignoreCase = true) && (u.contains("记") || u.contains("用"))) return true
         if (u.contains("以前") || u.contains("之前说过") || u.contains("上次的")) return true
         if (u.contains("记住") && u.length < 80) return true
+        if (low.contains("remember") || low.contains("recall") || low.contains("memory") ||
+            low.contains("profile") || low.contains("preference")
+        ) return true
+        if (low.contains("last time") || low.contains("previously") || low.contains("before")) return true
         return false
     }
 
@@ -228,9 +262,13 @@ object LlmOnDemandToolInclusion {
         if (u.contains("每天") || u.contains("每周") || u.contains("工作日") || u.contains("每隔") || u.contains("稍后")) return true
         if (u.contains("到点") || u.contains("明早") || u.contains("今晚") || u.contains("点叫我")) return true
         if (u.contains("执行") && (u.contains("点") || u.contains("时") || u.contains("分"))) return true
-        // 只用用户本轮话术判断是否注入定时工具，避免已加载的 scheduled-automation skill 文本反向污染执行阶段。
+        // Decide from the user message only, so injected scheduled-automation skill text cannot leak into this check.
         if (userLow.contains("schedule_task") || userLow.contains("schedule_app") || userLow.contains("alarm")) return true
         if (userLow.contains("remind me") || userLow.contains("set an alarm") || userLow.contains("cron")) return true
+        if (userLow.contains("schedule") || userLow.contains("every day") || userLow.contains("daily") ||
+            userLow.contains("every morning") || userLow.contains("every night") ||
+            userLow.contains("tomorrow") || userLow.contains("timer")
+        ) return true
         return false
     }
 
@@ -242,6 +280,8 @@ object LlmOnDemandToolInclusion {
         if (u.contains("重建") && (u.contains("画像") || u.contains("记忆"))) return true
         if (u.contains("刷新") && (u.contains("记") || u.contains("相"))) return true
         if (low.contains("rebuild") && low.contains("profile")) return true
+        if (low.contains("sync") && (low.contains("photo") || low.contains("album") || low.contains("gallery") || low.contains("image"))) return true
+        if (low.contains("scan") && (low.contains("album") || low.contains("gallery") || low.contains("photo"))) return true
         if (u.contains("清除") && u.contains("图") && (u.contains("记") || u.contains("像"))) return true
         if (u.contains("reset") && (u.contains("图") || u.contains("相"))) return true
         if (u.contains("gallery.memory", ignoreCase = true)) return true
@@ -267,11 +307,12 @@ object LlmOnDemandToolInclusion {
                 u.contains("进化") ||
                 u.contains("重建")
             ) && (u.contains("记忆") || u.contains("MEMORY", ignoreCase = true))
-        // “给我更新一下记忆”这类泛化表达默认指全局任务记忆；
-        // 明确提到相册/照片时交给 gallery_memory，避免两套更新流程混用。
+        // A generic "update my memory" means global task memory.
+        // When albums/photos are named explicitly this defers to gallery_memory so the two flows never mix.
         if (asksToUpdateMemory && !isGalleryScopedMemory) return true
         if (u.contains("MEMORY.md", ignoreCase = true) && (u.contains("更新") || u.contains("进化") || u.contains("沉淀"))) return true
         if (low.contains("memory_evolution")) return true
+        if (low.contains("global memory") || low.contains("task memory") || low.contains("usage habit")) return true
         if (sys.contains("memory_evolution", ignoreCase = true)) return true
         return false
     }
@@ -283,6 +324,9 @@ object LlmOnDemandToolInclusion {
         if (u.contains("定位") || u.contains("GPS", true) || u.contains("行動") || u.contains("移动数据")) return true
         if (u.contains("设置") && (u.contains("开") || u.contains("关"))) return true
         if (low.contains("airplane") || low.contains("bluetooth") || low.contains("system_settings")) return true
+        if (low.contains("brightness") || low.contains("volume") || low.contains("dark mode") ||
+            low.contains("location") || low.contains("mobile data")
+        ) return true
         return false
     }
 
@@ -291,6 +335,7 @@ object LlmOnDemandToolInclusion {
         if (u.contains("发图") || u.contains("发图片") || (u.contains("发") && u.contains("到") && (u.contains("群") || u.contains("人")))) return true
         if (u.contains("传图") || u.contains("上传图")) return true
         if (low.contains("send_image") || (low.contains("feishu") && u.contains("图"))) return true
+        if (low.contains("send") && (low.contains("photo") || low.contains("image") || low.contains("picture"))) return true
         return false
     }
 
@@ -300,6 +345,7 @@ object LlmOnDemandToolInclusion {
         if (u.contains("下载") && (u.contains("包") || u.contains("安装"))) return true
         if (low.contains("install") && (low.contains("apk") || low.contains("app"))) return true
         if (u.contains("PackageInstaller", ignoreCase = true)) return true
+        if (low.contains("download") && (low.contains("install") || low.contains("package"))) return true
         return false
     }
 
@@ -312,7 +358,9 @@ object LlmOnDemandToolInclusion {
         if (u.contains("照片") && (u.contains("找") || u.contains("看") || u.contains("有") || u.contains("选"))) return true
         if (u.contains("最近") && (u.contains("图") || u.contains("片") || u.contains("照"))) return true
         if (u.contains("截屏") && u.contains("发")) return false
+        if (low.contains("screenshot") && low.contains("send")) return false
         if (low.contains("list_gallery") || (low.contains("mediastore") && u.contains("图"))) return true
+        if (low.contains("photo") || low.contains("picture") || low.contains("album")) return true
         return false
     }
 
@@ -324,6 +372,8 @@ object LlmOnDemandToolInclusion {
         if (u.contains("Pictures", ignoreCase = true) && u.contains("相")) return true
         if (u.contains("一键成片") && u.contains("相")) return true
         if (low.contains("copy_images_to_album")) return true
+        if (low.contains("copy") && (low.contains("photo") || low.contains("image") || low.contains("album"))) return true
+        if (low.contains("new album") || low.contains("move to album")) return true
         if (u.contains("文件夹") && (u.contains("相") || u.contains("片"))) return true
         return false
     }
