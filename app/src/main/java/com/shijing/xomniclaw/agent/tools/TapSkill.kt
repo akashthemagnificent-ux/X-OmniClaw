@@ -29,11 +29,11 @@ class TapSkill : Skill {
         get() {
             val isAccessibilityEnabled = AccessibilityProxy.isConnected.value == true && AccessibilityProxy.isServiceReady()
             val statusNote = if (!isAccessibilityEnabled) {
-                "\n\n⚠️ **当前状态：不可用** - 无障碍服务未连接"
+                "\n\n⚠️ **Status: unavailable** - accessibility service not connected"
             } else {
-                "\n✅ **当前状态：可用**"
+                "\n✅ **Status: available**"
             }
-            return "点击屏幕上的坐标位置。用于点击按钮、输入框、列表项等可交互元素。**注意**: 操作屏幕前使用 get_view_tree() 获取 UI 元素信息即可，不需要再调用 screenshot()。$statusNote"
+            return "Tap a coordinate on screen. Use it for buttons, input fields, list items and other interactive elements. **Note**: call get_view_tree() for element information before acting; screenshot() is not required.$statusNote"
         }
 
     override fun getToolDefinition(): ToolDefinition {
@@ -45,8 +45,8 @@ class TapSkill : Skill {
                 parameters = ParametersSchema(
                     type = "object",
                     properties = mapOf(
-                        "x" to PropertySchema("integer", "X 坐标"),
-                        "y" to PropertySchema("integer", "Y 坐标")
+                        "x" to PropertySchema("integer", "X coordinate"),
+                        "y" to PropertySchema("integer", "Y coordinate")
                     ),
                     required = listOf("x", "y")
                 )

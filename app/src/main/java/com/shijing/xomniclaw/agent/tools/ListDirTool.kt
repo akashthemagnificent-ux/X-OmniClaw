@@ -39,7 +39,7 @@ class ListDirTool(
                 parameters = ParametersSchema(
                     type = "object",
                     properties = mapOf(
-                        "path" to PropertySchema("string", "要列出的目录路径")
+                        "path" to PropertySchema("string", "Directory path to list")
                     ),
                     required = listOf("path")
                 )

@@ -1,7 +1,7 @@
 ---
 name: app-search
 description: |
-  主流APP搜索。当用户想要在拼多多、美团、高德地图、抖音、快手、小红书、哔哩哔哩、知乎、百度、OPPO音乐、OPPO软件商店等APP中搜索时激活。覆盖电商购物、生活服务、短视频内容、知识搜索、音乐搜索、应用商店搜索等场景。
+  Mainstream APP search. Activate when the user wants to search in apps such as 拼多多, 美团, 高德地图, 抖音, 快手, 小红书, 哔哩哔哩, 知乎, 百度, OPPO音乐, OPPO软件商店, etc. Covers e-commerce shopping, local services, short-video content, knowledge search, music search, app-store search and other scenarios.
 metadata:
   {
     "xomniclaw": {
@@ -15,166 +15,166 @@ metadata:
 
 # App Search Tool
 
-通过各主流 APP 的 Deep Link 直达搜索页面，浏览结果并为用户提供有价值的总结。
+Use each mainstream APP's Deep Link to go straight to its search page, browse the results, and give the user a useful summary.
 
 ## 🎯 When to Use
 
 Use this skill when user asks about:
 
-### 电商购物
-✅ **拼多多搜索** - "拼多多搜一下纸巾"、"拼多多有什么便宜的耳机"
+### E-commerce shopping
+✅ **拼多多 Search** - "search Pinduoduo for tissues", "what cheap headphones are on Pinduoduo"
 
-### 生活服务
-✅ **美团搜索** - "美团上搜搜附近火锅店"、"帮我在美团找酒店"
-✅ **高德地图** - "高德上搜一下加油站"、"帮我找附近停车场"
+### Local services
+✅ **美团 Search** - "search Meituan for nearby hotpot restaurants", "find me hotels on Meituan"
+✅ **高德地图** - "search Amap for gas stations", "find nearby parking lots"
 
-### 短视频 / 内容
-✅ **抖音搜索** - "抖音搜一下健身教程"、"在抖音看看旅行攻略"
-✅ **快手搜索** - "快手搜一下美食做法"、"快手上找一下钓鱼视频"
-✅ **小红书搜索** - "小红书搜一下穿搭"、"帮我在小红书找护肤攻略"
-✅ **哔哩哔哩搜索** - "B站搜一下编程教程"、"在B站看看数码评测"
+### Short video / content
+✅ **抖音 Search** - "search Douyin for fitness tutorials", "look at travel guides on Douyin"
+✅ **快手 Search** - "search Kuaishou for recipes", "find fishing videos on Kuaishou"
+✅ **小红书 Search** - "search Xiaohongshu for outfit ideas", "find skincare guides on Xiaohongshu"
+✅ **哔哩哔哩 Search** - "search Bilibili for programming tutorials", "look at gadget reviews on Bilibili"
 
-### 知识 / 搜索
-✅ **知乎搜索** - "知乎上搜一下如何学Python"、"帮我在知乎找一下理财建议"
-✅ **百度搜索** - "百度搜一下天气预报"、"帮我百度一下这个问题"
+### Knowledge / search
+✅ **知乎 Search** - "search Zhihu for how to learn Python", "find me personal-finance advice on Zhihu"
+✅ **百度 Search** - "search Baidu for the weather forecast", "look up this question on Baidu"
 
-### 音乐
-✅ **OPPO音乐搜索** - "OPPO音乐搜周杰伦"、"帮我在OPPO音乐搜一下晴天"
+### Music
+✅ **OPPO音乐 Search** - "search OPPO Music for Jay Chou", "help me search OPPO Music for Sunny Day"
 
-### 应用商店
-✅ **OPPO软件商店搜索** - "OPPO软件商店搜红果短剧"、"帮我在软件商店找抖音"
+### App store
+✅ **OPPO软件商店 Search** - "search OPPO App Store for Hongguo Short Dramas", "find Douyin in the app store"
 
-## 🛑 工具选择（必读，最易踩坑）
+## 🛑 Tool Choice (must read, easiest place to trip up)
 
-跳转 APP 搜索页**只能且必须**调用 `device(action="open", uri="...")`：
+To jump to an APP's search page you **can only and must** call `device(action="open", uri="...")`:
 
-| 操作 | ✅ 必须使用 | ❌ 绝对禁止 |
+| Operation | ✅ Must use | ❌ Absolutely forbidden |
 |---|---|---|
-| 跳转目标 APP 搜索页 | `device(action="open", uri="<deep_link>")` | `start_activity(uri=...)` / `start_activity(package=..., activity=...)` / `start_activity(component=...)` |
+| Jump to the target APP's search page | `device(action="open", uri="<deep_link>")` | `start_activity(uri=...)` / `start_activity(package=..., activity=...)` / `start_activity(component=...)` |
 
-> **为什么禁用 `start_activity`**：第三方 APP（小红书/抖音/拼多多/B 站/快手/知乎等）的 activity 几乎全部不允许从其他进程显式启动。无论你尝试 `MainActivity` / `IndexSearchV2Activity` / `.search.SearchActivity` 等何种 component 或 package+activity 组合，**返回值 100% 都是 `Unable to find explicit activity class`**，会浪费 10+ 轮迭代仍无法成功。
+> **Why `start_activity` is forbidden**: the activities of third-party APPs (小红书/抖音/拼多多/B站/快手/知乎, etc.) almost never allow explicit launching from another process. No matter which component or package+activity combination you try — `MainActivity` / `IndexSearchV2Activity` / `.search.SearchActivity`, etc. — **the return value is 100% `Unable to find explicit activity class`**, and you will waste 10+ iterations without succeeding.
 >
-> **正确路径**：路由表里的 deep link（`xhsdiscover://`、`snssdk1128://`、`pinduoduo://` 等）会经由 `ACTION_VIEW` Intent 被系统自动路由到对应 APP，这正是 `device(action="open", uri=...)` 内部的工作；**你完全不需要也不应该指定 activity 名**。
+> **The correct path**: the deep links in the routing table (`xhsdiscover://`, `snssdk1128://`, `pinduoduo://`, etc.) are automatically routed by the system to the corresponding APP via an `ACTION_VIEW` Intent, which is exactly what `device(action="open", uri=...)` does internally; **you do not need to and should not specify an activity name**.
 >
-> **think → action 一致性**：如果你在 `<think>` 里写过"使用 `device(action="open")`"，function call 时务必真的调用 `device`，不要切换到 `start_activity`——这是弱模型最常见的失败模式。读到本段时再次自检：本轮要调用的工具名是不是 `device`？
+> **think → action consistency**: if you wrote "use `device(action="open")`" in `<think>`, you must actually call `device` in the function call — do not switch to `start_activity`. This is the most common failure mode of weak models. When you read this paragraph, check yourself again: is the tool you are about to call in this turn named `device`?
 
 ## 📋 Workflow
 
-### 标准搜索流程
+### Standard search flow
 
-> 🚫 **禁令**：调用 `device(action="open", ...)` 时**只传 `action` 和 `uri` 两个参数**，**严禁传 `package_name`**。系统根据 URI scheme 自动解析目标 APP，手动指定 `package_name` 会导致 ActivityNotFound。
+> 🚫 **Prohibition**: when calling `device(action="open", ...)`, **pass only the two parameters `action` and `uri`**; **passing `package_name` is strictly forbidden**. The system resolves the target APP automatically from the URI scheme; specifying `package_name` manually causes ActivityNotFound.
 >
-> ⚡ **唯一例外 — 百度APP**：`baiduboxapp://` scheme 实测无法触发搜索，必须使用 HTTPS 链接并指定 `package_name`。
+> ⚡ **Only exception — 百度APP**: the `baiduboxapp://` scheme has been tested and cannot trigger search; you must use an HTTPS link and specify `package_name`.
 >
 > ✅ `device(action="open", uri="imeituan://www.meituan.com/search?q=火锅")`
 > ❌ `device(action="open", package_name="com.meituan.android.fe", uri="imeituan://www.meituan.com/search?q=火锅")`
-> ✅ `device(action="open", uri="https://m.baidu.com/s?word=天气预报", package_name="com.baidu.searchbox")` ← 百度例外
-> ❌ `device(action="open", uri="baiduboxapp://search?keyword=天气预报")` ← 实测不可用
+> ✅ `device(action="open", uri="https://m.baidu.com/s?word=天气预报", package_name="com.baidu.searchbox")` ← 百度 exception
+> ❌ `device(action="open", uri="baiduboxapp://search?keyword=天气预报")` ← does not work in testing
 
 ```
-1. 解析用户意图，识别目标 APP 和搜索关键词
-2. 根据 APP 路由表构造对应的 Deep Link（必须从路由表原样复制模板，只替换 {keyword}）
-3. 通过 device(action="open", uri="...") 跳转目标 APP 搜索页（禁传 package_name）
-4. 等待 APP 加载搜索结果：device(action="act", kind="wait", timeMs=1000)
-5. 拉取页面 UI 树：device(action="snapshot")
-6. 从 snapshot 返回的 text 节点中提取结果中的具体信息
-7. 基于提取到的具体信息回答用户（200字以内，必须包含真实数字和细节）
+1. Parse the user's intent, identify the target APP and the search keyword
+2. Build the corresponding Deep Link from the APP routing table (you must copy the template verbatim from the routing table and only replace {keyword})
+3. Jump to the target APP's search page via device(action="open", uri="...") (passing package_name is forbidden)
+4. Wait for the APP to load search results: device(action="act", kind="wait", timeMs=1000)
+5. Fetch the page UI tree: device(action="snapshot")
+6. Extract the concrete information from the results in the text nodes returned by snapshot
+7. Answer the user based on the extracted concrete information (within 200 characters, must include real numbers and details)
 ```
 
-## 🗺️ APP 路由表
+## 🗺️ APP Routing Table
 
-### 电商类
+### E-commerce
 
-| APP | Deep Link 模板 | Scheme |
+| APP | Deep Link Template | Scheme |
 |------|----------------|--------|
 | 拼多多 | `pinduoduo://com.xunmeng.pinduoduo/search_result.html?search_key={keyword}` | `pinduoduo` |
 
-### 生活服务类
+### Local services
 
-| APP | Deep Link 模板 | Scheme |
+| APP | Deep Link Template | Scheme |
 |------|----------------|--------|
-| 美团（全局搜索） | `imeituan://www.meituan.com/search?q={keyword}` | `imeituan` |
-| 美团（酒店搜索） | `imeituan://www.meituan.com/hotel/search?q={keyword}` | `imeituan` |
+| 美团 (global search) | `imeituan://www.meituan.com/search?q={keyword}` | `imeituan` |
+| 美团 (hotel search) | `imeituan://www.meituan.com/hotel/search?q={keyword}` | `imeituan` |
 | 高德地图 | `androidamap://poi?keywords={keyword}` | `androidamap` |
 
-> ⚠️ **美团特别注意**：scheme 是 **`imeituan`**（带 `i` 前缀），不是 ~~`meituan`~~。路径是 `/search?q=`，不是 ~~`/web/?keyword=`~~。错误写法 `meituan://www.meituan.com/web/?keyword=xxx` 会导致 ActivityNotFound。
+> ⚠️ **Special note for 美团**: the scheme is **`imeituan`** (with the `i` prefix), not ~~`meituan`~~. The path is `/search?q=`, not ~~`/web/?keyword=`~~. The wrong form `meituan://www.meituan.com/web/?keyword=xxx` causes ActivityNotFound.
 
-### 短视频 / 内容类
+### Short video / content
 
-| APP | Deep Link 模板 | Scheme |
+| APP | Deep Link Template | Scheme |
 |------|----------------|--------|
 | 抖音 | `snssdk1128://search?keyword={keyword}` | `snssdk1128` |
 | 快手 | `kwai://search?keyword={keyword}` | `kwai` |
 | 小红书 | `xhsdiscover://search/result?keyword={keyword}` | `xhsdiscover` |
 | 哔哩哔哩 | `bilibili://search?keyword={keyword}` | `bilibili` |
 
-> ⚠️ **小红书特别注意**：scheme 是 **`xhsdiscover`**，不是 ~~`xhslink`~~、~~`xhs`~~、~~`xiaohongshu`~~。路径是 **`/search/result`**（不是 ~~`/search`~~），参数名是 **`keyword`**。正确写法 `xhsdiscover://search/result?keyword=xxx`。常见错误：scheme 写成 ~~`xhslink://search?keyword=xxx`~~ 会导致 ActivityNotFound。
+> ⚠️ **Special note for 小红书**: the scheme is **`xhsdiscover`**, not ~~`xhslink`~~, ~~`xhs`~~, ~~`xiaohongshu`~~. The path is **`/search/result`** (not ~~`/search`~~), and the parameter name is **`keyword`**. Correct form `xhsdiscover://search/result?keyword=xxx`. Common mistake: writing the scheme as ~~`xhslink://search?keyword=xxx`~~ causes ActivityNotFound.
 
-### 知识 / 搜索类
+### Knowledge / search
 
-| APP | Deep Link 模板 | Scheme |
+| APP | Deep Link Template | Scheme |
 |------|----------------|--------|
 | 知乎 | `zhihu://search?q={keyword}` | `zhihu` |
-| 百度APP | `https://m.baidu.com/s?word={keyword}`（需指定包名 `com.baidu.searchbox`） | `https` |
+| 百度APP | `https://m.baidu.com/s?word={keyword}` (must specify package name `com.baidu.searchbox`) | `https` |
 
-> ⚠️ **百度APP特别注意**：`baiduboxapp://search?keyword=xxx` Deep Link **实测不可用**（会停留在桌面，不触发搜索）。必须使用 HTTPS 链接 `https://m.baidu.com/s?word=xxx` 并**显式指定包名** `com.baidu.searchbox`，即 `device(action="open", uri="https://m.baidu.com/s?word=xxx", package_name="com.baidu.searchbox")`。百度是唯一需要传 `package_name` 的例外。
+> ⚠️ **Special note for 百度APP**: the `baiduboxapp://search?keyword=xxx` Deep Link **does not work in testing** (it stays on the home screen and does not trigger search). You must use the HTTPS link `https://m.baidu.com/s?word=xxx` and **explicitly specify the package name** `com.baidu.searchbox`, i.e. `device(action="open", uri="https://m.baidu.com/s?word=xxx", package_name="com.baidu.searchbox")`. 百度 is the only exception that requires `package_name`.
 
-### 音乐类
+### Music
 
-| APP | Deep Link 模板 | Scheme | 包名 |
+| APP | Deep Link Template | Scheme | Package name |
 |------|----------------|--------|------|
 | OPPO音乐 | `allmusic://search/keyword/{keyword}` | `allmusic` | `com.heytap.music` |
 
-> ⚠️ **OPPO音乐特别注意**：路径格式是 `/search/keyword/{关键词}`，关键词直接拼接在路径中。正确写法：`allmusic://search/keyword/周杰伦晴天`。
+> ⚠️ **Special note for OPPO音乐**: the path format is `/search/keyword/{keyword}`, with the keyword concatenated directly into the path. Correct form: `allmusic://search/keyword/周杰伦晴天`.
 
-### 应用商店类
+### App stores
 
-| APP | Deep Link 模板 | Scheme | 包名 |
+| APP | Deep Link Template | Scheme | Package name |
 |------|----------------|--------|------|
-| OPPO软件商店 | `market://search?q={keyword}` | `market` | `com.heytap.market`（Android 10+）/ `com.oppo.market`（Android 9及以下） |
+| OPPO软件商店 | `market://search?q={keyword}` | `market` | `com.heytap.market` (Android 10+) / `com.oppo.market` (Android 9 and below) |
 
-> ⚠️ **OPPO软件商店特别注意**：**严禁传 `package_name`**，系统会自动根据 `market://` scheme 路由到已安装的应用商店。正确写法：`market://search?q=红果短剧`。
+> ⚠️ **Special note for OPPO软件商店**: **passing `package_name` is strictly forbidden**; the system automatically routes to the installed app store based on the `market://` scheme. Correct form: `market://search?q=红果短剧`.
 
-## 🔗 Deep Link 构造规则
+## 🔗 Deep Link Construction Rules
 
-关键词用 `+` 连接多个搜索词。
+Join multiple search terms in the keyword with `+`.
 
-### 通用 APP 示例
+### Common APP examples
 
-| APP | 用户意图 | 搜索关键词 | Deep Link |
+| APP | User intent | Search keyword | Deep Link |
 |-----|---------|-----------|-----------|
-| 拼多多 | 拼多多搜纸巾 | 纸巾 | `pinduoduo://com.xunmeng.pinduoduo/search_result.html?search_key=纸巾` |
-| 美团 | 美团搜火锅 | 火锅 | `imeituan://www.meituan.com/search?q=火锅` |
-| 高德 | 高德搜加油站 | 加油站 | `androidamap://poi?keywords=加油站` |
-| 抖音 | 抖音搜健身教程 | 健身教程 | `snssdk1128://search?keyword=健身教程` |
-| 快手 | 快手搜美食做法 | 美食做法 | `kwai://search?keyword=美食做法` |
-| 小红书 | 小红书搜穿搭 | 穿搭 | `xhsdiscover://search/result?keyword=穿搭` |
-| B站 | B站搜编程教程 | 编程教程 | `bilibili://search?keyword=编程教程` |
-| 知乎 | 知乎搜理财建议 | 理财建议 | `zhihu://search?q=理财建议` |
-| 百度 | 百度搜天气预报 | 天气预报 | `https://m.baidu.com/s?word=天气预报`（需指定 `package_name="com.baidu.searchbox"`） |
-| OPPO音乐 | OPPO音乐搜周杰伦晴天 | 周杰伦晴天 | `allmusic://search/keyword/周杰伦晴天` |
-| OPPO软件商店 | OPPO软件商店搜红果短剧 | 红果短剧 | `market://search?q=红果短剧` |
+| 拼多多 | search Pinduoduo for tissues | tissues | `pinduoduo://com.xunmeng.pinduoduo/search_result.html?search_key=纸巾` |
+| 美团 | search Meituan for hotpot | hotpot | `imeituan://www.meituan.com/search?q=火锅` |
+| 高德 | search Amap for gas stations | gas stations | `androidamap://poi?keywords=加油站` |
+| 抖音 | search Douyin for fitness tutorials | fitness tutorials | `snssdk1128://search?keyword=健身教程` |
+| 快手 | search Kuaishou for recipes | recipes | `kwai://search?keyword=美食做法` |
+| 小红书 | search Xiaohongshu for outfit ideas | outfit ideas | `xhsdiscover://search/result?keyword=穿搭` |
+| B站 | search Bilibili for programming tutorials | programming tutorials | `bilibili://search?keyword=编程教程` |
+| 知乎 | search Zhihu for personal-finance advice | personal-finance advice | `zhihu://search?q=理财建议` |
+| 百度 | search Baidu for the weather forecast | weather forecast | `https://m.baidu.com/s?word=天气预报` (must specify `package_name="com.baidu.searchbox"`) |
+| OPPO音乐 | search OPPO Music for Jay Chou's Sunny Day | Jay Chou Sunny Day | `allmusic://search/keyword/周杰伦晴天` |
+| OPPO软件商店 | search OPPO App Store for Hongguo Short Dramas | Hongguo Short Dramas | `market://search?q=红果短剧` |
 
 ## 🚀 X-OmniClaw Implementation
 
-**Tool**: `device` (DeviceTool — 统一设备控制工具)
+**Tool**: `device` (DeviceTool — unified device control tool)
 
-⚠️ **重要**: 不要使用 shell `am start` 命令跳转 Deep Link（会因 SecurityException 权限拒绝），必须使用 `device(action="open", uri="...")` 通过 X-OmniClaw 应用上下文发起 `ACTION_VIEW` Intent。
+⚠️ **Important**: do not use the shell `am start` command to jump to a Deep Link (it will fail with a SecurityException permission denial). You must use `device(action="open", uri="...")` to launch an `ACTION_VIEW` Intent from the X-OmniClaw app context.
 
-### Step 1: 识别目标 APP 并构造 Deep Link
+### Step 1: Identify the target APP and construct the Deep Link
 
 ```kotlin
-// 根据用户意图识别 APP 和关键词
-val app = "douyin"  // 从用户查询中识别目标APP
-val keyword = "健身+教程"
+// Identify the APP and keyword from the user's intent
+val app = "douyin"  // identify the target APP from the user query
+val keyword = "fitness+tutorial"
 
-// APP → Deep Link 映射
+// APP → Deep Link mapping
 val deepLink = when (app) {
-    // 电商类
+    // E-commerce
     "pdd", "拼多多" ->
         "pinduoduo://com.xunmeng.pinduoduo/search_result.html?search_key=$keyword"
 
-    // 生活服务类
+    // Local services
     "meituan", "美团" ->
         "imeituan://www.meituan.com/search?q=$keyword"
     "meituan_hotel", "美团酒店" ->
@@ -182,7 +182,7 @@ val deepLink = when (app) {
     "amap", "高德", "高德地图" ->
         "androidamap://poi?keywords=$keyword"
 
-    // 短视频/内容类
+    // Short video/content
     "douyin", "抖音" ->
         "snssdk1128://search?keyword=$keyword"
     "kuaishou", "快手" ->
@@ -192,25 +192,25 @@ val deepLink = when (app) {
     "bilibili", "B站", "哔哩哔哩" ->
         "bilibili://search?keyword=$keyword"
 
-    // 知识/搜索类
+    // Knowledge/search
     "zhihu", "知乎" ->
         "zhihu://search?q=$keyword"
-    // ⚠️ 百度是例外：baiduboxapp:// scheme 实测不可用，必须用 HTTPS + 指定包名
+    // ⚠️ 百度 is the exception: the baiduboxapp:// scheme does not work in testing; use HTTPS + explicit package name
     "baidu", "百度" ->
-        "https://m.baidu.com/s?word=$keyword"  // 需额外传 package_name="com.baidu.searchbox"
+        "https://m.baidu.com/s?word=$keyword"  // also pass package_name="com.baidu.searchbox"
 
-    // 音乐类
+    // Music
     "oppomusic", "OPPO音乐", "oppo音乐" ->
         "allmusic://search/keyword/$keyword"
 
-    // 应用商店类
+    // App stores
     "oppostore", "OPPO软件商店", "oppo软件商店", "软件商店" ->
         "market://search?q=$keyword"
 
-    else -> throw IllegalArgumentException("不支持的 APP: $app")
+    else -> throw IllegalArgumentException("Unsupported APP: $app")
 }
 
-// 百度需要额外指定包名，其他 APP 严禁传 package_name
+// 百度 needs an explicit package name; all other APPs must NOT pass package_name
 if (app in listOf("baidu", "百度")) {
     device(action = "open", uri = deepLink, package_name = "com.baidu.searchbox")
 } else {
@@ -218,286 +218,286 @@ if (app in listOf("baidu", "百度")) {
 }
 ```
 
-### Step 2: 等待页面加载并确认
+### Step 2: Wait for the page to load and confirm
 
 ```kotlin
 device(action = "act", kind = "wait", timeMs = 1000)
 device(action = "snapshot")
 ```
 
-### Step 3: 分析 snapshot 内容（关键步骤）
+### Step 3: Analyze the snapshot content (key step)
 
-**你必须仔细阅读每一份 snapshot 返回的 text 节点**，根据不同 APP 类型提取对应信息：
+**You must carefully read every text node returned by each snapshot**, and extract the relevant information according to APP type:
 
-#### 电商类（拼多多）
-- **商品完整名称**（含品牌、系列、型号）
-- **价格**（精确到元，如 ¥599、¥1299）
-- **店铺名称**（如 "XX旗舰店"）
-- **销量/评价数**（如 "10万+评价"、"已拼5万件"）
-- **标签**（如 "百亿补贴"、"包邮"）
+#### E-commerce (拼多多)
+- **Full product name** (including brand, series, model)
+- **Price** (to the yuan, e.g. ¥599, ¥1299)
+- **Store name** (e.g. "XX flagship store")
+- **Sales/review count** (e.g. "100k+ reviews", "50k+ units sold")
+- **Tags** (e.g. "billion-yuan subsidy", "free shipping")
 
-#### 生活服务类（美团、高德地图）
-- **店铺/地点名称**
-- **评分**（如 4.8分）
-- **人均价格**（如 ¥89/人）
-- **距离**（如 1.2km）
-- **地址**
-- **营业状态**（营业中/已打烊）
-- **标签**（如 "必吃榜"、"黑珍珠"）
+#### Local services (美团, 高德地图)
+- **Store/place name**
+- **Rating** (e.g. 4.8 points)
+- **Price per person** (e.g. ¥89/person)
+- **Distance** (e.g. 1.2 km)
+- **Address**
+- **Business status** (open/closed)
+- **Tags** (e.g. "Must-Eat list", "Black Pearl")
 
-#### 短视频/内容类（抖音、快手、小红书、哔哩哔哩）
-- **视频/笔记标题**
-- **作者/UP主名称**
-- **播放量/点赞数**（如 "100万播放"、"5.2万赞"）
-- **发布时间**
-- **内容简介/标签**
+#### Short video/content (抖音, 快手, 小红书, 哔哩哔哩)
+- **Video/note title**
+- **Author/creator name**
+- **Views/likes** (e.g. "1M views", "52k likes")
+- **Publish time**
+- **Content summary/tags**
 
-#### 知识/搜索类（知乎、百度）
-- **问题/文章标题**
-- **回答者/作者**
-- **赞同数/阅读量**
-- **摘要内容**
+#### Knowledge/search (知乎, 百度)
+- **Question/article title**
+- **Answerer/author**
+- **Upvotes/reads**
+- **Excerpt content**
 
-#### 音乐类（OPPO音乐）
-- **歌曲名称**
-- **歌手/艺人**
-- **专辑名称**
-- **发行年份**
-- **歌曲时长**
-- **播放量/热度**（如有显示）
+#### Music (OPPO音乐)
+- **Song name**
+- **Singer/artist**
+- **Album name**
+- **Release year**
+- **Song duration**
+- **Plays/popularity** (if displayed)
 
-#### 应用商店类（OPPO软件商店）
-- **应用名称**
-- **应用图标描述**
-- **开发者/公司**
-- **评分**（如 4.8分）
-- **下载量**（如 "1亿次下载"）
-- **应用大小**
-- **应用简介/标签**
-- **是否为官方/认证应用**
+#### App store (OPPO软件商店)
+- **App name**
+- **App icon description**
+- **Developer/company**
+- **Rating** (e.g. 4.8 points)
+- **Downloads** (e.g. "100M+ downloads")
+- **App size**
+- **App description/tags**
+- **Whether it is official/verified**
 
-### Step 4: 基于具体信息回答用户
+### Step 4: Answer the user based on concrete information
 
-⛔ **严禁笼统回复**。以下是禁止出现的回复方式：
-
-```
-❌ "搜索结果展示了多个相关内容，你可以看看"
-❌ "你可以在当前页面继续上下滑动查看更多"
-❌ "点击感兴趣的内容查看详情"
-❌ "包含不同类型和价位，可以根据你的喜好选择"
-```
-
-✅ **必须包含具体数字和细节**，回复格式根据 APP 类型调整：
-
-**电商类回复模板**：
+⛔ **Never give a vague reply**. The following reply styles are forbidden:
 
 ```
-为您在{APP名}搜索了"{搜索词}"，挑选了几款值得关注的：
-
-1. {完整商品名} - ¥{价格}，{店铺名}，{销量/评价}
-2. {完整商品名} - ¥{价格}，{店铺名}，{销量/评价}
-3. {完整商品名} - ¥{价格}，{店铺名}，{销量/评价}
-
-价格区间¥{最低}-¥{最高}。{1-2句具体购物建议}。需要我点开某款看详情吗？
+❌ "The search results show several related items, take a look"
+❌ "You can keep scrolling up and down on this page for more"
+❌ "Tap the content you're interested in to see details"
+❌ "There are different types and price points, choose according to your preference"
 ```
 
-**生活服务类回复模板**：
+✅ **Must include concrete numbers and details**; adjust the reply format by APP type:
+
+**E-commerce reply template**:
 
 ```
-为您在{APP名}搜索了"{搜索词}"，推荐几家：
+For you, I searched "{search term}" in {APP name} and picked a few worth a look:
 
-1. {店名} - {评分}分，人均¥{价格}，距{距离}，{标签}
-2. {店名} - {评分}分，人均¥{价格}，距{距离}，{标签}
-3. {店名} - {评分}分，人均¥{价格}，距{距离}，{标签}
+1. {full product name} - ¥{price}, {store name}, {sales/reviews}
+2. {full product name} - ¥{price}, {store name}, {sales/reviews}
+3. {full product name} - ¥{price}, {store name}, {sales/reviews}
 
-{1-2句推荐理由}。需要我查看某家的详情或帮你导航吗？
+Price range ¥{lowest}-¥{highest}. {1-2 sentences of concrete shopping advice}. Want me to open one for details?
 ```
 
-**内容类回复模板**：
+**Local services reply template**:
 
 ```
-为您在{APP名}搜索了"{搜索词}"，推荐几个：
+For you, I searched "{search term}" in {APP name}, a few recommendations:
 
-1. 「{标题}」- @{作者}，{播放量/点赞}，{简要描述}
-2. 「{标题}」- @{作者}，{播放量/点赞}，{简要描述}
-3. 「{标题}」- @{作者}，{播放量/点赞}，{简要描述}
+1. {store name} - {rating} points, ¥{price} per person, {distance} away, {tag}
+2. {store name} - {rating} points, ¥{price} per person, {distance} away, {tag}
+3. {store name} - {rating} points, ¥{price} per person, {distance} away, {tag}
 
-{1-2句推荐理由}。需要我打开某个看看吗？
+{1-2 sentences of recommendation reason}. Want me to check a store's details or navigate you there?
 ```
 
-**音乐类回复模板**：
+**Content reply template**:
 
 ```
-为您在{APP名}搜索了"{搜索词}"，找到以下结果：
+For you, I searched "{search term}" in {APP name}, a few recommendations:
 
-1. 「{歌曲名}」- {歌手}，专辑《{专辑名}》，{发行年份}
-2. 「{歌曲名}」- {歌手}，专辑《{专辑名}》，{发行年份}
-3. 「{歌曲名}」- {歌手}，专辑《{专辑名}》，{发行年份}
+1. "{title}" - @{author}, {views/likes}, {brief description}
+2. "{title}" - @{author}, {views/likes}, {brief description}
+3. "{title}" - @{author}, {views/likes}, {brief description}
 
-{1-2句歌曲介绍或推荐理由}。需要我播放哪首吗？
+{1-2 sentences of recommendation reason}. Want me to open one and take a look?
 ```
 
-**应用商店类回复模板**：
+**Music reply template**:
 
 ```
-为您在{APP名}搜索了"{搜索词}"，找到以下应用：
+For you, I searched "{search term}" in {APP name}, found these results:
 
-1. 「{应用名}」- {开发者}，{评分}分，{下载量}，{应用大小}
-2. 「{应用名}」- {开发者}，{评分}分，{下载量}，{应用大小}
-3. 「{应用名}」- {开发者}，{评分}分，{下载量}，{应用大小}
+1. "{song name}" - {artist}, album "{album name}", {release year}
+2. "{song name}" - {artist}, album "{album name}", {release year}
+3. "{song name}" - {artist}, album "{album name}", {release year}
 
-{1-2句应用介绍或推荐理由}。需要我帮你下载哪个吗？
+{1-2 sentences introducing the song or why it's recommended}. Which one should I play?
+```
+
+**App store reply template**:
+
+```
+For you, I searched "{search term}" in {APP name}, found these apps:
+
+1. "{app name}" - {developer}, {rating} points, {downloads}, {app size}
+2. "{app name}" - {developer}, {rating} points, {downloads}, {app size}
+3. "{app name}" - {developer}, {rating} points, {downloads}, {app size}
+
+{1-2 sentences introducing the app or why it's recommended}. Which one should I download for you?
 ```
 
 ## 💡 Complete Examples
 
-### 示例1：拼多多搜索
+### Example 1: 拼多多 search
 
-**用户**: "拼多多搜一下纸巾"
+**User**: "search Pinduoduo for tissues"
 
 ```kotlin
-val keyword = "纸巾"
+val keyword = "tissues"
 device(action = "open", uri = "pinduoduo://com.xunmeng.pinduoduo/search_result.html?search_key=$keyword")
 device(action = "act", kind = "wait", timeMs = 1000)
 device(action = "snapshot")
 ```
 
-**回复示例**：
+**Reply example**:
 
 ```
-为您在拼多多搜索了"纸巾"，挑选了几款值得关注的：
+Searched 拼多多 for "tissues" and picked a few worth a look:
 
-1. 植护原木抽纸40包整箱 - ¥16.9，植护旗舰店，已拼100万+件，百亿补贴
-2. 洁柔抽纸Face系列3层120抽30包 - ¥39.9，洁柔官方旗舰店，已拼50万+件
-3. 维达超韧抽纸24包 - ¥29.9，维达官方旗舰店，已拼80万+件，包邮
+1. ZhiHu wood-pulp facial tissues, 40-pack case - ¥16.9, ZhiHu flagship store, 1M+ units sold, billion-yuan subsidy
+2. C&S facial tissues Face series, 3-ply 120 sheets, 30 packs - ¥39.9, C&S official flagship store, 500k+ units sold
+3. Vinda Ultra Strong facial tissues, 24 packs - ¥29.9, Vinda official flagship store, 800k+ units sold, free shipping
 
-价格区间¥16.9-¥39.9。植护性价比最高适合囤货，洁柔Face系列手感更好，维达超韧兼顾品质和价格。需要我点开某款看详情吗？
+Price range ¥16.9-¥39.9. ZhiHu is the best value for stocking up, C&S Face series feels better, Vinda balances quality and price. Want me to open one for details?
 ```
 
-### 示例2：抖音搜索
+### Example 2: 抖音 search
 
-**用户**: "抖音搜一下健身教程"
+**User**: "search Douyin for fitness tutorials"
 
 ```kotlin
-val keyword = "健身教程"
+val keyword = "fitness tutorials"
 device(action = "open", uri = "snssdk1128://search?keyword=$keyword")
 device(action = "act", kind = "wait", timeMs = 1000)
 device(action = "snapshot")
 ```
 
-**回复示例**：
+**Reply example**:
 
 ```
-为您在抖音搜索了"健身教程"，推荐几个热门视频：
+Searched 抖音 for "fitness tutorials", here are a few popular videos:
 
-1. 「新手全身燃脂30分钟跟练」- @帕梅拉PamelaReif，320万播放，适合零基础
-2. 「男生增肌必练的5个动作」- @刘畊宏，180万播放，哑铃居家训练
-3. 「每天15分钟马甲线养成计划」- @周六野Zoey，250万播放，28天打卡挑战
+1. "30-minute full-body fat-burn follow-along for beginners" - @PamelaReif, 3.2M views, suitable for zero basics
+2. "5 must-do moves for men to build muscle" - @LiuGengHong, 1.8M views, dumbbell home training
+3. "15-minute abs daily plan" - @ZoeyZhou, 2.5M views, 28-day check-in challenge
 
-这几位都是健身领域头部博主，内容专业。帕梅拉适合跟练燃脂，刘畊宏侧重力量，周六野适合女生塑形。需要我打开某个视频吗？
+These are all top fitness creators with professional content. Pamela is good for follow-along fat burn, Liu Geng Hong focuses on strength, Zoey Zhou suits women's toning. Want me to open a video?
 ```
 
-### 示例3：美团搜索
+### Example 3: 美团 search
 
-**用户**: "美团搜搜附近火锅店"
+**User**: "search Meituan for nearby hotpot restaurants"
 
 ```kotlin
-val keyword = "火锅"
+val keyword = "hotpot"
 device(action = "open", uri = "imeituan://www.meituan.com/search?q=$keyword")
 device(action = "act", kind = "wait", timeMs = 1000)
 device(action = "snapshot")
 ```
 
-**回复示例**：
+**Reply example**:
 
 ```
-为您在美团搜索了"火锅"，推荐几家：
+Searched 美团 for "hotpot", a few recommendations:
 
-1. 海底捞火锅(万象城店) - 4.8分，人均¥128，距1.2km，必吃榜上榜
-2. 巴奴毛肚火锅(CBD店) - 4.7分，人均¥145，距0.8km，招牌毛肚
-3. 楠火锅(太古里店) - 4.6分，人均¥95，距2.1km，排队王性价比高
+1. Haidilao Hotpot (MixC store) - 4.8 points, ¥128 per person, 1.2 km away, on the Must-Eat list
+2. Banu Tripe Hotpot (CBD store) - 4.7 points, ¥145 per person, 0.8 km away, signature tripe
+3. Nan Hotpot (Taikoo Li store) - 4.6 points, ¥95 per person, 2.1 km away, long-queue favorite with great value
 
-海底捞服务好适合聚餐，巴奴毛肚出名口味正宗，楠火锅性价比最高。需要我查看某家的详情或团购券吗？
+Haidilao has good service and suits group meals, Banu is famous for authentic tripe, Nan Hotpot has the best value. Want me to check a store's details or group-buy coupons?
 ```
 
-### 示例4：小红书搜索
+### Example 4: 小红书 search
 
-**用户**: "小红书搜一下防晒霜推荐"
+**User**: "search Xiaohongshu for sunscreen recommendations"
 
 ```kotlin
-val keyword = "防晒霜+推荐"
+val keyword = "sunscreen+recommendations"
 device(action = "open", uri = "xhsdiscover://search/result?keyword=$keyword")
 device(action = "act", kind = "wait", timeMs = 1000)
 device(action = "snapshot")
 ```
 
-**回复示例**：
+**Reply example**:
 
 ```
-为您在小红书搜索了"防晒霜推荐"，精选几篇高赞攻略：
+Searched 小红书 for "sunscreen recommendations", selected a few highly liked guides:
 
-1. 「2026防晒红黑榜！测了30款终于找到真命」- @成分党阿梨，5.2万赞，干货测评帖
-2. 「油皮亲妈防晒！上脸不搓泥不闷痘」- @皮肤科林医生，3.8万赞，医生推荐
-3. 「通勤防晒天花板，平价替代安耐晒」- @一只梨花，2.1万赞，¥59平价款实测
+1. "2026 sunscreen red/black list! Tested 30 products and finally found the one" - @IngredientNerdAli, 52k likes, in-depth review post
+2. "Sunscreen for oily skin! No pilling, no breakouts" - @DrLinDermatology, 38k likes, doctor recommended
+3. "The ceiling of commute sunscreen, affordable alternative to Anessa" - @PearBlossom, 21k likes, ¥59 budget pick tested
 
-高赞笔记普遍推荐资生堂蓝胖子和薇诺娜清透防晒，油皮偏爱理肤泉大哥大。需要我打开某篇笔记看看具体产品清单吗？
+Highly liked posts generally recommend Shiseido Blue Bottle and Winona clear sunscreen; oily skin prefers La Roche-Posay. Want me to open a post for the specific product list?
 ```
 
-### 示例5：OPPO音乐搜索
+### Example 5: OPPO音乐 search
 
-**用户**: "OPPO音乐搜一下周杰伦晴天"
+**User**: "search OPPO Music for Jay Chou's Sunny Day"
 
 ```kotlin
-val keyword = "周杰伦晴天"
+val keyword = "Jay Chou Sunny Day"
 device(action = "open", uri = "allmusic://search/keyword/$keyword")
 device(action = "act", kind = "wait", timeMs = 1000)
 device(action = "snapshot")
 ```
 
-**回复示例**：
+**Reply example**:
 
 ```
-为您在OPPO音乐搜索了"周杰伦晴天"，找到以下结果：
+Searched OPPO音乐 for "Jay Chou Sunny Day", found these results:
 
-1. 「晴天」- 周杰伦，专辑《叶惠美》，2003年发行，经典华语流行
-2. 「晴天 (Live版)」- 周杰伦，2019演唱会录音，现场气氛超燃
-3. 「晴天 (钢琴版)」- 纯音乐翻奏，适合学习/放松时听
+1. "Sunny Day" - Jay Chou, album "Ye Huimei", released 2003, classic Mandopop
+2. "Sunny Day (Live)" - Jay Chou, 2019 concert recording, great live atmosphere
+3. "Sunny Day (Piano)" - instrumental cover, good for studying/relaxing
 
-原版《晴天》是周杰伦最经典的情歌之一，方文山作词。需要我播放哪首吗？
+The original "Sunny Day" is one of Jay Chou's most classic love songs, lyrics by Vincent Fang. Which one should I play?
 ```
 
-### 示例6：OPPO软件商店搜索
+### Example 6: OPPO软件商店 search
 
-**用户**: "OPPO软件商店搜一下红果短剧"
+**User**: "search OPPO App Store for Hongguo Short Dramas"
 
 ```kotlin
-val keyword = "红果短剧"
+val keyword = "Hongguo Short Dramas"
 device(action = "open", uri = "market://search?q=$keyword")
 device(action = "act", kind = "wait", timeMs = 1000)
 device(action = "snapshot")
 ```
 
-**回复示例**：
+**Reply example**:
 
 ```
-为您在OPPO软件商店搜索了"红果短剧"，找到以下应用：
+Searched OPPO软件商店 for "Hongguo Short Dramas", found these apps:
 
-1. 「红果短剧」- 北京红果视界科技有限公司，4.8分，1亿+下载，68MB，官方认证
-2. 「红果免费短剧」- 红果科技，4.5分，5000万+下载，55MB，海量短剧免费看
-3. 「红果剧场」- 红果传媒，4.3分，1000万+下载，42MB，精选热门短剧
+1. "Hongguo Short Dramas" - Beijing Hongguo Vision Technology Co., Ltd., 4.8 points, 100M+ downloads, 68MB, officially verified
+2. "Hongguo Free Short Dramas" - Hongguo Tech, 4.5 points, 50M+ downloads, 55MB, massive free short dramas
+3. "Hongguo Theater" - Hongguo Media, 4.3 points, 10M+ downloads, 42MB, curated popular short dramas
 
-第一个是官方正版应用，下载量最高且评分最好。需要我帮你下载吗？
+The first is the official authentic app, with the highest downloads and best rating. Want me to download it for you?
 ```
 
-## 🔍 APP 识别策略
+## 🔍 APP Identification Strategy
 
-从用户查询中识别目标 APP：
+Identify the target APP from the user query:
 
-| 用户关键词 | 识别为 |
+| User keyword | Identified as |
 |-----------|--------|
 | 拼多多、PDD、拼多 | 拼多多 |
 | 美团、美团外卖 | 美团 |
-| 美团酒店 | 美团（酒店搜索） |
+| 美团酒店 | 美团 (hotel search) |
 | 高德、高德地图、导航搜 | 高德地图 |
 | 抖音、TikTok | 抖音 |
 | 快手 | 快手 |
@@ -508,62 +508,62 @@ device(action = "snapshot")
 | OPPO音乐、oppo音乐 | OPPO音乐 |
 | OPPO软件商店、oppo软件商店、软件商店、应用商店 | OPPO软件商店 |
 
-## 🔍 关键词提取策略
+## 🔍 Keyword Extraction Strategy
 
-从用户查询中提取搜索关键词时：
+When extracting search keywords from the user query:
 
 ```kotlin
-// 品牌 + 时间 + 品类 组合（电商/旅行场景）
-val brand = "罗技"
+// brand + year + category combination (e-commerce/travel scenarios)
+val brand = "Logitech"
 val year = "2026"
-val category = "机械键盘"
+val category = "mechanical keyboard"
 val keyword = "$brand+$year+$category"
 
-// 地点 + 品类 组合（生活服务/地图场景）
-val location = "三亚"
-val type = "酒店"
+// location + category combination (local services/map scenarios)
+val location = "Sanya"
+val type = "hotel"
 val keyword = "$location+$type"
 
-// 直接关键词（内容/知识场景）
-val keyword = "健身教程"
+// direct keyword (content/knowledge scenarios)
+val keyword = "fitness tutorials"
 ```
 
-**时间词映射**：
+**Time-word mapping**:
 
-| 用户表述 | 转换为 |
+| User phrasing | Converted to |
 |---------|-------|
-| 今年 | 2026 |
-| 新款/最新 | 2026+新款 |
-| 去年 | 2025 |
+| this year | 2026 |
+| new model/latest | 2026+new |
+| last year | 2025 |
 
-**美团场景路由**：
+**美团 Scenario Routing**:
 
-| 用户意图 | 路由 |
+| User intent | Route |
 |---------|------|
-| 搜索餐饮/娱乐/通用 | 美团全局搜索 |
-| 明确提到酒店/住宿 | 美团酒店搜索 |
+| search food/entertainment/general | 美团 global search |
+| explicitly mentions hotel/accommodation | 美团 hotel search |
 
 
-## ⚠️ 注意事项
+## ⚠️ Notes
 
-- **必须使用 device tool**: 通过 `device(action="open", uri="...")` 跳转，不要用 shell `am start`（会报 SecurityException）。**严禁传 `package_name` 参数**——系统会根据 URI scheme 自动解析目标 APP，手动指定 package_name 会导致 ActivityNotFound。**唯一例外是百度APP**：因其 `baiduboxapp://` scheme 实测不可用，必须使用 HTTPS 链接 + `package_name="com.baidu.searchbox"`
-- **严格按路由表复制 URI**: 不要凭记忆拼写 Deep Link，必须从上方路由表中原样复制模板，只替换 `{keyword}` 部分。常见错误：美团 scheme 写成 `meituan://`（正确的是 `imeituan://`）、路径写成 `/web/?keyword=`（正确的是 `/search?q=`）
-- **APP 必须已安装**: Deep Link 需要对应 APP，若未安装会返回 ActivityNotFoundException
-- **登录状态**: 部分搜索结果需要登录账号才能完整展示
-- **网络依赖**: 需要联网才能加载搜索结果
-- **加载时间**: 网络较慢时适当增加 `wait` 的 timeMs
-- **回复字数**: 字数控制在 200 字以内，但必须包含从 snapshot 中读取的具体信息
-- **严禁套话**: 绝对不能回复"包含不同类型""你可以继续浏览"这类笼统废话。如果 snapshot 没拿到足够文字信息，应如实说明并再 wait 后重新 snapshot
+- **Must use the device tool**: jump via `device(action="open", uri="...")`, not the shell `am start` (it throws SecurityException). **Passing the `package_name` parameter is strictly forbidden** — the system resolves the target APP automatically from the URI scheme, and specifying package_name manually causes ActivityNotFound. **The only exception is 百度APP**: because its `baiduboxapp://` scheme does not work in testing, you must use an HTTPS link + `package_name="com.baidu.searchbox"`
+- **Copy the URI strictly from the routing table**: do not spell a Deep Link from memory; you must copy the template verbatim from the routing table above and only replace the `{keyword}` part. Common mistakes: writing the 美团 scheme as `meituan://` (correct is `imeituan://`), or the path as `/web/?keyword=` (correct is `/search?q=`)
+- **The APP must be installed**: a Deep Link needs the corresponding APP; if it is not installed, you get ActivityNotFoundException
+- **Login state**: some search results require a logged-in account to display fully
+- **Network dependency**: an internet connection is required to load search results
+- **Load time**: when the network is slow, increase the `wait` timeMs appropriately
+- **Reply length**: keep it within 200 characters, but it must contain the concrete information read from the snapshot
+- **No boilerplate**: never reply with vague filler such as "contains different types" or "you can keep browsing". If the snapshot does not contain enough text, say so honestly, wait again, and take a new snapshot
 
 ## 🔄 Error Handling
 
-### APP 未安装
+### APP not installed
 
 ```kotlin
-// device(action="open", uri="...") 会返回 ActivityNotFoundException 错误
-// 向用户说明需要安装对应 APP
-// 部分 APP 可降级到网页版：
-// 注意：百度主链接已经是 HTTPS，不受此 fallback 影响
+// device(action="open", uri="...") returns an ActivityNotFoundException error
+// Tell the user the corresponding APP needs to be installed
+// Some APPs can fall back to their web version:
+// Note: the main 百度 link is already HTTPS, so this fallback does not apply
 val webFallback = mapOf(
     "拼多多" to "https://mobile.yangkeduo.com/search_result.html?search_key=$keyword",
     "知乎" to "https://www.zhihu.com/search?type=content&q=$keyword",
@@ -573,59 +573,59 @@ val webFallback = mapOf(
 device(action = "open", uri = webFallback[app] ?: "https://www.baidu.com/s?wd=$keyword")
 ```
 
-### 搜索无结果
+### Search returns no results
 
 ```kotlin
-// 尝试简化关键词，去掉年份、限定词
-val simplifiedKeyword = "机械键盘"  // 去掉品牌等限定词
-// 用简化关键词重新搜索
+// Try simplifying the keyword: drop the year and qualifiers
+val simplifiedKeyword = "mechanical keyboard"  // remove brand and other qualifiers
+// Search again with the simplified keyword
 ```
 
-### 页面加载超时
+### Page load timeout
 
 ```kotlin
 device(action = "act", kind = "wait", timeMs = 1000)
 device(action = "snapshot")
-// 如果仍未加载，提示用户检查网络
+// If it still has not loaded, prompt the user to check the network
 ```
 
-### 美团 Scheme 错误
+### 美团 Scheme error
 
 ```kotlin
-// ❌ 错误示例（scheme 少了 i 前缀，路径也不对）
+// ❌ Wrong example (the scheme is missing the i prefix, and the path is wrong too)
 device(action = "open", uri = "meituan://www.meituan.com/web/?keyword=$keyword")
 
-// ✅ 正确写法
+// ✅ Correct form
 device(action = "open", uri = "imeituan://www.meituan.com/search?q=$keyword")
 ```
 
-### 百度APP baiduboxapp:// Scheme 不可用
+### 百度APP baiduboxapp:// Scheme unavailable
 
 ```kotlin
-// ❌ baiduboxapp:// scheme 实测无法触发搜索（停留在桌面）
+// ❌ the baiduboxapp:// scheme does not trigger search in testing (stays on the home screen)
 device(action = "open", uri = "baiduboxapp://search?keyword=$keyword")
 
-// ❌ utils 路径同样不可用
+// ❌ the utils path does not work either
 device(action = "open", uri = "baiduboxapp://utils/search?keyword=$keyword")
 
-// ✅ 正确写法：使用 HTTPS 链接 + 显式指定包名
+// ✅ Correct form: use an HTTPS link + explicitly specify the package name
 device(action = "open", uri = "https://m.baidu.com/s?word=$keyword", package_name = "com.baidu.searchbox")
 ```
 
 
 ## 📱 Supported Queries
 
-| APP | 查询类型 | 示例 | 搜索关键词 |
+| APP | Query type | Example | Search keyword |
 |-----|---------|------|-----------|
-| 拼多多 | 低价搜索 | "拼多多搜便宜耳机" | 耳机 |
-| 美团 | 美食搜索 | "美团搜火锅" | 火锅 |
-| 美团 | 酒店搜索 | "美团搜酒店" | 酒店 |
-| 高德 | POI搜索 | "高德搜加油站" | 加油站 |
-| 抖音 | 视频搜索 | "抖音搜健身" | 健身 |
-| 快手 | 视频搜索 | "快手搜美食做法" | 美食做法 |
-| 小红书 | 笔记搜索 | "小红书搜穿搭" | 穿搭 |
-| B站 | 视频搜索 | "B站搜编程教程" | 编程教程 |
-| 知乎 | 问答搜索 | "知乎搜如何学Python" | 如何学Python |
-| 百度 | 通用搜索 | "百度搜天气预报" | 天气预报 |
-| OPPO音乐 | 音乐搜索 | "OPPO音乐搜周杰伦晴天" | 周杰伦晴天 |
-| OPPO软件商店 | 应用搜索 | "软件商店搜红果短剧" | 红果短剧 |
+| 拼多多 | Low-price search | "search Pinduoduo for cheap headphones" | headphones |
+| 美团 | Food search | "search Meituan for hotpot" | hotpot |
+| 美团 | Hotel search | "search Meituan for hotels" | hotels |
+| 高德 | POI search | "search Amap for gas stations" | gas stations |
+| 抖音 | Video search | "search Douyin for fitness" | fitness |
+| 快手 | Video search | "search Kuaishou for recipes" | recipes |
+| 小红书 | Note search | "search Xiaohongshu for outfit ideas" | outfit ideas |
+| B站 | Video search | "search Bilibili for programming tutorials" | programming tutorials |
+| 知乎 | Q&A search | "search Zhihu for how to learn Python" | how to learn Python |
+| 百度 | General search | "search Baidu for the weather forecast" | weather forecast |
+| OPPO音乐 | Music search | "search OPPO Music for Jay Chou's Sunny Day" | Jay Chou Sunny Day |
+| OPPO软件商店 | App search | "search the app store for Hongguo Short Dramas" | Hongguo Short Dramas |

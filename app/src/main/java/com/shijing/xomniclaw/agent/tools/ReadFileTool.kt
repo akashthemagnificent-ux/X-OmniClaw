@@ -43,8 +43,8 @@ class ReadFileTool(
                     properties = mapOf(
                         "path" to PropertySchema(
                             "string",
-                            "要读取的文件路径。支持 /sdcard/... 绝对路径；相对路径相对 workspace。" +
-                                "内置技能可用 assets://skills/<name>/SKILL.md（直接读 APK assets）。"
+                            "Path of the file to read. Absolute /sdcard/... paths are supported; relative paths resolve against the workspace. " +
+                                "Built-in skills can be read as assets://skills/<name>/SKILL.md (straight from the APK assets)."
                         )
                     ),
                     required = listOf("path")
@@ -111,7 +111,7 @@ class ReadFileTool(
     ): ToolResult {
         val ctx = context
             ?: return ToolResult.error(
-                "无法从 APK 读取 assets（缺少 Context）: $userPath"
+                "Cannot read APK assets (missing Context): $userPath"
             )
         return try {
             val text = ctx.assets.open(assetPath).bufferedReader().use { it.readText() }

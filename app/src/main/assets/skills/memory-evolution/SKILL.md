@@ -66,7 +66,7 @@ The app owns a managed scheduled task named `全局记忆进化`.
 
 Its instruction should be equivalent to:
 
-`使用 memory_evolution 工具执行全局记忆进化：处理待沉淀的 X-OmniClaw 任务记忆，更新 MEMORY.md，并重建 USER-PROFILE.md。`
+`Use the memory_evolution tool to run global memory evolution: process pending X-OmniClaw task memories, update MEMORY.md, and rebuild USER-PROFILE.md.`
 
 ## Best Practices
 

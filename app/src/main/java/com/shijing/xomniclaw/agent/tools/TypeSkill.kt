@@ -31,8 +31,8 @@ class TypeSkill(private val context: Context) : Skill {
             val isAccessibilityEnabled = com.shijing.xomniclaw.accessibility.AccessibilityProxy.isConnected.value == true &&
                                         com.shijing.xomniclaw.accessibility.AccessibilityProxy.isServiceReady()
             val statusNote = when {
-                isAccessibilityEnabled -> " ✅ 无障碍可用（中文依赖焦点控件）"
-                else -> " ⚠️ 请先聚焦输入框并开启无障碍，否则中文可能失败"
+                isAccessibilityEnabled -> " ✅ Accessibility available (CJK input needs a focused control)"
+                else -> " ⚠️ Focus the input field and enable accessibility, otherwise CJK input may fail"
             }
             return "Type text into focused input field (tap the field first).$statusNote"
         }
@@ -46,7 +46,7 @@ class TypeSkill(private val context: Context) : Skill {
                 parameters = ParametersSchema(
                     type = "object",
                     properties = mapOf(
-                        "text" to PropertySchema("string", "要输入的文本内容")
+                        "text" to PropertySchema("string", "Text to type")
                     ),
                     required = listOf("text")
                 )

@@ -22,7 +22,7 @@ Use this skill when the user wants to:
 - rebuild a user profile from image memories
 - schedule periodic gallery memory updates
 
-Do not use this skill as the first choice for questions like `今天我拍了什么照片` or `我最近拍过什么截图`.
+Do not use this skill as the first choice for questions like `What photos did I take today?` or `What screenshots have I taken recently?`.
 For image-question answering or gallery-image operations based on existing `memory/IMAGE-MEMORY.md`, prefer `gallery-qa`.
 
 This skill is responsible for **producing and maintaining** image memories.
@@ -88,7 +88,7 @@ Example idea:
 
 Example instruction:
 
-`使用 gallery_memory 工具同步相册中的新增图片记忆，并更新用户画像。`
+`Use the gallery_memory tool to sync new image memories from the gallery and update the user profile.`
 
 ## Best Practices
 

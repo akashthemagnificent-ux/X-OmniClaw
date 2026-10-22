@@ -25,7 +25,7 @@ class LongPressSkill : Skill {
     }
 
     override val name = "long_press"
-    override val description = "长按屏幕上的坐标位置。用于触发长按菜单、删除项目等需要长按操作的场景。**注意**: 操作屏幕前使用 get_view_tree() 获取 UI 元素信息即可，不需要再调用 screenshot()。"
+    override val description = "Long-press a coordinate on screen. Use it for long-press menus, deleting items, and similar. **Note**: call get_view_tree() for element information before acting; screenshot() is not required."
 
     override fun getToolDefinition(): ToolDefinition {
         return ToolDefinition(
@@ -36,9 +36,9 @@ class LongPressSkill : Skill {
                 parameters = ParametersSchema(
                     type = "object",
                     properties = mapOf(
-                        "x" to PropertySchema("integer", "X 坐标"),
-                        "y" to PropertySchema("integer", "Y 坐标"),
-                        "duration" to PropertySchema("integer", "长按持续时间（毫秒），默认 1000")
+                        "x" to PropertySchema("integer", "X coordinate"),
+                        "y" to PropertySchema("integer", "Y coordinate"),
+                        "duration" to PropertySchema("integer", "Long-press duration in ms, default 1000")
                     ),
                     required = listOf("x", "y")
                 )

@@ -36,7 +36,7 @@ class StopSkill(private val taskDataManager: TaskDataManager) : Skill {
                 parameters = ParametersSchema(
                     type = "object",
                     properties = mapOf(
-                        "reason" to PropertySchema("string", "停止的原因")
+                        "reason" to PropertySchema("string", "Reason for stopping")
                     ),
                     required = emptyList()
                 )

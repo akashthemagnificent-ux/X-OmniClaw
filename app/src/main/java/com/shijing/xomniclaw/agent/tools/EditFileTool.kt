@@ -39,9 +39,9 @@ class EditFileTool(
                 parameters = ParametersSchema(
                     type = "object",
                     properties = mapOf(
-                        "path" to PropertySchema("string", "要编辑的文件路径"),
-                        "old_text" to PropertySchema("string", "要查找并替换的精确文本"),
-                        "new_text" to PropertySchema("string", "替换后的新文本")
+                        "path" to PropertySchema("string", "File path to edit"),
+                        "old_text" to PropertySchema("string", "Exact text to find and replace"),
+                        "new_text" to PropertySchema("string", "Replacement text")
                     ),
                     required = listOf("path", "old_text", "new_text")
                 )

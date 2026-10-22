@@ -17,11 +17,11 @@ metadata:
 
 Use this skill for all gallery-image consumption tasks, including:
 
-- `今天我拍了什么照片`
-- `我最近拍过什么`
-- `我拍过和猫有关的照片吗`
-- `帮我把所有截图整理出来`
-- `把猫主题图片复制到某个文件夹`
+- `What photos did I take today?`
+- `What have I photographed recently?`
+- `Do I have any cat photos?`
+- `Help me organize all my screenshots`
+- `Copy the cat-themed images to a folder`
 
 This skill is the primary consumer of `memory/IMAGE-MEMORY.md`.
 It does **not** maintain or rebuild image memories. If the user explicitly asks to scan, sync, refresh, or rebuild image memories, use `gallery-memory` instead.
@@ -69,9 +69,9 @@ When this skill applies, follow this workflow strictly:
 
 For operations such as:
 
-- `把猫主题的图片复制到某个文件夹`
-- `把所有截图整理到一个相册`
-- `把发票照片都归档`
+- `Copy the cat-themed images to a folder`
+- `Organize all screenshots into one album`
+- `Archive all the invoice photos`
 
 follow this exact order:
 
@@ -86,8 +86,8 @@ Prefer concise natural language.
 
 Good answer style:
 
-- `今天你拍了两张照片，一张是桌面附近的宠物照片，另一张是带文字内容的页面截图。`
+- `You took two photos today: one is a pet photo near the desk, and the other is a screenshot of a page with text content.`
 
 Bad answer style:
 
-- `在 memory/IMAGE-MEMORY.md 的第 120-140 行找到了结果。`
+- `Found the results at lines 120-140 of memory/IMAGE-MEMORY.md.`

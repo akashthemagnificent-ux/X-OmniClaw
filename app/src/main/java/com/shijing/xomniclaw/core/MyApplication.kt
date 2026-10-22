@@ -1165,7 +1165,8 @@ class MyApplication : Application(), Application.ActivityLifecycleCallbacks {
             // Detect if contains screenshot path (supports file path and Content URI)
             // Format 1: 路径: /storage/.../screenshot_xxx.png
             // Format 2: 路径: content://com.shijing.xomniclaw.accessibility.fileprovider/...
-            val screenshotPathRegex = Regex("""路径:\s*((?:/storage/|/sdcard/|content://)[^\s\n]+\.png)""")
+            // Accepts both the current English label and the legacy Chinese one.
+            val screenshotPathRegex = Regex("""(?:路径|Path):\s*((?:/storage/|/sdcard/|content://)[^\s\n]+\.png)""")
             val screenshotMatch = screenshotPathRegex.find(cleanContent)
 
             if (screenshotMatch != null) {

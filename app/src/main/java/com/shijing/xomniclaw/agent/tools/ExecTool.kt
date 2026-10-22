@@ -51,8 +51,8 @@ class ExecTool(
                 parameters = ParametersSchema(
                     type = "object",
                     properties = mapOf(
-                        "command" to PropertySchema("string", "要执行的 shell 命令"),
-                        "working_dir" to PropertySchema("string", "可选的工作目录")
+                        "command" to PropertySchema("string", "Shell command to run"),
+                        "working_dir" to PropertySchema("string", "Optional working directory")
                     ),
                     required = listOf("command")
                 )

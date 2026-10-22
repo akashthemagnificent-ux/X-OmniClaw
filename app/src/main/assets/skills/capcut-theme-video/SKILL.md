@@ -1,131 +1,131 @@
 ---
 name: capcut-theme-video
-description: CapCut (剪映) one-tap video creation on Android. Always clear A_latest first (copy_images_to_album clear-only), then retrieve by time (list_gallery_images) or content (image-memories). Copy to A_latest (clear_album_first), CapCut 照片视频 → A_latest → 全部, multi_tap, N=K.
+description: CapCut (剪映) one-tap video creation on Android. Always clear A_latest first (copy_images_to_album clear-only), then retrieve by time (list_gallery_images) or content (image-memories). Copy to A_latest (clear_album_first), CapCut 照片视频 (Photos/Videos) → A_latest → 全部 (All), multi_tap, N=K.
 metadata: { "xomniclaw": { "always": false, "emoji": "🎬" } }
 ---
 
-# 剪映（CapCut）一键成片与相册选图
+# CapCut (剪映) One-Tap Video and Album Photo Selection
 
-本 Skill 指导你如何获取目标照片、统一存入 `A_latest` 相册，并在剪映中完成「一键成片」。
+This Skill guides you through obtaining the target photos, storing them uniformly in the `A_latest` album, and completing "一键成片 (one-tap edit)" in CapCut.
 
-## 何时使用
+## When to Use
 
-用户要：**打开剪映**、**一键成片**、**从相册选多张图（按时间或按主题）**、**去成片 / 导出视频** 等多步 UI 操作时加载本 Skill。
+Load this Skill when the user wants a multi-step UI operation such as: **open CapCut**, **一键成片 (one-tap edit)**, **select multiple photos from the album (by time or by theme)**, **go to the finished video / export the video**.
 
-包名：`com.lemon.lv`
+Package name: `com.lemon.lv`
 
-## 相册名 `A_latest`（硬规则）
+## Album Name `A_latest` (hard rule)
 
-- **本流程使用的相册名有且只有一个：`A_latest`**（与 `Pictures/A_latest/` 及剪映「照片视频」下拉显示一致）。  
-- **禁止**变体：`A_latest_风景`、`主题_A_latest`、`latest`、带空格等；主题/时间只体现在检索，**不要**写进相册名。  
-- **入库前必须先清相册**：最终写入时 `copy_images_to_album` 须 **`clear_album_first: true`**。  
-- **任意检索前也须先清空 `A_latest`**（路径 A、路径 B **相同**）：见下「步骤 0」。避免旧副本混入按时间的 `list_gallery_images` 结果，也避免按内容选图时相册里仍残留上一轮素材、与本次拷贝混淆。
+- **This flow uses exactly one album name: `A_latest`** (consistent with `Pictures/A_latest/` and the CapCut "照片视频 (Photos/Videos)" dropdown).  
+- **Forbidden variants**: `A_latest_scenery`, `theme_A_latest`, `latest`, with spaces, etc.; theme/time is expressed only in retrieval — **do not** write it into the album name.  
+- **The album must be cleared before adding anything**: on the final write, `copy_images_to_album` must use **`clear_album_first: true`**.  
+- **Before any retrieval, `A_latest` must also be cleared first** (Path A and Path B are **the same**): see "Step 0" below. This prevents old copies from mixing into time-based `list_gallery_images` results, and prevents material left over from the previous round from being confused with this round's copies when selecting by content.
 
 ---
 
-## 核心策略：如何获取照片与目标张数 K
+## Core Strategy: How to Obtain Photos and the Target Count K
 
-在进入剪映前，必须先确定要选哪些照片以及**目标张数 K**。不论是按时间还是按主题，**所有选出的照片都必须先复制到 `A_latest` 相册中**，然后在剪映里统一从 `A_latest` 相册中选取。
+Before entering CapCut, you must first determine which photos to select and the **target count K**. Whether by time or by theme, **all selected photos must first be copied into the `A_latest` album**, and then selected uniformly from the `A_latest` album in CapCut.
 
-### 步骤 0：先清空 `A_latest`（路径 A 与路径 B 必做，先于一切检索）
+### Step 0: Clear `A_latest` first (required for both Path A and Path B, before any retrieval)
 
-在**任何** `list_gallery_images`（路径 A）或 `memory_search` / `memory_get`（路径 B）**之前**，先调用 **`copy_images_to_album`**：
+Before **any** `list_gallery_images` (Path A) or `memory_search` / `memory_get` (Path B), first call **`copy_images_to_album`**:
 
 - `album_name: "A_latest"`
 - `clear_album_first: true`
-- **不要传** `content_uris` / `media_ids` → 工具**只清空**该相册（空相册则删除 0 条）。
+- **Do not pass** `content_uris` / `media_ids` → the tool **only clears** that album (0 records deleted if the album is empty).
 
-**原因简述**：
+**Reason in brief**:
 
-- **路径 A**：`A_latest` 里旧副本仍在 MediaStore 时，`date_preset` 等**未按相册排除**的检索会把它们和真实目标照片混在一起。  
-- **路径 B**：先清空可保证后续写入 `A_latest` 时相册状态干净，不与上一轮成片残留混淆。
+- **Path A**: if old copies in `A_latest` remain in MediaStore, retrievals such as `date_preset` that are **not excluded by album** will mix them with the real target photos.  
+- **Path B**: clearing first guarantees that when `A_latest` is later written, the album state is clean and not confused with leftovers from the previous finished video.
 
-**可选探针**（与直接先清空等价）：先 `list_gallery_images`，`album_filter: "A_latest"`，`limit: 1`；仅当 **`count` ≥ 1** 时再执行上述仅清空调用。
+**Optional probe** (equivalent to clearing directly first): first `list_gallery_images`, `album_filter: "A_latest"`, `limit: 1`; only when **`count` ≥ 1** execute the clear-only call above.
 
-### 步骤 1：获取目标照片的 content_uris
+### Step 1: Obtain the target photos' content_uris
 
-完成步骤 0 后，按用户需求二选一：
+After completing Step 0, choose one of two options according to the user's needs:
 
-#### 路径 A：基于时间或相册名（非主题语义）
-**适用场景**：用户明确要求「今天拍的照片」「昨天的照片」「最近 24 小时」，或者指定了具体的系统相册名。
-**操作步骤**：
-1. 调用 `list_gallery_images`，使用 `date_preset` (`today` | `yesterday` | `last_24h`) 或 `album_filter`（必要时提高 **`limit`**，最大 100）。
-2. 从返回的图片列表中提取所有的 `content_uri`。
+#### Path A: Based on time or album name (non-theme semantics)
+**Use case**: the user explicitly asks for "photos taken today", "yesterday's photos", "the last 24 hours", or specifies a concrete system album name.
+**Steps**:
+1. Call `list_gallery_images` using `date_preset` (`today` | `yesterday` | `last_24h`) or `album_filter` (raise **`limit`** if necessary, max 100).
+2. Extract all `content_uri` values from the returned image list.
 
-#### 路径 B：基于特定主题、事件或图像内容
-**适用场景**：用户要求按内容找图，如「风景」「海边」「猫」「去北京旅行」。
-**操作步骤**：
-1. **提取主题词**：从用户话里抽出检索用词。
-2. **检索 image-memories**（按内容找图时不要用 `list_gallery_images` 的 `name_filter` 当主题检索：文件名多为 `IMG…`，不含「风景」「猫」等语义，易得到 0 条）：
-   - 调用 `memory_search`，`query` 填主题词；可适当增大 `maxResults`（建议 ≥ 10）、略降 `minScore`（建议 ≤ 0.4）以多召回。
-   - 遍历返回的 `citations` 列表，**逐条 `memory_get`**，提取 `content_uri` 或 `media_id`；**不要只读一段就停**，避免漏图。
+#### Path B: Based on a specific theme, event, or image content
+**Use case**: the user asks to find images by content, such as "scenery", "seaside", "cat", "trip to Beijing".
+**Steps**:
+1. **Extract theme words**: pull retrieval terms out of the user's words.
+2. **Search image-memories** (when finding images by content, do not use `list_gallery_images`'s `name_filter` as a theme search: filenames are mostly `IMG…` and contain no semantics like "scenery" or "cat", so you easily get 0 results):
+   - Call `memory_search` with the theme word in `query`; you may raise `maxResults` (recommended ≥ 10) and lower `minScore` slightly (recommended ≤ 0.4) to recall more.
+   - Iterate the returned `citations` list and **call `memory_get` for each item**, extracting `content_uri` or `media_id`; **do not stop after reading just one**, to avoid missing images.
 
-### 步骤 2：写入固定相册 `A_latest`（硬规则）
+### Step 2: Write into the fixed album `A_latest` (hard rule)
 
-无论走的是路径 A 还是路径 B，拿到 `content_uris` 或 `media_ids` 后：
-1. 调用 `copy_images_to_album`：`album_name: "A_latest"`，传入收集到的 `content_uris` 或 `media_ids`，**`clear_album_first: true`**（再次清空后拷贝；与步骤 0 衔接，避免遗漏或并发下残留）。
-2. 拷贝后调用 `list_gallery_images`，`album_filter: "A_latest"`，记下返回的 `count`，这就是**目标张数 K**。
-3. 在剪映中，必须**先点「照片视频」下拉选择 `A_latest` 相册**，再进行选图。
+Whichever path you take — A or B — once you have `content_uris` or `media_ids`:
+1. Call `copy_images_to_album`: `album_name: "A_latest"`, pass the collected `content_uris` or `media_ids`, **`clear_album_first: true`** (clear again then copy; connects with Step 0 to avoid omissions or leftovers under concurrency).
+2. After copying, call `list_gallery_images` with `album_filter: "A_latest"` and note the returned `count`; this is the **target count K**.
+3. In CapCut, you must **first tap the "照片视频 (Photos/Videos)" dropdown and select the `A_latest` album**, then select photos.
 
 ---
 
-## 剪映操作执行步骤
+## CapCut Operation Steps
 
-### 1. Deep Link 直达一键成片相关页（优先）
-无需在剪映首页再点「一键成片」时，用 `device` `action=open` 传 `uri` + `package_name`：
+### 1. Deep Link directly to the one-tap edit page (preferred)
+When there is no need to tap 一键成片 (one-tap edit) again on the CapCut home page, use `device` `action=open` with `uri` + `package_name`:
 ```text
 device(action="open", package_name="com.lemon.lv", uri="videocut://template/smart_recommend?enter_from=intelligent_edit&tab_name=edit")
 ```
-随后 `device(action="snapshot")` 确认是否已进入选素材界面。若出现「是否允许打开剪映」等系统权限弹窗（如 `com.oplus.securitypermission`），先点允许再 snapshot。若 Deep Link 失败，请在首页用 ref 点击 `text '一键成片'`。
+Then `device(action="snapshot")` to confirm whether you have entered the media selection screen. If a system permission popup such as "是否允许打开剪映 (Allow opening CapCut?)" appears (e.g. `com.oplus.securitypermission`), tap allow first, then snapshot. If the Deep Link fails, tap `text '一键成片'` (one-tap edit) by ref on the home page.
 
-### 2. 选素材页：相册与分类切换
+### 2. Media selection page: album and category switching
 
-> **snapshot vs screenshot 硬规则（违反必失败）**
-> 全程只能用 `device(action="snapshot")` 返回带 refs 的无障碍树并用 `tap ref` 点击。**禁止**用 `screenshot` 盲猜坐标。
+> **snapshot vs screenshot hard rule (violation means failure)**
+> Throughout, use only `device(action="snapshot")` to get the accessibility tree with refs and tap via `tap ref`. **Do not** use `screenshot` to guess coordinates.
 
-1. **先点相册下拉（硬规则）**：在树里找到 `link '照片视频'` 这一行，`tap` 这一行的 `ref`（带上 `snapshot_id`）。**禁止**用同区域附近的无文案 `button` 代替。
-2. **选择 `A_latest` 相册**：展开列表后再 `snapshot`，在列表里找 `text 'A_latest'`（名称精确为 A_latest，无后缀）。
-   - **正确**：`tap` 紧挨在 `text 'A_latest'` 的「上一节点」那个 `button` 的 ref。
-   - **错误**：误点后面的 `button`（那是下一行相册）。  
-3. **切换到「全部」Tab（重要）**：
-   - 选中 `A_latest` 后，剪映默认可能停留在「照片」或「视频」Tab。
-   - **必须**在顶部 Tab 栏找到 **`text '全部'`**（或 `button '全部'`），点击其对应的 **ref**。
-   - **目的**：确保能看到 `A_latest` 相册下的所有素材（无论图片还是视频）。
-   - `snapshot` 确认 `全部` 已被选中（`selected`）。   
+1. **First tap the album dropdown (hard rule)**: find the `link '照片视频'` (Photos/Videos) row in the tree, and `tap` that row's `ref` (with `snapshot_id`). **Do not** substitute a nearby unlabeled `button` in the same area.
+2. **Select the `A_latest` album**: expand the list, `snapshot` again, and find `text 'A_latest'` in the list (name exactly A_latest, no suffix).
+   - **Correct**: `tap` the ref of the `button` that is the "previous node" immediately before `text 'A_latest'`.
+   - **Wrong**: accidentally tapping the `button` after it (that is the next album row).  
+3. **Switch to the "全部 (All)" tab (important)**:
+   - After selecting `A_latest`, CapCut may default to the "照片 (Photos)" or "视频 (Videos)" tab.
+   - You **must** find **`text '全部'`** (or `button '全部'`) in the top tab bar and tap its **ref**.
+   - **Purpose**: ensure you can see all media under the `A_latest` album (whether images or videos).
+   - `snapshot` to confirm `全部` is selected (`selected`).   
 
-### 3. 勾选素材（点「圈」不点「大图」）（批量点击）
-1. **勾选注意事项**
-   在相册网格中，每个格子常出现一对相邻节点（先大块 `button` 再小 `link` 圈）：
-   - **只点勾选小圈**：多为 `link`（未选中时无文案，选中后常带序号如 `link '1' (selected)`）。
-   - **禁止点大块无文案 `button`**：那是整张缩略图区域，点击会进入大图预览。
-2. **使用 `multi_tap` 勾选全部**：
-   - 在当前 Tab 网格中，只列各格**勾选小圈**的 ref（多为 `link`），**勿混入**同格大块无文案缩略图 `button`。
-   - **`multi_tap` 单次最多 15 个 ref**（与单屏可见格数一致）；超出则：**multi_tap 一批 → `snapshot` → 滚动 → 再 `multi_tap` 下一批**。重复 ref 会去重（保序）。
-   - 每次 `act`（含 `multi_tap`）须带**当前最近一次** `snapshot` 返回的 **`snapshot_id`**（严格模式下 ref 会过期）。
-3. **校验**：
-   - **核对张数**：每次点击或 `multi_tap` 后**必须** `snapshot`，核对底部 **`下一步 (N)`** 的 N 是否达到目标张数 **K**。
-   - **易错**：界面常出现「选择3个以上素材，成片效果更佳」，这只是推荐，**绝不**表示选 3 张就可以点下一步。必须选到 **N = K**。
+### 3. Select media (tap the "circle", not the "big image") (batch taps)
+1. **Selection notes**
+   In the album grid, each cell often has a pair of adjacent nodes (a large `button` first, then a small `link` circle):
+   - **Tap only the selection circle**: usually a `link` (no text when unselected; often carries a number like `link '1' (selected)` when selected).
+   - **Do not tap the large unlabeled `button`**: that is the whole thumbnail area; tapping it enters the full-size preview.
+2. **Use `multi_tap` to select everything**:
+   - In the current tab grid, list only the refs of each cell's **selection circle** (usually `link`), and **do not mix in** the same cell's large unlabeled thumbnail `button`.
+   - **`multi_tap` accepts at most 15 refs per call** (matching the number of visible cells on one screen); if there are more: **multi_tap one batch → `snapshot` → scroll → multi_tap the next batch**. Duplicate refs are deduplicated (order preserved).
+   - Every `act` (including `multi_tap`) must carry the **`snapshot_id`** from the **most recent** `snapshot` (refs expire in strict mode).
+3. **Verify**:
+   - **Check the count**: after every tap or `multi_tap` you **must** `snapshot` and check whether N in the bottom **`下一步 (N)`** (Next) has reached the target count **K**.
+   - **Pitfall**: the UI often shows "选择3个以上素材，成片效果更佳 (Select 3 or more media for a better result)"; this is only a recommendation and **never** means selecting 3 photos is enough to tap Next. You must select until **N = K**.
 
 
-### 4. 等待与下一步
-- `下一步 (N)` 的 N = K 后，点击「下一步」。
-- 后续生成/导出环节，必须使用 `act` + `wait` 进行等待：
+### 4. Wait and Next
+- Once N in `下一步 (N)` (Next) equals K, tap "Next".
+- For the subsequent generation/export stage, you must use `act` + `wait` to wait:
   ```text
   device(action="act", kind="wait", timeMs=10000)
   ```
-  **错误**：`device(action="wait")`。
-- 导出很慢时应用多次短 wait + snapshot，不要假设一次等 10 分钟已生效。
+  **Wrong**: `device(action="wait")`.
+- If export is very slow, use several short waits + snapshots; do not assume one 10-minute wait has taken effect.
 
 ---
 
-## 简要检查清单
+## Brief Checklist
 
-1. **步骤 0（两路径相同）**：`copy_images_to_album`（`A_latest` + `clear_album_first: true`，无 URIs）仅清空。
-2. **检索**：路径 A → `list_gallery_images`；路径 B → `memory_search` / `memory_get` → 得到 `content_uri` 列表。
-3. **统一入库**：`copy_images_to_album`（`A_latest` + **`clear_album_first: true`** + 本次 URIs）→ `list_gallery_images` `album_filter: "A_latest"` 得 **K**。
-4. **进入剪映**：优先 Deep Link，失败则首页 ref 点击。
-5. **选相册集**：下拉选择 `A_latest`。
-6. **切全部 Tab**：**必须点击「全部」Tab**，确保素材可见。
-7. **选图**：只点勾选小圈（`link`）；`multi_tap`（≤15/次）配合 `snapshot`。
-8. **核对与等待**：`下一步 (N)` 直到 N = K；`act` + `wait` 再 `snapshot`。
+1. **Step 0 (same for both paths)**: `copy_images_to_album` (`A_latest` + `clear_album_first: true`, no URIs) to clear only.
+2. **Retrieve**: Path A → `list_gallery_images`; Path B → `memory_search` / `memory_get` → get the `content_uri` list.
+3. **Store uniformly**: `copy_images_to_album` (`A_latest` + **`clear_album_first: true`** + this round's URIs) → `list_gallery_images` `album_filter: "A_latest"` to get **K**.
+4. **Enter CapCut**: prefer the Deep Link; if it fails, tap by ref on the home page.
+5. **Select the album set**: choose `A_latest` from the dropdown.
+6. **Switch to the All tab**: **you must tap the "全部 (All)" tab** to ensure the media is visible.
+7. **Select photos**: tap only the selection circles (`link`); use `multi_tap` (≤15 per call) together with `snapshot`.
+8. **Verify and wait**: `下一步 (N)` (Next) until N = K; `act` + `wait` then `snapshot`.
 

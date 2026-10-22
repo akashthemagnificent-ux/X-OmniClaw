@@ -60,7 +60,7 @@ class ScreenshotSkill(private val context: Context) : Skill {
             val (originalNodes, processedNodes) = run {
                 val result = DeviceController.detectIcons(context)
                 if (result == null) {
-                    Log.w(TAG, "无法获取 UI 树（无障碍服务未启用或失败），继续截图")
+                    Log.w(TAG, "UI tree unavailable (accessibility off or failed); continuing with the screenshot")
                     Pair(emptyList(), emptyList())
                 } else {
                     result
@@ -79,7 +79,7 @@ class ScreenshotSkill(private val context: Context) : Skill {
                 screenshotResult = try {
                     val screenshotFile = PromptArtifactNaming.buildScreenshotFile(
                         dir = java.io.File("/sdcard/.xomniclaw/workspace/screenshots"),
-                        // shell screencap 兜底单独标识，避免和主链截图混淆。
+                        // Distinct suffix so shell-fallback shots are not confused with main-path screenshots.
                         suffix = "skill_shell_screenshot"
                     )
                     val screenshotPath = screenshotFile.absolutePath
@@ -106,30 +106,30 @@ class ScreenshotSkill(private val context: Context) : Skill {
 
             // 4. Combine output
             val output = buildString {
-                appendLine("【截图信息】")
-                appendLine("分辨率: ${bitmap.width}x${bitmap.height}")
-                appendLine("路径: $path")
+                appendLine("[Screenshot]")
+                appendLine("Resolution: ${bitmap.width}x${bitmap.height}")
+                appendLine("Path: $path")
                 appendLine()
 
-                appendLine("【屏幕 UI 元素】（共 ${processedNodes.size} 个）")
+                appendLine("[Screen UI elements] (${processedNodes.size} total)")
                 appendLine()
 
                 processedNodes.forEachIndexed { index, node ->
                     val text = node.text?.takeIf { it.isNotBlank() }
                         ?: node.contentDesc?.takeIf { it.isNotBlank() }
-                        ?: "[无文本]"
+                        ?: "[no text]"
 
                     append("[$index] \"$text\" (${node.point.x}, ${node.point.y})")
 
                     if (node.clickable) {
-                        append(" [可点击]")
+                        append(" [clickable]")
                     }
 
                     appendLine()
                 }
 
                 appendLine()
-                appendLine("提示：使用坐标 (x,y) 进行 tap 操作")
+                appendLine("Hint: tap using the (x, y) coordinates above.")
             }
 
             SkillResult.success(

@@ -35,8 +35,8 @@ class LogSkill : Skill {
                 parameters = ParametersSchema(
                     type = "object",
                     properties = mapOf(
-                        "message" to PropertySchema("string", "日志消息"),
-                        "level" to PropertySchema("string", "日志级别: debug, info, warn, error，默认 info")
+                        "message" to PropertySchema("string", "Log message"),
+                        "level" to PropertySchema("string", "Log level: debug, info, warn, error. Defaults to info")
                     ),
                     required = listOf("message")
                 )

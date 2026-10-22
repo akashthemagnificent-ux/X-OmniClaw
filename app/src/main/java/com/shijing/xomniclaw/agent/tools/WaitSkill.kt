@@ -36,7 +36,7 @@ class WaitSkill : Skill {
                 parameters = ParametersSchema(
                     type = "object",
                     properties = mapOf(
-                        "seconds" to PropertySchema("number", "等待的秒数")
+                        "seconds" to PropertySchema("number", "Seconds to wait")
                     ),
                     required = listOf("seconds")
                 )

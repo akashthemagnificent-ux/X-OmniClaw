@@ -36,15 +36,15 @@ Important boundary:
 
 - This skill is only for creating, listing, or cancelling future schedules.
 - When an existing schedule fires, do **not** call `schedule_app_task` again.
-- The saved execution instruction must be immediate and one-shot, e.g. `打开小红书，然后搜索新闻总结后发给我`.
+- The saved execution instruction must be immediate and one-shot, e.g. `open Xiaohongshu, then search for news, summarize it, and send it to me`.
 - Never keep words such as `每天晚上8点`, `每周三`, `定时`, or `到点` inside `operation`; those belong only in `schedule_phrase`.
 
 Example:
 
-- user request: `每周三早上10点打开小红书搜新闻并总结`
+- user request: `Every Wednesday at 10:00, open Xiaohongshu, search for news, and summarize it`
 - LLM extraction:
   - `app_name = 小红书`
-  - `operation = 搜新闻并总结`
+  - `operation = search for news and summarize`
   - `schedule_phrase = 每周三早上10点`
 - rule parsing result:
   - `repeat = weekly`
@@ -53,14 +53,14 @@ Example:
 
 Typical requests:
 
-- "每天晚上12点打开微信给张三发消息"
-- "每天中午12点打开小红书搜索 AI 新闻并总结"
-- "每周三早上10点打开小红书搜索 AI 新闻并总结"
-- "每个工作日上午10点打开企业微信提醒我打卡"
-- "每隔45分钟打开某个 App 检查一次状态"
-- "明天早上8点自动打开企业微信提醒我打卡"
-- "帮我定时打开某个 APP 去做某事"
-- "每天晚上扫描相册并更新用户画像"
+- "Every day at 12:00, open WeChat and message Zhang San"
+- "Every day at noon, open Xiaohongshu, search for AI news, and summarize it"
+- "Every Wednesday at 10:00, open Xiaohongshu, search for AI news, and summarize it"
+- "Every workday at 10:00, open WeCom and remind me to clock in"
+- "Every 45 minutes, open an app and check its status once"
+- "Tomorrow at 8:00, automatically open WeCom and remind me to clock in"
+- "Help me schedule an app to do something at a fixed time"
+- "Every evening, scan the gallery and update the user profile"
 
 ## Preferred Tool
 
@@ -78,7 +78,7 @@ It is better than the lower-level `schedule_task` when the request is naturally 
 
 If the user says:
 
-- "每天晚上12点打开微信去做 X 操作"
+- "Every day at 12:00, open WeChat and perform X"
 
 Prefer extracting fields first, then call:
 
@@ -87,7 +87,7 @@ Prefer extracting fields first, then call:
   "action": "create",
   "task_name": "daily-wechat-task",
   "app_name": "微信",
-  "operation": "做 X 操作",
+  "operation": "perform X",
   "schedule_phrase": "每天晚上12点"
 }
 ```
@@ -123,7 +123,7 @@ Use lower-level `schedule_task` when:
 
 If the user says:
 
-- "每天晚上 10 点扫描相册并更新用户画像"
+- "Every day at 10 PM, scan the gallery and update the user profile"
 
 Prefer using `schedule_task` with a clear instruction that tells the agent to use `gallery_memory`:
 
@@ -131,7 +131,7 @@ Prefer using `schedule_task` with a clear instruction that tells the agent to us
 {
   "action": "create",
   "task_name": "daily-gallery-memory-sync",
-  "instruction": "使用 gallery_memory 工具同步相册中的新增图片记忆，并更新用户画像。",
+  "instruction": "Use the gallery_memory tool to sync new image memories from the gallery and update the user profile.",
   "repeat": "daily",
   "daily_time": "22:00"
 }
@@ -139,7 +139,7 @@ Prefer using `schedule_task` with a clear instruction that tells the agent to us
 
 ## Best Practices
 
-1. Prefer `schedule_app_task` for "定时打开 App 并操作" requests.
+1. Prefer `schedule_app_task` for "open an app on a schedule and act" requests.
 2. Preserve the user's original business intent inside `operation`.
 3. If the target app is ambiguous, ask for clarification or include `package_name`.
 4. For first-time setup, remind the user to verify the task once on a real device.
@@ -156,7 +156,7 @@ Prefer using `schedule_task` with a clear instruction that tells the agent to us
   "action": "create",
   "task_name": "daily-xhs-news",
   "app_name": "小红书",
-  "operation": "搜索 AI 新闻，并总结前三条结果",
+  "operation": "Search for AI news and summarize the top three results",
   "schedule_phrase": "每天中午12点"
 }
 ```
@@ -168,7 +168,7 @@ Prefer using `schedule_task` with a clear instruction that tells the agent to us
   "action": "create",
   "task_name": "weekly-xhs-news",
   "app_name": "小红书",
-  "operation": "搜索 AI 新闻，并总结前三条结果",
+  "operation": "Search for AI news and summarize the top three results",
   "schedule_phrase": "每周三早上10点"
 }
 ```
@@ -180,7 +180,7 @@ Prefer using `schedule_task` with a clear instruction that tells the agent to us
   "action": "create",
   "task_name": "workday-checkin",
   "app_name": "企业微信",
-  "operation": "提醒我打卡",
+  "operation": "Remind me to clock in",
   "schedule_phrase": "每个工作日上午10点"
 }
 ```
@@ -192,7 +192,7 @@ Prefer using `schedule_task` with a clear instruction that tells the agent to us
   "action": "create",
   "task_name": "interval-status-check",
   "app_name": "小红书",
-  "operation": "检查一次首页热点并总结",
+  "operation": "Check the home feed highlights once and summarize them",
   "schedule_phrase": "每隔45分钟"
 }
 ```
@@ -204,7 +204,7 @@ Prefer using `schedule_task` with a clear instruction that tells the agent to us
   "action": "create",
   "task_name": "wechat-reminder-tonight",
   "app_name": "微信",
-  "operation": "给张三发送消息：明天记得交日报",
+  "operation": "Send Zhang San a message: remember to submit your daily report tomorrow",
   "repeat": "once",
   "delay_seconds": 600
 }

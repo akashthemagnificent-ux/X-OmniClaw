@@ -49,8 +49,8 @@ class WebFetchTool(
                 parameters = ParametersSchema(
                     type = "object",
                     properties = mapOf(
-                        "url" to PropertySchema("string", "要获取的 URL"),
-                        "max_chars" to PropertySchema("integer", "最大返回字符数，默认 50000")
+                        "url" to PropertySchema("string", "URL to fetch"),
+                        "max_chars" to PropertySchema("integer", "Maximum characters returned, default 50000")
                     ),
                     required = listOf("url")
                 )
