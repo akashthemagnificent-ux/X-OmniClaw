@@ -43,7 +43,7 @@ class GalleryMemoryWorkflow(
         progressListener?.invoke(
             GalleryMemorySyncProgress(
                 stage = "scanning",
-                message = "正在扫描相册中的新增图片",
+                message = "Scanning the gallery for new images",
                 inspectedCount = 0,
                 discoveredCount = 0,
                 skippedCount = 0
@@ -102,7 +102,7 @@ class GalleryMemoryWorkflow(
             progressListener?.invoke(
                 GalleryMemorySyncProgress(
                     stage = "scanning",
-                    message = "正在扫描相册中的新增图片",
+                    message = "Scanning the gallery for new images",
                     inspectedCount = inspectedCount,
                     discoveredCount = discovered.size,
                     skippedCount = skippedExistingCount
@@ -156,7 +156,7 @@ class GalleryMemoryWorkflow(
             progressListener?.invoke(
                 GalleryMemorySyncProgress(
                     stage = "summarizing",
-                    message = "正在生成图片记忆 ${index + 1}/${discovered.size}",
+                    message = "Generating image memory ${index + 1}/${discovered.size}",
                     inspectedCount = inspectedCount,
                     discoveredCount = discovered.size,
                     processedCount = index,
@@ -168,7 +168,7 @@ class GalleryMemoryWorkflow(
             progressListener?.invoke(
                 GalleryMemorySyncProgress(
                     stage = "summarizing",
-                    message = "正在生成图片记忆 ${index + 1}/${discovered.size}",
+                    message = "Generating image memory ${index + 1}/${discovered.size}",
                     inspectedCount = inspectedCount,
                     discoveredCount = discovered.size,
                     processedCount = index + 1,
@@ -181,7 +181,7 @@ class GalleryMemoryWorkflow(
         progressListener?.invoke(
             GalleryMemorySyncProgress(
                 stage = "writing",
-                message = "正在写入 image-memories 和 user-profile",
+                message = "Writing image-memories and user-profile",
                 inspectedCount = inspectedCount,
                 discoveredCount = discovered.size,
                 processedCount = entries.size,
@@ -202,7 +202,7 @@ class GalleryMemoryWorkflow(
         progressListener?.invoke(
             GalleryMemorySyncProgress(
                 stage = "completed",
-                message = "相册扫描完成，已写入 ${entries.size} 条图片记忆",
+                message = "Gallery scan complete; wrote ${entries.size} image memories",
                 inspectedCount = inspectedCount,
                 discoveredCount = discovered.size,
                 processedCount = entries.size,

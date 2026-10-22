@@ -123,52 +123,52 @@ class ADBSelfControlSkill(private val context: Context) : Skill {
     override val name = "adb_self_control"
 
     override val description = """
-        通过 ADB 远程调用 PhoneForClaw 的 Self-Control 功能（开发电脑使用）。
+        Call X-OmniClaw's Self-Control features remotely over ADB (for use from a development machine).
 
-        此 Skill 生成 ADB 命令，用于从开发电脑远程控制 Android 设备上的 PhoneForClaw。
+        This skill generates ADB commands that let a development machine control X-OmniClaw on an Android device.
 
-        支持 3 种命令格式：
-        - ContentProvider (推荐)：返回结构化数据
-        - Broadcast：兼容性好，异步执行
-        - Shell Script：封装简化，易于使用
+        Three command formats are supported:
+        - ContentProvider (recommended): returns structured data
+        - Broadcast: widely compatible, executes asynchronously
+        - Shell Script: thin wrapper, easy to use
 
-        使用场景：
-        - CI/CD 自动化测试
-        - 远程调试和配置
-        - 快速测试和验证
-        - 多设备批量控制
+        Use cases:
+        - CI/CD automated testing
+        - Remote debugging and configuration
+        - Quick testing and verification
+        - Batch control of multiple devices
 
-        示例：
+        Examples:
         ```
-        # 获取 ContentProvider 命令
+        # ContentProvider command
         {
           "method": "provider",
           "skill": "navigate_app",
           "args": {"page": "config"}
         }
-        返回：adb shell content call --uri ... --method navigate_app --extra page:s:config
+        Returns: adb shell content call --uri ... --method navigate_app --extra page:s:config
 
-        # 获取 Broadcast 命令
+        # Broadcast command
         {
           "method": "broadcast",
           "skill": "manage_config",
           "args": {"operation": "get", "key": "exploration_mode"}
         }
-        返回：adb shell am broadcast -a ... --es skill manage_config --es operation get --es key exploration_mode
+        Returns: adb shell am broadcast -a ... --es skill manage_config --es operation get --es key exploration_mode
 
-        # 获取脚本命令
+        # Script command
         {
           "method": "script",
           "skill": "control_service",
           "args": {"operation": "hide_float"}
         }
-        返回：./self-control-adb.sh control_service operation=hide_float
+        Returns: ./self-control-adb.sh control_service operation=hide_float
         ```
 
-        注意：
-        - 此 Skill 仅生成命令字符串，不实际执行
-        - 需要在开发电脑上运行生成的命令
-        - 设备需要通过 USB 或网络 ADB 连接
+        Notes:
+        - This skill only generates command strings; it does not execute them
+        - The generated commands are run on the development machine
+        - The device must be connected over USB or network ADB
     """.trimIndent()
 
     override fun getToolDefinition(): ToolDefinition {

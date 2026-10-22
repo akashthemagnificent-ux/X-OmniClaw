@@ -37,7 +37,7 @@ class UiYoloSnapshotEngine(private val context: Context) {
             null
         } ?: return UiDetectionSnapshotResult(
             status = "screenshot_unavailable",
-            message = "YOLO 检测未执行：截图失败或未授予录屏权限。"
+            message = "YOLO detection did not run: screenshot failed or screen-recording permission was not granted."
         )
 
         val (bitmap, screenshotPath) = screenshotResult
@@ -45,7 +45,7 @@ class UiYoloSnapshotEngine(private val context: Context) {
             val localDetector = obtainDetector() ?: return UiDetectionSnapshotResult(
                 status = "model_unavailable",
                 screenshotPath = screenshotPath,
-                message = initErrorMessage ?: "YOLO 模型未初始化成功。"
+                message = initErrorMessage ?: "The YOLO model did not initialise."
             )
 
             val detectResult = localDetector.detect(bitmap)
@@ -108,7 +108,7 @@ class UiYoloSnapshotEngine(private val context: Context) {
             return UiDetectionSnapshotResult(
                 status = "detect_failed",
                 screenshotPath = screenshotPath,
-                message = "YOLO 检测失败：${error.message}"
+                message = "YOLO detection failed: ${error.message}"
             )
         } finally {
             if (!bitmap.isRecycled) {
@@ -142,9 +142,9 @@ class UiYoloSnapshotEngine(private val context: Context) {
                 }
             } catch (error: Exception) {
                 initErrorMessage = buildString {
-                    append("YOLO 模型不可用：未在 assets 中找到 `")
+                    append("YOLO model unavailable: `")
                     append(UiYoloClassLabels.MODEL_ASSET_NAME)
-                    append("`，或模型初始化失败。")
+                    append("` was not found in assets, or model initialisation failed.")
                 }
                 Log.w(TAG, "init detector failed: ${error.message}")
                 null
