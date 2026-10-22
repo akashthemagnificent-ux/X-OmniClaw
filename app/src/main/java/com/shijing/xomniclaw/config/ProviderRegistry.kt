@@ -134,24 +134,24 @@ object ProviderRegistry {
     val OPENROUTER = ProviderDefinition(
         id = "openrouter",
         name = "OpenRouter",
-        description = "聚合平台，免费+付费模型",
+        description = "Aggregator: free and paid models",
         baseUrl = OPENROUTER_BASE_URL,
         api = ModelApi.OPENAI_COMPLETIONS,
         keyRequired = false, // 有内置免费 key
         keyHint = "OpenRouter API Key (sk-or-v1-...)",
         envVarName = "OPENROUTER_API_KEY",
         tutorialSteps = listOf(
-            "打开 openrouter.ai/keys",
-            "登录或注册账号",
-            "点击 \"Create Key\"",
-            "复制 API Key"
+            "Open openrouter.ai/keys",
+            "Sign in or create an account",
+            "Click \"Create Key\"",
+            "Copy the API Key"
         ),
         tutorialUrl = "https://openrouter.ai/keys",
         presetModels = listOf(
             // 与模型设置页保持一致：OpenRouter 默认展示 5 个付费候选。
             PresetModel(
                 id = "moonshotai/kimi-k2.6",
-                name = "Kimi K2.6 (付费)",
+                name = "Kimi K2.6 (paid)",
                 free = false,
                 contextWindow = 262144,
                 maxTokens = 16384,
@@ -160,7 +160,7 @@ object ProviderRegistry {
             ),
             PresetModel(
                 id = "z-ai/glm-5v-turbo",
-                name = "GLM 5V Turbo (付费)",
+                name = "GLM 5V Turbo (paid)",
                 free = false,
                 contextWindow = 131072,
                 maxTokens = 8192,
@@ -169,7 +169,7 @@ object ProviderRegistry {
             ),
             PresetModel(
                 id = "qwen/qwen3.6-flash",
-                name = "Qwen 3.6 Flash (付费，推荐)",
+                name = "Qwen 3.6 Flash (paid, recommended)",
                 free = false,
                 contextWindow = 200000,
                 maxTokens = 16384,
@@ -178,7 +178,7 @@ object ProviderRegistry {
             ),
             PresetModel(
                 id = "xiaomi/mimo-v2.5",
-                name = "Xiaomi Mimo v2.5 (付费)",
+                name = "Xiaomi Mimo v2.5 (paid)",
                 free = false,
                 contextWindow = 200000,
                 maxTokens = 16384,
@@ -187,7 +187,7 @@ object ProviderRegistry {
             ),
             PresetModel(
                 id = "openai/gpt-5.5",
-                name = "GPT-5.5 (付费)",
+                name = "GPT-5.5 (paid)",
                 free = false,
                 contextWindow = 1048576,
                 maxTokens = 32768,
@@ -202,7 +202,7 @@ object ProviderRegistry {
     val ANTHROPIC = ProviderDefinition(
         id = "anthropic",
         name = "Anthropic",
-        description = "Claude 系列",
+        description = "Claude family",
         baseUrl = ANTHROPIC_BASE_URL,
         api = ModelApi.ANTHROPIC_MESSAGES,
         keyRequired = true,
@@ -210,10 +210,10 @@ object ProviderRegistry {
         envVarName = "ANTHROPIC_API_KEY",
         authHeader = false, // Anthropic 用 x-api-key header
         tutorialSteps = listOf(
-            "打开 console.anthropic.com",
-            "登录或注册账号",
-            "进入 API Keys 页面",
-            "点击 \"Create Key\" 并复制"
+            "Open console.anthropic.com",
+            "Sign in or create an account",
+            "Go to the API Keys page",
+            "Click \"Create Key\" and copy the value"
         ),
         tutorialUrl = "https://console.anthropic.com/settings/keys",
         presetModels = listOf(
@@ -249,17 +249,17 @@ object ProviderRegistry {
     val OPENAI = ProviderDefinition(
         id = "openai",
         name = "OpenAI",
-        description = "GPT 系列",
+        description = "GPT family",
         baseUrl = OPENAI_BASE_URL,
         api = ModelApi.OPENAI_COMPLETIONS,
         keyRequired = true,
         keyHint = "OpenAI API Key (sk-...)",
         envVarName = "OPENAI_API_KEY",
         tutorialSteps = listOf(
-            "打开 platform.openai.com",
-            "登录或注册账号",
-            "进入 API Keys 页面",
-            "点击 \"Create new secret key\" 并复制"
+            "Open platform.openai.com",
+            "Sign in or create an account",
+            "Go to the API Keys page",
+            "Click \"Create new secret key\" and copy the value"
         ),
         tutorialUrl = "https://platform.openai.com/api-keys",
         presetModels = listOf(
@@ -294,18 +294,18 @@ object ProviderRegistry {
 
     val OLLAMA = ProviderDefinition(
         id = "ollama",
-        name = "Ollama (本地)",
-        description = "本地模型，无需 API Key",
+        name = "Ollama (local)",
+        description = "Local models, no API key needed",
         baseUrl = OLLAMA_BASE_URL,
         api = ModelApi.OLLAMA,
         keyRequired = false,
-        keyHint = "API Key (可选)",
+        keyHint = "API Key (optional)",
         envVarName = "OLLAMA_API_KEY",
         tutorialSteps = listOf(
-            "安装 Ollama: ollama.com/download",
-            "运行模型: ollama run qwen2.5:7b",
-            "确保 Ollama 在同一局域网内运行",
-            "如在其他设备上运行，修改 Base URL"
+            "Install Ollama: ollama.com/download",
+            "Run a model: ollama run qwen2.5:7b",
+            "Make sure Ollama runs on the same LAN",
+            "If it runs on another device, change the Base URL"
         ),
         tutorialUrl = "https://ollama.com/download",
         // 无预置 id 时可在模型配置里「手动添加」本地模型名，或直改 xomniclaw.json
@@ -319,17 +319,17 @@ object ProviderRegistry {
     val MOONSHOT = ProviderDefinition(
         id = "moonshot",
         name = "Moonshot (Kimi)",
-        description = "月之暗面 Kimi 大模型",
+        description = "Moonshot Kimi models",
         baseUrl = MOONSHOT_BASE_URL,
         api = ModelApi.OPENAI_COMPLETIONS,
         keyRequired = true,
         keyHint = "Moonshot API Key",
         envVarName = "MOONSHOT_API_KEY",
         tutorialSteps = listOf(
-            "打开 platform.moonshot.cn",
-            "登录或注册账号",
-            "进入 API 管理页面",
-            "创建并复制 API Key"
+            "Open platform.moonshot.cn",
+            "Sign in or create an account",
+            "Go to the API management page",
+            "Create and copy an API Key"
         ),
         tutorialUrl = "https://platform.moonshot.cn/console/api-keys",
         presetModels = listOf(
@@ -349,17 +349,17 @@ object ProviderRegistry {
     val MINIMAX = ProviderDefinition(
         id = "minimax",
         name = "MiniMax",
-        description = "MiniMax 大模型 (OpenAI 兼容)",
+        description = "MiniMax models (OpenAI compatible)",
         baseUrl = MINIMAX_BASE_URL,
         api = ModelApi.OPENAI_COMPLETIONS,
         keyRequired = true,
         keyHint = "MiniMax API Key (sk-cp-...)",
         envVarName = "MINIMAX_API_KEY",
         tutorialSteps = listOf(
-            "打开 platform.minimaxi.com",
-            "登录或注册账号",
-            "进入 API Keys 页面",
-            "创建并复制 API Key"
+            "Open platform.minimaxi.com",
+            "Sign in or create an account",
+            "Go to the API Keys page",
+            "Create and copy an API Key"
         ),
         tutorialUrl = "https://platform.minimaxi.com/",
         presetModels = listOf(
@@ -378,18 +378,18 @@ object ProviderRegistry {
 
     val MIMIMAX = ProviderDefinition(
         id = "mimimax",
-        name = "mimimax.cn (中转图像)",
-        description = "mimimax.cn 中转接口（images/understand）",
+        name = "mimimax.cn (image proxy)",
+        description = "mimimax.cn proxy endpoint (images/understand)",
         baseUrl = MIMIMAX_RELAY_BASE_URL,
         api = ModelApi.MINIMAX_IMAGES_UNDERSTAND,
         keyRequired = true,
         keyHint = "mimimax.cn API Key",
         envVarName = "MIMIMAX_API_KEY",
         tutorialSteps = listOf(
-            "确认中转地址为 mimimax.cn",
-            "获取中转 API Key",
-            "在 VLM 配置中选择 mimimax provider",
-            "模型建议使用 minimax/vision"
+            "Confirm the proxy host is mimimax.cn",
+            "Get the proxy API Key",
+            "Select the mimimax provider in the VLM config",
+            "Use minimax/vision as the model"
         ),
         tutorialUrl = "",
         presetModels = listOf(
@@ -410,7 +410,7 @@ object ProviderRegistry {
     val KIMI_CODING = ProviderDefinition(
         id = "kimi-coding",
         name = "Kimi for Coding",
-        description = "Kimi 编程专用 API（Anthropic 兼容）",
+        description = "Kimi coding API (Anthropic compatible)",
         baseUrl = KIMI_CODING_BASE_URL,
         api = ModelApi.ANTHROPIC_MESSAGES,
         keyRequired = true,
@@ -418,9 +418,9 @@ object ProviderRegistry {
         envVarName = "KIMI_API_KEY",
         headers = mapOf("User-Agent" to "claude-code/0.1.0"),
         tutorialSteps = listOf(
-            "打开 kimi.com/coding",
-            "注册或登录 Kimi Coding 账号",
-            "获取 API Key"
+            "Open kimi.com/coding",
+            "Sign up or sign in to a Kimi Coding account",
+            "Get an API Key"
         ),
         tutorialUrl = "https://kimi.com/coding",
         presetModels = listOf(

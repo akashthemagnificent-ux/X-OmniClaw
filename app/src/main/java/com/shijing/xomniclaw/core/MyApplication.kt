@@ -866,7 +866,7 @@ class MyApplication : Application(), Application.ActivityLifecycleCallbacks {
                                     if (sender != null) {
                                         kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.IO) {
                                             try {
-                                                val rejectMessage = "⚠️ 抱歉，你的账号不在白名单中，无法使用此机器人。\n\n你的飞书 User ID: `${event.senderId}`\n\n如需使用，请联系管理员将你的 User ID 添加到白名单。"
+                                                val rejectMessage = "⚠️ Sorry, your account is not on the allowlist, so this bot is unavailable to you.\n\nYour Feishu user ID: `${event.senderId}`\n\nAsk an administrator to add your user ID to the allowlist."
                                                 sender.sendTextMessage(
                                                     receiveId = event.chatId,
                                                     text = rejectMessage,
@@ -1004,7 +1004,7 @@ class MyApplication : Application(), Application.ActivityLifecycleCallbacks {
 
                 val session = MainEntryNew.getSessionManager()?.getOrCreate(sessionId)
                 if (session == null) {
-                    return@withContext "系统错误：无法创建会话"
+                    return@withContext "System error: could not create the session"
                 }
 
                 Log.i(TAG, "📋 [Session] 加载会话: ${session.messageCount()} 条历史消息")
@@ -1125,7 +1125,7 @@ class MyApplication : Application(), Application.ActivityLifecycleCallbacks {
 
                 // Return final result
                 // If block replies were sent and final content matches last block reply, skip it
-                val strippedFinal = com.shijing.xomniclaw.util.ReplyTagFilter.strip(result.finalContent ?: "抱歉，我无法处理这个请求。")
+                val strippedFinal = com.shijing.xomniclaw.util.ReplyTagFilter.strip(result.finalContent ?: "Sorry, I could not handle that request.")
                 if (blockRepliesSent.isNotEmpty() && blockRepliesSent.last().trim() == strippedFinal.trim()) {
                     Log.i(TAG, "📤 Final content matches last block reply, marking as already sent")
                     "\u0000BLOCK_REPLY_ALREADY_SENT"  // Sentinel value, caller will check
@@ -1135,7 +1135,7 @@ class MyApplication : Application(), Application.ActivityLifecycleCallbacks {
 
             } catch (e: Exception) {
                 Log.e(TAG, "Agent 处理失败", e)
-                "抱歉，处理消息时出错了：${e.message}"
+                "Sorry, something went wrong while handling the message: ${e.message}"
             }
         }
     }
@@ -1249,7 +1249,7 @@ class MyApplication : Application(), Application.ActivityLifecycleCallbacks {
                     val sendResult = result.getOrNull()
                     Log.i(TAG, "✅ 回复发送成功: ${sendResult?.messageId}")
                 } else {
-                    val errorMsg = result.exceptionOrNull()?.message ?: "未知错误"
+                    val errorMsg = result.exceptionOrNull()?.message ?: "Unknown error"
                     Log.e(TAG, "❌ 回复发送失败 (Markdown): $errorMsg")
 
                     // Fallback: 如果 Markdown 卡片失败(如表格过多),降级为纯文本
@@ -1257,7 +1257,7 @@ class MyApplication : Application(), Application.ActivityLifecycleCallbacks {
                         Log.w(TAG, "⚠️ 降级为纯文本模式重试...")
                         result = sender.sendTextMessage(
                             receiveId = event.chatId,
-                            text = "⚠️ 内容格式过于复杂,以下为纯文本版本:\n\n$cleanContent",
+                            text = "⚠️ The content format was too complex; here it is as plain text:\n\n$cleanContent",
                             receiveIdType = "chat_id",
                             renderMode = com.xiaomo.feishu.messaging.RenderMode.TEXT  // 强制纯文本
                         )
@@ -1269,7 +1269,7 @@ class MyApplication : Application(), Application.ActivityLifecycleCallbacks {
                             Log.e(TAG, "❌ 纯文本回复也失败,发送错误提示...")
                             sender.sendTextMessage(
                                 receiveId = event.chatId,
-                                text = "❌ 回复发送失败: $errorMsg\n\n请检查飞书日志或稍后重试。",
+                                text = "❌ Failed to send the reply: $errorMsg\n\nCheck the Feishu logs or try again later.",
                                 receiveIdType = "chat_id",
                                 renderMode = com.xiaomo.feishu.messaging.RenderMode.TEXT
                             )
@@ -1533,7 +1533,7 @@ class MyApplication : Application(), Application.ActivityLifecycleCallbacks {
             }
             val session = MainEntryNew.getSessionManager()?.getOrCreate(sessionId)
             if (session == null) {
-                throw Exception("无法创建会话")
+                throw Exception("Could not create the session")
             }
 
             Log.i(TAG, "📋 [Session] 加载会话: ${session.messageCount()} 条历史消息")
@@ -1594,7 +1594,7 @@ class MyApplication : Application(), Application.ActivityLifecycleCallbacks {
 
             // 10. Send reply（附加本回合 LLM token 累加，与主界面一致）
             val replyContent = MainEntryNew.formatAgentReplyWithTokenUsage(
-                com.shijing.xomniclaw.util.ReplyTagFilter.strip(result.finalContent ?: "抱歉，我无法处理这个请求。"),
+                com.shijing.xomniclaw.util.ReplyTagFilter.strip(result.finalContent ?: "Sorry, I could not handle that request."),
                 result.tokenUsage
             )
 
@@ -1652,7 +1652,7 @@ class MyApplication : Application(), Application.ActivityLifecycleCallbacks {
 
                 discordChannel?.sendMessage(
                     channelId = event.channelId,
-                    content = "抱歉，处理您的消息时遇到错误：${e.message}",
+                    content = "Sorry, an error occurred while handling your message: ${e.message}",
                     replyToId = event.messageId
                 )
             } catch (e2: Exception) {
@@ -1669,43 +1669,43 @@ class MyApplication : Application(), Application.ActivityLifecycleCallbacks {
         val botId = discordChannel?.getBotUserId() ?: ""
 
         return """
-# 身份
-你是 **$botName**，一个运行在 Android 设备上的智能助手，通过 Discord 与用户交互。
+# Identity
+You are **$botName**, an intelligent assistant running on an Android device, talking to the user through Discord.
 
-# 当前上下文
-- **平台**: Discord
-- **频道类型**: ${event.chatType}
-- **频道 ID**: ${event.channelId}
-- **用户**: ${event.authorName} (ID: ${event.authorId})
+# Current context
+- **Platform**: Discord
+- **Channel type**: ${event.chatType}
+- **Channel ID**: ${event.channelId}
+- **User**: ${event.authorName} (ID: ${event.authorId})
 - **Bot ID**: $botId
 
 $historyContext
 
-# 核心能力
-你可以通过工具调用来控制 Android 设备：
-- 📸 截图观察屏幕
-- 👆 点击、滑动、输入
-- 🏠 导航、打开应用
-- 🔍 获取 UI 信息
+# Core capabilities
+You control the Android device through tool calls:
+- 📸 Screenshot to observe the screen
+- 👆 Tap, swipe, type
+- 🏠 Navigate, open apps
+- 🔍 Read UI information
 
-# 交互规则
-1. **简洁明了**: Discord 消息尽量简洁，重要信息用 Markdown 格式化
-2. **主动截图**: 需要观察屏幕时主动使用 screenshot 工具
-3. **逐步执行**: 复杂任务分解为多个步骤
-4. **反馈进度**: 长时间操作时告知用户当前进度
-5. **错误处理**: 遇到问题时说明原因并提供建议
+# Interaction rules
+1. **Be concise**: keep Discord messages short; format important information with Markdown
+2. **Take screenshots proactively**: use the screenshot tool whenever you need to see the screen
+3. **Work step by step**: break complex tasks into smaller steps
+4. **Report progress**: tell the user where you are during long operations
+5. **Handle errors**: explain the cause and suggest a fix when something fails
 
-# 响应格式
-- 使用 Discord Markdown: **粗体**、*斜体*、`代码`、```代码块```
-- 重要操作结果用表情符号: ✅ ❌ ⚠️ 🔄
-- 列表使用 - 或数字编号
+# Response format
+- Use Discord Markdown: **bold**, *italic*, `code`, ```code blocks```
+- Mark important results with emoji: ✅ ❌ ⚠️ 🔄
+- Use - or numbered lists
 
-# 注意事项
-- 不要输出过长的消息（建议 1500 字符以内）
-- 代码块使用语法高亮
-- 链接使用 [文本](URL) 格式
+# Notes
+- Do not send overly long messages (aim for under 1500 characters)
+- Use syntax highlighting in code blocks
+- Format links as [text](URL)
 
-现在，请处理用户的消息。
+Now handle the user's message.
         """.trimIndent()
     }
 
