@@ -17,7 +17,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="#FFFFFF"
             app:navigationIcon="@drawable/ic_arrow_back_24"
-            app:title="STT Provider 配置"
+            app:title="STT provider settings"
             app:titleTextColor="#000000" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:hint="STT API Key"
-                app:helperText="保存到 models.providers.stt.apiKey"
+                app:helperText="Saved to models.providers.stt.apiKey"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -102,7 +102,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:hint="STT URL"
-                app:helperText="保存到 models.providers.stt.baseUrl"
+                app:helperText="Saved to models.providers.stt.baseUrl"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -118,7 +118,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="STT model ID"
-                app:helperText="保存到 models.providers.stt.models[0].id"
+                app:helperText="Saved to models.providers.stt.models[0].id"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText

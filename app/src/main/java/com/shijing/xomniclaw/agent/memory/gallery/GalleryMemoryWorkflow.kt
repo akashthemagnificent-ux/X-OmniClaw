@@ -125,7 +125,7 @@ class GalleryMemoryWorkflow(
             progressListener?.invoke(
                 GalleryMemorySyncProgress(
                     stage = "completed",
-                    message = "没有发现新的相册图片",
+                    message = "No new gallery images found",
                     inspectedCount = inspectedCount,
                     discoveredCount = 0,
                     processedCount = 0,

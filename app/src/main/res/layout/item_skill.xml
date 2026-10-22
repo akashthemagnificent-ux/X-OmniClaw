@@ -51,7 +51,7 @@
                 android:layout_height="32dp"
                 android:src="@android:drawable/ic_menu_delete"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="删除"
+                android:contentDescription="Delete"
                 android:visibility="gone" />
 
         </LinearLayout>

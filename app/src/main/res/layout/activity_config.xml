@@ -64,7 +64,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/ic_menu_more"
-                        android:contentDescription="模型配置" />
+                        android:contentDescription="Model configuration" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -319,7 +319,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/ic_menu_more"
-                        android:contentDescription="查看 Skills" />
+                        android:contentDescription="View Skills" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -370,7 +370,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/ic_menu_more"
-                        android:contentDescription="查看 Channels" />
+                        android:contentDescription="View Channels" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -422,7 +422,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/ic_popup_sync"
-                        android:contentDescription="检查更新" />
+                        android:contentDescription="Check for updates" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

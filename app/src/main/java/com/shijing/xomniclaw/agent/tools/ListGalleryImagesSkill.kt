@@ -208,17 +208,17 @@ class ListGalleryImagesSkill(private val context: Context) : Skill {
             )
 
             val text = buildString {
-                appendLine("🖼 相册图片 (${items.size} 条，按修改时间倒序)")
+                appendLine("🖼 Gallery images (${items.size} items, newest modified first)")
                 if (!datePreset.isNullOrBlank()) {
-                    appendLine("筛选: date_preset=$datePreset（设备本地时区；today/yesterday 优先 DATE_TAKEN 落在该日，无拍摄时间再按 DATE_MODIFIED）")
+                    appendLine("Filter: date_preset=$datePreset (device local timezone; today/yesterday prefer DATE_TAKEN on that day, falling back to DATE_MODIFIED when there is no capture time)")
                 }
-                modifiedAfterSec?.let { appendLine("筛选: modified_after_sec=$it") }
-                modifiedBeforeSec?.let { appendLine("筛选: modified_before_sec=$it") }
-                appendLine("说明：仅有文件名/相册/尺寸等元数据，无「花/人物」等语义标签；主题筛选请让用户用到命名相册或先截图走视觉。")
-                appendLine("选剪映素材：若无用户另行指定张数，目标 **K=${items.size}**；须在 **`下一步 (N)` 的 N=K** 后再点下一步。界面「选3个以上更好」仅为最低建议，**禁止**在 N<K 时因已≥3 张就继续。")
+                modifiedAfterSec?.let { appendLine("Filter: modified_after_sec=$it") }
+                modifiedBeforeSec?.let { appendLine("Filter: modified_before_sec=$it") }
+                appendLine("Note: only metadata such as filename/album/size is available — there are no semantic tags like \"flowers/people\". For topic filtering, ask the user to use a named album, or take a screenshot and use vision first.")
+                appendLine("CapCut material selection: unless the user specifies a count, target **K=${items.size}**; only tap Next again once N in `下一步 (N)` has reached N=K. The on-screen `选3个以上更好` (\"3 or more is better\") is only a minimum recommendation; do **NOT** continue at N<K just because 3+ are already selected.")
                 appendLine()
                 items.forEachIndexed { i, row ->
-                    appendLine("${i + 1}. ${row["display_name"]}  [相册: ${row["album"]}]")
+                    appendLine("${i + 1}. ${row["display_name"]}  [album: ${row["album"]}]")
                     appendLine("   URI: ${row["content_uri"]}")
                     appendLine(
                         "   ${row["width"]}x${row["height"]}  ${row["mime_type"]}  ${row["size_bytes"]} bytes  " +

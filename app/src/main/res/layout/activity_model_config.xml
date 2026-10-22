@@ -18,7 +18,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="#FFFFFF"
             app:navigationIcon="@drawable/ic_arrow_back_24"
-            app:title="模型配置"
+            app:title="Model configuration"
             app:titleTextColor="#000000" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -383,7 +383,7 @@
                             android:layout_height="20dp"
                             android:rotation="0"
                             android:src="@drawable/ic_expand_more_24"
-                            android:contentDescription="展开" />
+                            android:contentDescription="Expand" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 

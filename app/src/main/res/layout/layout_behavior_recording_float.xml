@@ -48,7 +48,7 @@
             android:layout_height="40dp"
             android:layout_marginEnd="6dp"
             android:background="@android:color/transparent"
-            android:contentDescription="收藏当前页面"
+            android:contentDescription="Save current page"
             android:padding="8dp"
             android:src="@android:drawable/btn_star_big_on" />
 
@@ -57,7 +57,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@android:color/transparent"
-            android:contentDescription="停止轨迹录制"
+            android:contentDescription="Stop recording the trail"
             android:padding="8dp"
             android:src="@android:drawable/ic_media_pause" />
     </LinearLayout>

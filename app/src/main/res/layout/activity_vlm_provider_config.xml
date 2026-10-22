@@ -17,7 +17,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="#FFFFFF"
             app:navigationIcon="@drawable/ic_arrow_back_24"
-            app:title="VLM Provider 配置"
+            app:title="VLM provider settings"
             app:titleTextColor="#000000" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -129,7 +129,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:hint="VLM API Key (optional)"
-                    app:helperText="保存到 models.providers.vlm.apiKey；留空则沿用已有 vlm 或 mimimax 密钥"
+                    app:helperText="Saved to models.providers.vlm.apiKey; leave blank to reuse the existing vlm or mimimax key"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText

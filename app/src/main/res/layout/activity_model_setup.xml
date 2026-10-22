@@ -116,7 +116,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="OpenRouter API Key"
-                        app:helperText="可选，留空则使用内置 Key"
+                        app:helperText="Optional; leave blank to use the built-in key"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText

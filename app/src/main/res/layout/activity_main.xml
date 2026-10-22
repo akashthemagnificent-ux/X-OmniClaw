@@ -125,7 +125,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/ic_menu_send"
-                        android:contentDescription="查看详情" />
+                        android:contentDescription="View details" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -149,7 +149,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@android:drawable/ic_lock_lock"
-                        android:contentDescription="权限" />
+                        android:contentDescription="Permissions" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -189,7 +189,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/ic_menu_send"
-                        android:contentDescription="查看详情" />
+                        android:contentDescription="View details" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -253,7 +253,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/ic_menu_send"
-                        android:contentDescription="查看详情" />
+                        android:contentDescription="View details" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -317,7 +317,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@android:drawable/ic_menu_send"
-                        android:contentDescription="查看详情" />
+                        android:contentDescription="View details" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
