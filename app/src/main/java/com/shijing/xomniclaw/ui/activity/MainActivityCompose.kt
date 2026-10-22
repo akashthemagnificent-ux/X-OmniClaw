@@ -1375,7 +1375,7 @@ fun StatusTab(
                 updateProfile = true
             )
             manualGallerySyncMessage.value =
-                "Background scan started: at most $manualSyncMaxImages unscanned images this time, will continue running in the background."
+                "Background scan started: at most ${settings.manualSyncMaxImages} unscanned images this time, will continue running in the background."
             refreshStatus()
         } catch (e: Exception) {
             manualGallerySyncMessage.value = "Failed to start background scan: ${e.message}"

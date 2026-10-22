@@ -697,7 +697,7 @@ object MainEntryNew {
                         append("You manually cancelled the current task; this is not a system error.\n\n")
                         append("You can:\n")
                         append("- Send a new instruction to continue\n")
-                        append("- Or tap "New conversation" to start a new session")
+                        append("- Or tap \"New conversation\" to start a new session")
                     }
                 } else {
                     buildString {

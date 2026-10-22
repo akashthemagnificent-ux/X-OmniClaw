@@ -4,25 +4,33 @@ import json
 import time
 from datetime import datetime
 
+# Bilingual on purpose: the user may still speak Chinese and Chinese app UI
+# produces Chinese output, so both marker sets stay.
 DONE_HINTS = [
     "任务已完成", "任务完成", "已经全部完成", "无法继续", "做不到",
     "没有权限", "无法打开", "未能打开", "无法启动", "拒绝访问",
     "搜索结果如下", "以下是搜", "为您找到以下", "找到以下相关", "共为您",
-    "以上就是", "总结如下", "希望对您"
+    "以上就是", "总结如下", "希望对您",
+    "task is complete", "task complete", "unable to continue",
+    "permission denied", "access denied", "unable to open",
+    "unable to start", "here are the results", "i found the following",
+    "to summarize", "hope this helps"
 ]
 
 PLAN_HINTS = [
     "接下来", "下一步", "随后", "然后我将", "然后我会", "然后我要",
     "我将要", "我将", "现在将", "需要先", "先要", "稍后", "马上",
     "让我来", "我会继续", "我继续", "现在我来",
-    "I will", "I'll ", "Next,", "Then I", "Now I will", "Let me "
+    "I will", "I'll ", "Next,", "Then I", "Now I will", "Let me ",
+    "next step", "after that", "I'm going to", "I need to first"
 ]
 
 TEXT_ONLY_CONTINUATION_NUDGE = (
-    "系统提示：你上一回合没有调用任何工具就停止了回复，但用户任务通常需要多步界面操作才能完成。"
-    "请立即重新观察当前屏幕，并继续使用 device / tap / swipe / input_text 等工具执行下一步，"
-    "直到用户目标被实际完成。"
-    "禁止仅用「接下来我将…」「下一步我会…」等承诺性文字结束回合；每一轮有实际操作时必须出现对应的工具调用。"
+    "System note: your last turn ended without calling any tool, but the user's task "
+    "usually needs several UI steps to finish. Observe the current screen again now and "
+    "continue with the next step using device / tap / swipe / input_text until the user's "
+    "goal is actually achieved. Do not end a turn with a promise such as \"next I will...\"; "
+    "every turn that makes real progress must contain the corresponding tool call."
 )
 
 MAX_TEXT_ONLY_CONTINUATION_NUDGES = 6

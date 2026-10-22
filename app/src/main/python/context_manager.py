@@ -28,7 +28,7 @@ INTERMEDIATE_ASSISTANT_HARD_MAX_CHARS = 280
 DIALOG_MESSAGE_HARD_MAX_CHARS = 2_200
 
 def _truncate_middle(text, max_len=52):
-    """路径/URI 中间省略，降低 token。"""
+    """Elide the middle of paths/URIs to save tokens."""
     if text is None:
         return ""
     s = str(text)
@@ -47,8 +47,8 @@ def _compact_old_ui_tree_content(content):
     header = first_line or "[snapshot summary unavailable]"
     return (
         f"{header}\n"
-        "[历史 UI tree 已压缩：仅保留最近一次完整 snapshot，"
-        "前面的界面树已省略以节省上下文。]"
+        "[History UI tree compacted: only the most recent full snapshot is kept; "
+        "earlier trees were dropped to save context.]"
     )
 
 
@@ -83,7 +83,7 @@ def _find_latest_critical_ui_tree_index(messages):
 
 
 def _find_last_tool_message_index(messages):
-    """时间线上最后一条 tool 消息的索引；用于保留最近一次 skill / 工具输出全文。"""
+    """Index of the last tool message; keeps the latest skill/tool output in full."""
     for i in range(len(messages) - 1, -1, -1):
         if messages[i].get("role") == "tool":
             return i
@@ -170,7 +170,7 @@ def prioritize_tool_and_intermediate_compaction(messages, keep_turns, aggressive
         return 0, 0
     preserve_start = _find_preserve_start_for_recent_turns(messages, keep_turns)
     latest_ui_tree_index = _find_latest_critical_ui_tree_index(messages)
-    # 最后一条 tool 不做「tool log compacted」截断，避免刚执行完的 skill 在 UI/上下文里被压成省略标记
+    # Leave the last tool message uncompacted so a just-finished skill is not elided in UI or context
     last_tool_index = _find_last_tool_message_index(messages)
     tool_max = TOOL_LOG_HARD_MAX_CHARS if aggressive else TOOL_LOG_SOFT_MAX_CHARS
     asst_max = INTERMEDIATE_ASSISTANT_HARD_MAX_CHARS if aggressive else INTERMEDIATE_ASSISTANT_SOFT_MAX_CHARS
@@ -196,7 +196,7 @@ def prioritize_tool_and_intermediate_compaction(messages, keep_turns, aggressive
                 }
                 compacted_tool += 1
                 continue
-            # 跳过最近一次 tool 的字符截断（与 UI snapshot 保留策略独立）
+            # Skip char truncation for the latest tool result (independent of the UI snapshot policy)
             if i == last_tool_index:
                 continue
             if len(content) > tool_max:

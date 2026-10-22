@@ -50,25 +50,25 @@ def _strip_reasoning_tags(text):
 
 
 def _format_reasoning_for_log(text, max_chars=4000):
-    """将推理内容压平成单行并限长，避免日志被换行切碎或无限膨胀。"""
+    """Flatten reasoning into one bounded line so logs stay readable."""
     if not text:
         return ""
     normalized = re.sub(r"\s+", " ", str(text)).strip()
     if len(normalized) <= max_chars:
         return normalized
-    # 超长时截断并附带标记，保证主日志可读且可快速定位前半段关键推理。
+    # Truncate when overlong, with a marker so the start of the reasoning stays visible.
     return normalized[: max_chars - 1] + "…"
 
 
 def _safe_get_skill_selection_trace(bridge):
-    """从 KotlinBridge 读取技能筛选摘要；桥接版本不支持时静默降级。"""
+    """Read the skill-selection trace from KotlinBridge; degrade silently on old bridges."""
     try:
         if hasattr(bridge, "get_skill_selection_trace"):
             trace = bridge.get_skill_selection_trace()
             if trace:
                 return str(trace).strip()
     except Exception:
-        # 兼容老版本 bridge：不因调试日志能力缺失影响主流程。
+        # Old bridge builds may not expose this; never break the main flow over a debug log.
         pass
     return ""
 
@@ -78,7 +78,11 @@ def _is_snapshot_ref_error(err: str) -> bool:
     if not err:
         return False
     msg = err.lower()
+    # English markers are what DeviceTool emits; the Chinese ones are kept for
+    # older builds and for Chinese-localized AccessibilityManager errors.
     patterns = [
+        "expired",
+        "not found in the latest",
         "已过期",
         "ref '",
         "ref \"",
@@ -110,12 +114,12 @@ def _is_send_like_device_tap(fn_name, args):
 
 def _detect_chat_snapshot_flags(result_content):
     """
-    识别 snapshot 返回中与聊天页相关的轻量特征。
+    Detect lightweight chat-page features in a snapshot result.
 
-    返回:
-    - in_chat_context: 是否看起来处于聊天上下文
-    - input_seen: 是否看到输入框特征
-    - send_seen: 是否看到发送特征
+    Returns:
+    - in_chat_context: whether we appear to be inside a chat
+    - input_seen: whether an input field was seen
+    - send_seen: whether a send affordance was seen
     """
     text = result_content or ""
     lower = text.lower()
@@ -131,7 +135,7 @@ def _detect_chat_snapshot_flags(result_content):
 
 
 def _update_runtime_state_after_tool(runtime_state, fn_name, args, result_success, result_content, metadata):
-    """根据工具返回更新轻量运行态，避免 agent 在同一任务内丢失上下文。"""
+    """Update lightweight runtime state from tool results so the agent keeps task context."""
     if not result_success:
         return
 
@@ -140,12 +144,12 @@ def _update_runtime_state_after_tool(runtime_state, fn_name, args, result_succes
 
     action = str(args.get("action", "")).lower()
     if action == "snapshot":
-        # 不再依赖 package 判断：只要成功执行 snapshot，就视为完成一次发送后观察。
+        # Package checks are gone: a successful snapshot counts as the post-send observation.
         if runtime_state.get("pending_send_verify"):
             runtime_state["pending_send_verify"] = False
             runtime_state["last_send_verified_at_iter"] = runtime_state.get("iteration", 0)
 
-        # 通过 UI 文本特征识别是否进入聊天上下文，避免前台包名瞬时抖动误判。
+        # Detect chat context from UI text so a momentary foreground-package flip does not mislead.
         in_chat_context, input_seen, send_seen = _detect_chat_snapshot_flags(result_content)
         if in_chat_context:
             runtime_state["in_feishu_chat"] = True
@@ -165,23 +169,23 @@ def _update_runtime_state_after_tool(runtime_state, fn_name, args, result_succes
 
 
 def _build_runtime_state_hint(runtime_state):
-    """构造短状态提示，提醒模型延续当前任务而非回到起点。"""
+    """Build a short state note so the model continues instead of restarting."""
     hints = []
 
     if runtime_state.get("in_feishu_chat"):
-        hints.append("已进入飞书会话上下文，不要重复从“打开飞书”开始")
+        hints.append("already inside a Feishu conversation; do not restart from \"open Feishu\"")
     if runtime_state.get("typed_in_feishu_chat"):
-        hints.append("本轮会话已执行过输入，优先继续发送与验收，不要重新输入覆盖")
+        hints.append("text was already entered this turn; continue to send and verify instead of retyping")
     if runtime_state.get("pending_send_verify"):
-        hints.append("刚执行发送动作，下一步必须先观察（snapshot/screenshot）确认消息已发出")
+        hints.append("a send action just ran; observe next (snapshot/screenshot) to confirm the message went out")
 
     if not hints:
         return None
-    return "系统状态记忆：" + "；".join(hints) + "。"
+    return "System state memory: " + "; ".join(hints) + "."
 
 
 def _msg(role, content, tool_calls=None, tool_call_id=None, name=None):
-    """统一消息构建：基础字段 + 可选字段。"""
+    """Unified message builder: base fields plus optional ones."""
     message = {"role": role, "content": content or ""}
     optional_fields = {
         "tool_calls": tool_calls,
@@ -196,14 +200,14 @@ def _msg(role, content, tool_calls=None, tool_call_id=None, name=None):
 
 def _build_system_prompt_with_self_counting(system_prompt, reasoning_enabled):
     """
-    Python 侧不再注入额外规则，避免产生多条 system 消息。
-    规则统一维护在 assets/bootstrap（由 Kotlin 侧构建 system prompt 时加载）。
+    Python no longer injects extra rules; multiple system messages hurt caching.
+    Rules live in assets/bootstrap and are loaded by Kotlin when it builds the system prompt.
     """
     return (system_prompt or "").strip()
 
 
 def _build_initial_messages(system_prompt, reasoning_enabled, context_history_json, user_message, logger):
-    """构建会话初始 messages，减少 run_agent 主流程样板代码。"""
+    """Build the initial session messages, keeping run_agent free of boilerplate."""
     messages = []
     effective_system_prompt = _build_system_prompt_with_self_counting(system_prompt, reasoning_enabled)
     messages.append(_msg("system", effective_system_prompt))
@@ -215,7 +219,7 @@ def _build_initial_messages(system_prompt, reasoning_enabled, context_history_js
         ctx_history = []
 
     if ctx_history:
-        # thinking 与 Kotlin 侧一致：只存盘与 UI 恢复，不进入模型上文
+        # Match Kotlin: thinking is persisted and restored in UI only, never sent to the model
         filtered = [m for m in ctx_history if m.get("role") not in ("system", "thinking")]
         messages.extend(filtered)
         logger.write(f"✅ Context history added: {len(filtered)} messages")
@@ -231,8 +235,8 @@ def _is_stopped_error(err_msg):
 
 def _accumulate_llm_usage(totals, usage_obj):
     """
-    将 Kotlin call_llm 返回中的 usage（OpenAI 风格）累加到本轮 Agent 合计。
-    totals: dict，含 prompt、completion、total 三键，原地修改。
+    Accumulate OpenAI-style usage from Kotlin call_llm into this run's totals.
+    totals: dict with prompt/completion/total keys, mutated in place.
     """
     if not usage_obj or not isinstance(usage_obj, dict):
         return
@@ -282,7 +286,7 @@ def run_agent(
     loop_detector = LoopDetector()
     error_tracker = []
 
-    logger.write("========== Agent Loop 开始 (Python) ==========")
+    logger.write("========== Agent Loop start (Python) ==========")
     logger.write(f"Max iterations: {max_iterations}")
     logger.write(f"Reasoning: {'enabled' if reasoning_enabled else 'disabled'}")
     skill_trace = _safe_get_skill_selection_trace(bridge)
@@ -305,10 +309,10 @@ def run_agent(
     final_content = None
     text_only_nudges = 0
     runtime_state = {}
-    # 多轮 LLM 调用的 token 累加（依赖 Kotlin bridge 在每轮 JSON 中附带 usage）
+    # Token accumulation across LLM rounds (Kotlin bridge attaches usage per round)
     usage_totals = {"prompt": 0, "completion": 0, "total": 0}
 
-    # max_iterations==0 时 range(1,1) 为空，for 不会给 iteration 赋值，文末记录/JSON 会 NameError，故先设默认值。
+    # With max_iterations==0 the loop never assigns iteration; default it to avoid NameError below.
     iteration = 0
     for iteration in range(1, max_iterations + 1):
         iter_start = time.time()
@@ -317,8 +321,8 @@ def run_agent(
 
         # Check stop signal from Kotlin at the top of each iteration
         if bridge.is_stop_requested():
-            logger.write("🛑 已收到用户停止信号，退出循环")
-            final_content = "已按用户请求停止。"
+            logger.write("🛑 Stop signal received from user, leaving loop")
+            final_content = "Stopped at the user's request."
             break
 
         # Emit iteration progress
@@ -327,8 +331,8 @@ def run_agent(
         # --- Context management ---
         enforce_context_budget(messages, context_window_tokens)
 
-        # 注入短状态记忆（仅本轮 LLM 上文，不入库）：否则会以「用户消息」写入会话，
-        # 主界面会出现多条重复的“系统状态记忆”气泡。
+        # Inject the state note into this round only: persisting it would write a user
+        # message and produce duplicated "system state" bubbles in the UI.
         state_hint = _build_runtime_state_hint(runtime_state)
         payload_messages = messages
         if state_hint:
@@ -345,21 +349,21 @@ def run_agent(
             err_msg = str(e)
             # User-requested stop: exit cleanly
             if _is_stopped_error(err_msg):
-                logger.write("🛑 LLM 调用时收到停止信号，退出循环")
-                final_content = "已按用户请求停止。"
+                logger.write("🛑 Stop signal received during LLM call, leaving loop")
+                final_content = "Stopped at the user's request."
                 break
 
-            logger.write(f"❌ LLM 调用失败: {err_msg}")
+            logger.write(f"❌ LLM call failed: {err_msg}")
 
             if _track_error(error_tracker, err_msg):
-                final_content = f"任务失败: 连续 {MAX_CONSECUTIVE_ERRORS} 次相同错误 - {err_msg}"
+                final_content = f"Task failed: {MAX_CONSECUTIVE_ERRORS} identical errors in a row - {err_msg}"
                 break
 
             if "timeout" in err_msg.lower():
-                messages.append(_msg("user", "系统提示: LLM 调用超时，请尝试简化任务或分步执行"))
+                messages.append(_msg("user", "System note: the LLM call timed out. Simplify the task or split it into steps."))
                 continue
 
-            final_content = f"❌ 执行出错\n\n**错误信息**: {err_msg}"
+            final_content = f"❌ Execution error\n\n**Error**: {err_msg}"
             break
 
         llm_duration_ms = int((time.time() - llm_start) * 1000)
@@ -367,12 +371,12 @@ def run_agent(
         try:
             response = json.loads(response_json)
         except Exception:
-            logger.write(f"❌ 无法解析 LLM 响应 JSON")
-            final_content = "❌ 内部错误：无法解析 LLM 响应"
+            logger.write("❌ Could not parse the LLM response JSON")
+            final_content = "❌ Internal error: could not parse the LLM response"
             break
 
         _accumulate_llm_usage(usage_totals, response.get("usage"))
-        logger.write(f"✅ LLM 响应已收到 [耗时: {llm_duration_ms}ms]")
+        logger.write(f"✅ LLM response received [{llm_duration_ms}ms]")
 
         # Reasoning
         thinking = response.get("thinking_content")
@@ -400,7 +404,7 @@ def run_agent(
                     json.dumps({"text": intermediate_text, "iteration": iteration}),
                 )
 
-            # 解析工具参数仅一次：同时用于 assistant message 与实际执行。
+            # Parse tool args once: reused for the assistant message and the real execution.
             parsed_tool_calls = []
             assistant_tool_calls = []
             for tc in tool_calls:
@@ -425,7 +429,7 @@ def run_agent(
             should_stop = False
 
             def stop_tool_loop(content_to_set, log_message=None):
-                """统一工具循环内的停止状态同步，避免重复赋值分支。"""
+                """Single place to sync the stop state inside the tool loop."""
                 nonlocal should_stop, final_content
                 if log_message:
                     logger.write(log_message)
@@ -486,7 +490,7 @@ def run_agent(
                 except Exception as e:
                     err_str = str(e)
                     if _is_stopped_error(err_str):
-                        stop_tool_loop("已按用户请求停止。", "🛑 工具执行时收到停止信号，退出循环")
+                        stop_tool_loop("Stopped at the user's request.", "🛑 Stop signal received during tool execution, leaving loop")
                         break
                     result_json = json.dumps({"success": False, "content": err_str})
 
@@ -517,10 +521,10 @@ def run_agent(
                 )
 
                 # For snapshot/observe tools: print the full accessibility XML tree to the log.
-                # 由于 screenshot(action="screenshot") 的返回内容本身已经在 Result 行打印，
-                # 并不是真正的 XML tree，这里仅对 snapshot 等真正的无障碍树结果启用该块日志。
+                # screenshot() output is already printed on the Result line and is not a real XML
+                # tree, so only genuine accessibility-tree results get this log block.
                 if result_success and is_observe_ui_tool_call(fn_name, args):
-                    # device(action="screenshot") 现在主要用于视觉 grounding，不再重复打印整体结果。
+                    # device(action="screenshot") is now used for visual grounding; do not reprint the whole result.
                     if not (fn_name == "device" and str(args.get("action", "")).lower() == "screenshot"):
                         logger.write("--- [ACCESSIBILITY TREE START] ---")
                         logger.write(result_content)
@@ -531,18 +535,18 @@ def run_agent(
                     err = f"{fn_name}: {result_content}"
                     if _track_error(error_tracker, err):
                         should_stop = True
-                        final_content = f"任务失败: 连续 {MAX_CONSECUTIVE_ERRORS} 次相同错误 - {err}"
+                        final_content = f"Task failed: {MAX_CONSECUTIVE_ERRORS} identical errors in a row - {err}"
                         messages.append(_msg("tool", final_content, tool_call_id=tc_id, name=fn_name))
                         break
 
                     # Heuristic: any snapshot/ref-related failures should recommend
                     # using screenshot+query for visual grounding on the next iteration.
                     if fn_name == "device" and _is_snapshot_ref_error(result_content):
-                        logger.write("📸 检测到 snapshot/ref 相关错误，建议下一轮优先使用 screenshot+query 做像素级视觉校验。")
+                        logger.write("📸 snapshot/ref error detected; prefer screenshot+query for pixel-level visual checks next round.")
                         hint = (
-                            "系统建议：上一步依赖 snapshot/ref 的操作失败。"
-                            "下一轮请先 device(action=\"snapshot\") 刷新 ref；若仍不足，再使用 device(action=\"screenshot\", query=\"与任务相关的控件描述\") "
-                            "做视觉定位，然后基于最新 snapshot 中的 ref 继续操作。"
+                            "System hint: the previous step failed because it relied on snapshot/ref."
+                            "Next round, refresh refs with device(action=\"snapshot\") first; if that is still insufficient, use device(action=\"screenshot\", query=\"<description of the target control>\") "
+                            "for visual grounding, then continue from the fresh snapshot refs."
                         )
                         messages.append(_msg("tool", hint, tool_call_id=tc_id, name=fn_name))
                 else:
@@ -581,7 +585,7 @@ def run_agent(
                 break
 
             iter_ms = int((time.time() - iter_start) * 1000)
-            logger.write(f"⏱️ 本轮迭代总耗时: {iter_ms}ms (LLM: {llm_duration_ms}ms, 执行: {total_exec_ms}ms)")
+            logger.write(f"⏱️ Iteration total: {iter_ms}ms (LLM: {llm_duration_ms}ms, exec: {total_exec_ms}ms)")
             bridge.emit_progress(
                 "iteration_complete",
                 json.dumps({
@@ -604,8 +608,8 @@ def run_agent(
         if should_nudge:
             text_only_nudges += 1
             logger.write(
-                f"🔁 无 tool_calls 但文本仍像未完成任务"
-                f"（续跑提示 {text_only_nudges}/{MAX_TEXT_ONLY_CONTINUATION_NUDGES}）"
+                f"🔁 no tool_calls but the text still reads like an unfinished task "
+                f"(continuation nudge {text_only_nudges}/{MAX_TEXT_ONLY_CONTINUATION_NUDGES})"
             )
             messages.append(_msg("assistant", stripped))
             messages.append(_msg("user", TEXT_ONLY_CONTINUATION_NUDGE))
@@ -634,16 +638,16 @@ def run_agent(
     # --- Post-loop ---
     if final_content is None and iteration >= max_iterations:
         logger.write(f"Max iterations ({max_iterations}) reached")
-        final_content = f"达到最大迭代次数 ({max_iterations})，任务未完成。建议将任务拆分为更小的步骤。"
+        final_content = f"Reached the iteration limit ({max_iterations}) before finishing. Split the task into smaller steps."
 
     if final_content is None:
-        final_content = "无响应"
+        final_content = "No response"
 
-    logger.write("========== Agent Loop 结束 (Python) ==========")
+    logger.write("========== Agent Loop end (Python) ==========")
     logger.write(f"Iterations: {iteration}")
     logger.write(f"Tools used: {', '.join(tools_used)}")
     logger.write(
-        f"Token usage (LLM 累加, prompt+completion+total 按轮次加总): "
+        f"Token usage (LLM totals, prompt+completion+total summed per round): "
         f"prompt={usage_totals['prompt']} completion={usage_totals['completion']} total={usage_totals['total']}"
     )
 

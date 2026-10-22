@@ -188,7 +188,6 @@ fun CameraPreviewOverlay(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             if (source != VisionFrameSource.SCREEN_CAPTURE && onSwitchCamera != null) {
-                if (source != VisionFrameSource.SCREEN_CAPTURE && onSwitchCamera != null) {
                 IconButton(
                     onClick = onSwitchCamera,
                     modifier = Modifier
@@ -265,7 +264,7 @@ fun CameraPreviewOverlay(
         }
 
         if (source != VisionFrameSource.SCREEN_CAPTURE) {
-            Box(
+            Surface(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter),
@@ -283,26 +282,21 @@ fun CameraPreviewOverlay(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .align(Alignment.CenterVertically)
-                                .horizontalArrangement = Arrangement.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Videocam,
-                                contentDescription = null,
-                                tint = Color.White.copy(alpha = 0.8f),
-                                modifier = Modifier.size(18.dp)
+                        Icon(
+                            imageVector = Icons.Default.Videocam,
+                            contentDescription = null,
+                            tint = Color.White.copy(alpha = 0.8f),
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = if (isVoiceListening) "Recognizing voice..."
+                            else "Hold the floating mic to speak",
+                            style = TextStyle(
+                                color = Color.White.copy(alpha = 0.8f),
+                                fontSize = 13.sp
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = if (isVoiceListening) "Recognizing voice..."
-                                else "Hold microphone to speak",
-                                style = TextStyle(
-                                    color = Color.White.copy(alpha = 0.8f),
-                                    fontSize = 13.sp
-                                )
-                            )
+                        )
                     }
                 }
             }

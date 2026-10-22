@@ -8,7 +8,7 @@ from utils import timestamp_str
 
 
 class SessionLogger:
-    # 与应用主配置目录保持一致，避免品牌更名后日志继续落到旧路径。
+    # Stay in the app config dir so a rename does not leave logs at the old path.
     LOG_DIR = "/sdcard/.xomniclaw/workspace/logs"
     CONTEXT_FILE = "/sdcard/.xomniclaw/workspace/.xomniclaw/artifact-context.txt"
 
@@ -55,7 +55,7 @@ class SessionLogger:
             return default_ts, default_prefix
 
     def write(self, message):
-        # 日志增强：记录调用方源文件路径与行号，便于精准定位打印来源。
+        # Log enhancement: record the caller file and line to locate the source precisely.
         caller = self._resolve_caller_frame()
         source_tag = self._format_source_tag(caller)
         line = f"[{timestamp_str()}] {source_tag} {message}"
@@ -69,7 +69,7 @@ class SessionLogger:
 
     def _resolve_caller_frame(self):
         """
-        查找真正的业务调用帧（跳过 SessionLogger 自身内部帧）。
+        Find the real business call frame (skipping SessionLogger internals).
         """
         frame = inspect.currentframe()
         try:
@@ -83,17 +83,17 @@ class SessionLogger:
                 cur = cur.f_back
             return None
         finally:
-            # 避免 frame 引用环导致 GC 回收延迟。
+            # Avoid frame reference cycles delaying GC.
             del frame
 
     def _format_source_tag(self, caller_info):
         """
-        将调用方格式化为 [path:line]。
+        Format the caller as [path:line].
         """
         if not caller_info:
             return "[unknown:0]"
         filename, lineno = caller_info
-        # 统一为正斜杠，便于跨平台阅读与检索。
+        # Normalize to forward slashes for cross-platform reading and search.
         normalized = filename.replace("\\", "/")
         return f"[{normalized}:{lineno}]"
 
