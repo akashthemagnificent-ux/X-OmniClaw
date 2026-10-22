@@ -703,7 +703,7 @@ fun MainScreen(
                         showFirstLaunchPermissionAlert = false
                     }
                 ) {
-                    Text("稍后处理")
+                    Text("Later")
                 }
             }
         )
@@ -745,10 +745,10 @@ fun MainScreen(
 }
 
 enum class MainTab(val title: String, val icon: ImageVector) {
-    CHAT("对话", Icons.Default.Chat),
-    STATUS("状态", Icons.Default.Dashboard),
-    SETTINGS("设置", Icons.Default.Settings),
-    DEEPLINK("收藏", Icons.Default.Bookmarks)
+    CHAT("Chat", Icons.Default.Chat),
+    STATUS("Status", Icons.Default.Dashboard),
+    SETTINGS("Settings", Icons.Default.Settings),
+    DEEPLINK("Bookmarks", Icons.Default.Bookmarks)
 }
 
 @Composable
@@ -765,9 +765,9 @@ fun ChatTab(
     val isLoading by chatViewModel.isLoading.collectAsState()
     val memoryWindowInfo by chatViewModel.memoryWindowInfo.collectAsState()
     val runningTasks by chatViewModel.runningTasks.collectAsState()
-    var permissionStatusInfo by remember { mutableStateOf("权限状态：检查中...") }
+    var permissionStatusInfo by remember { mutableStateOf("Permission status: checking…") }
     var permissionStatusHealthy by remember { mutableStateOf(false) }
-    var currentModelInfo by remember { mutableStateOf("当前模型：读取中...") }
+    var currentModelInfo by remember { mutableStateOf("Current model: reading…") }
     val sessions by chatViewModel.sessions.collectAsState()
     val currentSession by chatViewModel.currentSession.collectAsState()
     val companionUiState by com.shijing.xomniclaw.voice.ScreenCompanionController.uiState.collectAsState()
@@ -778,13 +778,13 @@ fun ChatTab(
         try {
             val snapshot = queryPermissionSnapshot(context)
             val statusList = listOf(
-                "无障碍" to snapshot.accessibility,
-                "悬浮窗" to snapshot.overlay,
-                "录屏" to snapshot.screenCapture,
-                "相册" to snapshot.album,
-                "全部文件" to snapshot.allFilesAccess,
-                "摄像头" to snapshot.camera,
-                "麦克风" to snapshot.microphone
+                "Accessibility" to snapshot.accessibility,
+                "Overlay" to snapshot.overlay,
+                "Screen capture" to snapshot.screenCapture,
+                "Gallery" to snapshot.album,
+                "All files" to snapshot.allFilesAccess,
+                "Camera" to snapshot.camera,
+                "Microphone" to snapshot.microphone
             )
             val grantedCount = statusList.count { it.second }
             val missing = statusList.filterNot { it.second }.map { it.first }
@@ -1003,12 +1003,12 @@ fun ChatTab(
     if (showVisionSourcePicker) {
         AlertDialog(
             onDismissRequest = { showVisionSourcePicker = false },
-            title = { Text("选择视觉输入") },
+            title = { Text("Choose vision input") },
             text = {
                 Column {
                     TextButton(onClick = {
                         openCameraPreview()
-                    }) { Text("摄像头") }
+                    }) { Text("Camera") }
                     TextButton(onClick = {
                         showVisionSourcePicker = false
                         if (MediaProjectionHelper.isMediaProjectionGranted()) {
@@ -1023,10 +1023,10 @@ fun ChatTab(
                                     sessionId = currentSession.id,
                                     visionConfig = currentVisionConfig
                                 )
-                                val message = if (entered) "已进入屏内替身模式" else "进入替身模式失败"
+                                val message = if (entered) "Entered stand-in mode" else "Failed to enter stand-in mode"
                                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                             } else {
-                                Toast.makeText(context, "应用上下文异常，无法进入替身模式", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "App context unavailable; cannot enter stand-in mode", Toast.LENGTH_SHORT).show()
                             }
                         } else {
                             CrashBreadcrumbs.mark(
@@ -1036,25 +1036,25 @@ fun ChatTab(
                             MediaProjectionHelper.startForegroundForMediaProjection(context)
                             projectionLauncher.launch(MediaProjectionHelper.createScreenCaptureIntent(context))
                         }
-                    }) { Text("屏幕画面（截屏流）") }
+                    }) { Text("Screen (capture stream)") }
                     TextButton(onClick = {
                         showVisionSourcePicker = false
                         val app = application
                         val serviceReady = com.shijing.xomniclaw.accessibility.service.AccessibilityBinderService.serviceInstance != null
                         if (app == null) {
-                            Toast.makeText(context, "应用上下文异常，无法开始轨迹录制", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "App context unavailable; cannot start trajectory recording", Toast.LENGTH_SHORT).show()
                         } else if (!serviceReady) {
-                            Toast.makeText(context, "需要先启用无障碍服务", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Enable the accessibility service first", Toast.LENGTH_SHORT).show()
                         } else {
                             val started = com.shijing.xomniclaw.behavior.BehaviorRecordingController.start(app)
-                            val message = if (started) "已开始轨迹录制" else "开始轨迹录制失败"
+                            val message = if (started) "Trajectory recording started" else "Failed to start trajectory recording"
                             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                         }
-                    }) { Text("轨迹录制（支持 Deeplink 收藏）") }
+                    }) { Text("Trajectory recording (supports Deeplink bookmarks)") }
                 }
             },
             confirmButton = {
-                TextButton(onClick = { showVisionSourcePicker = false }) { Text("取消") }
+                TextButton(onClick = { showVisionSourcePicker = false }) { Text("Cancel") }
             }
         )
     }
@@ -1090,7 +1090,7 @@ fun ChatTab(
         onCheckUpdate = {
             val activity = context as? MainActivityCompose
             activity?.let {
-                android.widget.Toast.makeText(it, "正在检查更新...", android.widget.Toast.LENGTH_SHORT).show()
+                android.widget.Toast.makeText(it, "Checking for updates…", android.widget.Toast.LENGTH_SHORT).show()
                 it.lifecycleScope.launch {
                     try {
                         val updater = com.shijing.xomniclaw.updater.AppUpdater(it)
@@ -1098,10 +1098,10 @@ fun ChatTab(
                         if (info.hasUpdate) {
                             it.silentUpdateCheck()
                         } else {
-                            android.widget.Toast.makeText(it, "已是最新版本 v${info.currentVersion}", android.widget.Toast.LENGTH_SHORT).show()
+                            android.widget.Toast.makeText(it, "Already up to date: v${info.currentVersion}", android.widget.Toast.LENGTH_SHORT).show()
                         }
                     } catch (e: Exception) {
-                        android.widget.Toast.makeText(it, "检查更新失败", android.widget.Toast.LENGTH_SHORT).show()
+                        android.widget.Toast.makeText(it, "Update check failed", android.widget.Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -1162,7 +1162,7 @@ fun StatusTab(
                 profileLoadingEnabled = true,
                 scanIntervalMinutes = 24 * 60,
                 manualSyncMaxImages = 100,
-                automationTaskSummary = "未启用"
+                automationTaskSummary = "Disabled"
             )
         )
     }
@@ -1184,7 +1184,7 @@ fun StatusTab(
                     globalMemoryChars = 0,
                     userProfileChars = 0,
                     pendingEvents = 0,
-                    lastMessage = "尚未运行"
+                    lastMessage = "Not run yet"
                 )
             )
         )
@@ -1378,7 +1378,7 @@ fun StatusTab(
                 "Background scan started: at most $manualSyncMaxImages unscanned images this time, will continue running in the background."
             refreshStatus()
         } catch (e: Exception) {
-            manualGallerySyncMessage.value = "启动后台扫描失败：${e.message}"
+            manualGallerySyncMessage.value = "Failed to start background scan: ${e.message}"
         }
     }
 
@@ -1389,10 +1389,10 @@ fun StatusTab(
             withContext(Dispatchers.IO) {
                 createGalleryMemoryWorkflow(context).resetCursor()
             }
-            manualGallerySyncMessage.value = "已重置相册扫描游标，下次同步会从更早的位置重新补扫未写入图片。"
+            manualGallerySyncMessage.value = "Gallery scan cursor reset; the next sync will rescan unindexed images from an earlier position."
             refreshStatus()
         } catch (e: Exception) {
-            manualGallerySyncMessage.value = "重置扫描游标失败：${e.message}"
+            manualGallerySyncMessage.value = "Failed to reset scan cursor: ${e.message}"
         } finally {
             manualGallerySyncInProgress.value = false
         }
@@ -1406,10 +1406,10 @@ fun StatusTab(
                 com.shijing.xomniclaw.workspace.WorkspaceInitializer(context)
                     .restoreBootstrapMemoryFile(fileName)
             }
-            memoryMaintenanceMessage.value = "已初始化 $fileName：当前内容已恢复为初始模板。"
+            memoryMaintenanceMessage.value = "Initialized $fileName: content restored to the initial template."
             refreshStatus()
         } catch (e: Exception) {
-            memoryMaintenanceMessage.value = "初始化 $fileName 失败：${e.message}"
+            memoryMaintenanceMessage.value = "Failed to initialize $fileName: ${e.message}"
         } finally {
             manualGallerySyncInProgress.value = false
         }
@@ -1505,12 +1505,12 @@ fun StatusTab(
                     saveInProgress.value = false
 
                     if (result.success) {
-                        Toast.makeText(context, "定时任务已更新", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Scheduled task updated", Toast.LENGTH_SHORT).show()
                         editingTask.value = null
                         editErrorMessage.value = null
                         refreshStatus()
                     } else {
-                        editErrorMessage.value = result.errorMessage ?: "保存失败"
+                        editErrorMessage.value = result.errorMessage ?: "Save failed"
                     }
                 }
             }
@@ -1524,8 +1524,8 @@ fun StatusTab(
                     pendingDeleteTask.value = null
                 }
             },
-            title = { Text("删除定时任务") },
-            text = { Text("确认删除任务“${task.name}”？删除后不会自动恢复。") },
+            title = { Text("Delete scheduled task") },
+            text = { Text("Delete task \u201c${task.name}\u201d? This cannot be undone.") },
             confirmButton = {
                 TextButton(
                     enabled = taskActionInProgressId.value == null,
@@ -1538,15 +1538,15 @@ fun StatusTab(
                             taskActionInProgressId.value = null
                             pendingDeleteTask.value = null
                             if (deleted) {
-                                Toast.makeText(context, "定时任务已删除", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Scheduled task deleted", Toast.LENGTH_SHORT).show()
                                 refreshStatus()
                             } else {
-                                Toast.makeText(context, "删除失败，任务可能已不存在", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Delete failed; the task may no longer exist", Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
                 ) {
-                    Text(if (taskActionInProgressId.value == task.id) "删除中..." else "删除")
+                    Text(if (taskActionInProgressId.value == task.id) "Deleting…" else "Delete")
                 }
             },
             dismissButton = {
@@ -1554,7 +1554,7 @@ fun StatusTab(
                     enabled = taskActionInProgressId.value == null,
                     onClick = { pendingDeleteTask.value = null }
                 ) {
-                    Text("取消")
+                    Text("Cancel")
                 }
             }
         )
@@ -1583,7 +1583,7 @@ fun StatusTab(
             },
             confirmButton = {
                 TextButton(onClick = { memoryDetailState.value = null }) {
-                    Text("关闭")
+                    Text("Close")
                 }
             }
         )
@@ -1602,7 +1602,7 @@ fun StatusTab(
         )
 
         Text(
-            text = "AI 移动自动化平台",
+            text = "AI Mobile Automation Platform",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -1636,7 +1636,7 @@ fun StatusTab(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = if (gatewayRunning.value) "运行中 (ws://0.0.0.0:8765)" else "未运行",
+                    text = if (gatewayRunning.value) "Running (ws://0.0.0.0:8765)" else "Not running",
                     style = MaterialTheme.typography.bodyMedium,
                     color = if (gatewayRunning.value) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
                 )
@@ -1656,7 +1656,7 @@ fun StatusTab(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = if (skillsCount.value > 0) "${skillsCount.value} 个 Skills" else "加载中...",
+                    text = if (skillsCount.value > 0) "${skillsCount.value} Skills" else "Loading…",
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
@@ -1691,14 +1691,14 @@ fun StatusTab(
                     if (result.success) {
                         Toast.makeText(
                             context,
-                            if (enabled) "定时任务已启用" else "定时任务已停用",
+                            if (enabled) "Scheduled task enabled" else "Scheduled task disabled",
                             Toast.LENGTH_SHORT
                         ).show()
                         refreshStatus()
                     } else {
                         Toast.makeText(
                             context,
-                            result.errorMessage ?: "更新任务状态失败",
+                            result.errorMessage ?: "Failed to update task status",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -1752,17 +1752,17 @@ fun StatusTab(
         if (showGalleryMemoryEnableHintDialog.value) {
             AlertDialog(
                 onDismissRequest = { showGalleryMemoryEnableHintDialog.value = false },
-                title = { Text("开启相册记忆与画像") },
+                title = { Text("Enable gallery memory and profile") },
                 text = {
                     Text(
-                        "已开始准备扫描相册内容，用于构建图片记忆与用户画像。\n" +
-                            "请在系统里授权照片/媒体权限。\n" +
-                            "可随时关闭总开关暂停。"
+                        "Preparing to scan gallery content to build image memory and your profile.\n" +
+                            "Please grant photo/media permissions in the system.\n" +
+                            "You can pause at any time with the master switch."
                     )
                 },
                 confirmButton = {
                     TextButton(onClick = { showGalleryMemoryEnableHintDialog.value = false }) {
-                        Text("我知道了")
+                        Text("Got it")
                     }
                 }
             )
@@ -1845,15 +1845,15 @@ private fun TokenUsageCard(status: MainEntryNew.TokenUsageStatus) {
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             Text(
-                text = "Token 使用量（实时）",
+                text = "Token usage (live)",
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = "本会话累计：${formatTokenUsageLine(status.sessionCounter)}",
+                text = "This session: ${formatTokenUsageLine(status.sessionCounter)}",
                 style = MaterialTheme.typography.bodyMedium
             )
             Text(
-                text = "全局累计：${formatTokenUsageLine(status.globalCounter)}",
+                text = "All time: ${formatTokenUsageLine(status.globalCounter)}",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -1865,7 +1865,7 @@ private fun TokenUsageCard(status: MainEntryNew.TokenUsageStatus) {
  * 统一 token 展示文案，避免状态页出现不同格式。
  */
 private fun formatTokenUsageLine(counter: MainEntryNew.TokenUsageCounter): String {
-    return "输入 ${counter.promptTokens} / 输出 ${counter.completionTokens} / 合计 ${counter.totalTokens}"
+    return "Input ${counter.promptTokens} / Output ${counter.completionTokens} / Total ${counter.totalTokens}"
 }
 
 @Composable
@@ -1896,31 +1896,31 @@ private fun ScheduledTasksCard(
             ) {
                 Column {
                     Text(
-                        text = "定时任务",
+                        text = "Scheduled tasks",
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        text = "当前共 ${allTasksCount} 个任务，当前显示 ${tasks.size} 个",
+                        text = "${allTasksCount} tasks total, showing ${tasks.size}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
                 TextButton(onClick = onRefresh) {
-                    Text("刷新")
+                    Text("Refresh")
                 }
             }
 
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = onSearchQueryChange,
-                label = { Text("搜索任务") },
-                supportingText = { Text("支持按任务名、执行指令、重复类型搜索") },
+                label = { Text("Search tasks") },
+                supportingText = { Text("Search by task name, instruction, or repeat type") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
 
             ExposedDropdownField(
-                label = "排序方式",
+                label = "Sort by",
                 value = formatTaskSortOptionLabel(sortOption),
                 options = ScheduledTaskSortOption.values().map { it.name },
                 enabled = true,
@@ -1930,13 +1930,13 @@ private fun ScheduledTasksCard(
 
             if (allTasksCount == 0) {
                 Text(
-                    text = "暂无定时任务",
+                    text = "No scheduled tasks",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             } else if (tasks.isEmpty()) {
                 Text(
-                    text = "没有匹配当前搜索条件的定时任务",
+                    text = "No tasks match your search",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -1980,26 +1980,26 @@ private fun ScheduledTaskListItem(
                     style = MaterialTheme.typography.titleSmall
                 )
                 Text(
-                    text = if (task.enabled) "已启用" else "已停用",
+                    text = if (task.enabled) "Enabled" else "Disabled",
                     style = MaterialTheme.typography.bodySmall,
                     color = if (task.enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
                 )
             }
             TextButton(onClick = onEdit) {
-                Text("编辑")
+                Text("Edit")
             }
         }
 
         Text(
-            text = "类型：${formatRepeatLabel(task.repeat)}",
+            text = "Type: ${formatRepeatLabel(task.repeat)}",
             style = MaterialTheme.typography.bodySmall
         )
         Text(
-            text = "下一次触发：${formatTaskScheduleSummary(task)}",
+            text = "Next run: ${formatTaskScheduleSummary(task)}",
             style = MaterialTheme.typography.bodySmall
         )
         Text(
-            text = "执行指令：${task.instruction}",
+            text = "Instruction: ${task.instruction}",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -2013,13 +2013,13 @@ private fun ScheduledTaskListItem(
                 onClick = onToggleEnabled,
                 enabled = actionsEnabled
             ) {
-                Text(if (task.enabled) "停用" else "启用")
+                Text(if (task.enabled) "Disable" else "Enable")
             }
             TextButton(
                 onClick = onDelete,
                 enabled = actionsEnabled
             ) {
-                Text("删除")
+                Text("Delete")
             }
         }
     }
@@ -2031,24 +2031,24 @@ private fun TaskDiagnosticsBlock(task: ScheduledTask) {
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         Text(
-            text = "最近触发：${task.lastTriggeredAtMs?.let { formatTimestamp(it) } ?: "暂无"}",
+            text = "Last run: ${task.lastTriggeredAtMs?.let { formatTimestamp(it) } ?: "None"}",
             style = MaterialTheme.typography.bodySmall
         )
         Text(
-            text = "触发延迟：${task.lastTriggerDelayMs?.let { "${it}ms" } ?: "暂无"}",
+            text = "Trigger delay: ${task.lastTriggerDelayMs?.let { "${it}ms" } ?: "None"}",
             style = MaterialTheme.typography.bodySmall
         )
         Text(
-            text = "派发耗时：${task.lastDispatchLatencyMs?.let { "${it}ms" } ?: "暂无"}",
+            text = "Dispatch time: ${task.lastDispatchLatencyMs?.let { "${it}ms" } ?: "None"}",
             style = MaterialTheme.typography.bodySmall
         )
         Text(
-            text = "触发来源：${task.lastTriggerSource ?: "暂无"}",
+            text = "Trigger source: ${task.lastTriggerSource ?: "None"}",
             style = MaterialTheme.typography.bodySmall
         )
         task.lastWakeSummary?.takeIf { it.isNotBlank() }?.let { wakeSummary ->
             Text(
-                text = "亮屏结果：$wakeSummary",
+                text = "Wake result: $wakeSummary",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -2080,11 +2080,11 @@ private fun GalleryMemorySettingsCard(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "相册记忆与画像",
+                text = "Gallery memory and profile",
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = "管理后台增量扫描、画像默认加载和自动同步频率",
+                text = "Manage background incremental scans, default profile loading, and auto-sync frequency",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -2094,7 +2094,7 @@ private fun GalleryMemorySettingsCard(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "后台扫描进度",
+                        text = "Background scan progress",
                         style = MaterialTheme.typography.bodyMedium
                     )
                     when {
@@ -2128,9 +2128,9 @@ private fun GalleryMemorySettingsCard(
                 verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("总开关")
+                    Text("Master switch")
                     Text(
-                        text = "启用后默认允许后台定时增量扫描相册",
+                        text = "When enabled, allows scheduled background incremental gallery scans",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -2147,9 +2147,9 @@ private fun GalleryMemorySettingsCard(
                 verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("画像加载")
+                    Text("Profile loading")
                     Text(
-                        text = "执行任务时默认加载 USER-PROFILE.md",
+                        text = "Load USER-PROFILE.md by default when running tasks",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -2161,16 +2161,16 @@ private fun GalleryMemorySettingsCard(
             }
 
             Text(
-                text = "扫描频率",
+                text = "Scan frequency",
                 style = MaterialTheme.typography.bodyMedium
             )
             Text(
-                text = "选择后台增量扫描相册的频率，开启总开关后生效",
+                text = "Choose how often to scan the gallery in the background; applies once the master switch is on",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             ExposedDropdownField(
-                label = "扫描频率",
+                label = "Scan frequency",
                 value = formatGalleryMemoryIntervalLabel(state.scanIntervalMinutes),
                 options = intervalOptions.map { it.toString() },
                 enabled = !manualSyncInProgress,
@@ -2184,9 +2184,9 @@ private fun GalleryMemorySettingsCard(
                 verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("快速测试")
+                    Text("Quick test")
                     Text(
-                        text = "立即执行一次：后台最多补扫 ${state.manualSyncMaxImages} 张未写入图片，并更新画像",
+                        text = "Run once now: scan up to ${state.manualSyncMaxImages} unindexed images and update the profile",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -2195,11 +2195,11 @@ private fun GalleryMemorySettingsCard(
                     onClick = onRunManualSync,
                     enabled = !manualSyncInProgress
                 ) {
-                    Text(if (manualSyncInProgress) "扫描中..." else "立即扫描一次")
+                    Text(if (manualSyncInProgress) "Scanning…" else "Scan now")
                 }
             }
             ExposedDropdownField(
-                label = "快速测试最多扫描",
+                label = "Max images per quick test",
                 value = formatGalleryMemoryManualSyncLabel(state.manualSyncMaxImages),
                 options = manualSyncOptions.map { it.toString() },
                 enabled = !manualSyncInProgress,
@@ -2213,9 +2213,9 @@ private fun GalleryMemorySettingsCard(
                 verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text("游标维护")
+                    Text("Cursor maintenance")
                     Text(
-                        text = "如果怀疑有遗漏，可重置扫描位置后重新补扫；已写入的图片会被 stableKey 过滤，不会重复写入。",
+                        text = "If you suspect missed items, reset the scan position and rescan; already-indexed images are filtered by stableKey and will not be duplicated.",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -2224,7 +2224,7 @@ private fun GalleryMemorySettingsCard(
                     onClick = onResetCursor,
                     enabled = !manualSyncInProgress
                 ) {
-                    Text("重置游标")
+                    Text("Reset cursor")
                 }
             }
 
@@ -2237,7 +2237,7 @@ private fun GalleryMemorySettingsCard(
             }
 
             Text(
-                text = "当前状态：${state.automationTaskSummary}。仅扫描新增图片；若没有新增图片，则不会生成新的记忆内容。",
+                text = "Status: ${state.automationTaskSummary}. Only new images are scanned; with no new images no new memory is generated.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -2279,23 +2279,23 @@ private fun MemoryStatusCard(
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        text = "可查看 MEMORY.md、IMAGE-MEMORY.md、USER-PROFILE.md 与按日沉淀日志",
+                        text = "View MEMORY.md, IMAGE-MEMORY.md, USER-PROFILE.md, and daily logs",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
                 TextButton(onClick = onRefresh) {
-                    Text("刷新")
+                    Text("Refresh")
                 }
             }
 
             MemoryFileActionRow(
                 statusText = if (snapshot.longTermMemoryExists) {
-                    "MEMORY.md 已存在，长度 ${snapshot.longTermMemoryLength} 字符"
+                    "MEMORY.md exists, ${snapshot.longTermMemoryLength} characters"
                 } else {
-                    "MEMORY.md 暂无内容"
+                    "MEMORY.md is empty"
                 },
-                viewButtonText = "查看 MEMORY.md",
+                viewButtonText = "View MEMORY.md",
                 memoryDetailLoading = memoryDetailLoading,
                 maintenanceInProgress = maintenanceInProgress,
                 onView = onViewLongTermMemory,
@@ -2303,23 +2303,23 @@ private fun MemoryStatusCard(
             )
 
             Text(
-                text = "全局记忆进化：待处理 ${snapshot.evolutionStatus.pendingEvents} 条，最近处理 ${snapshot.evolutionStatus.processedEvents} 条，采纳 ${snapshot.evolutionStatus.acceptedCandidates} 条",
+                text = "Global memory evolution: ${snapshot.evolutionStatus.pendingEvents} pending, ${snapshot.evolutionStatus.processedEvents} processed, ${snapshot.evolutionStatus.acceptedCandidates} accepted",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
-                text = "最近结果：${snapshot.evolutionStatus.lastMessage}",
+                text = "Latest result: ${snapshot.evolutionStatus.lastMessage}",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             MemoryFileActionRow(
                 statusText = if (snapshot.imageMemoriesExists) {
-                    "IMAGE-MEMORY.md 已存在，长度 ${snapshot.imageMemoriesLength} 字符"
+                    "IMAGE-MEMORY.md exists, ${snapshot.imageMemoriesLength} characters"
                 } else {
-                    "IMAGE-MEMORY.md 暂无内容"
+                    "IMAGE-MEMORY.md is empty"
                 },
-                viewButtonText = "查看 IMAGE-MEMORY.md",
+                viewButtonText = "View IMAGE-MEMORY.md",
                 memoryDetailLoading = memoryDetailLoading,
                 maintenanceInProgress = maintenanceInProgress,
                 onView = onViewImageMemories,
@@ -2328,11 +2328,11 @@ private fun MemoryStatusCard(
 
             MemoryFileActionRow(
                 statusText = if (snapshot.userProfileExists) {
-                    "USER-PROFILE.md 已存在，长度 ${snapshot.userProfileLength} 字符"
+                    "USER-PROFILE.md exists, ${snapshot.userProfileLength} characters"
                 } else {
-                    "USER-PROFILE.md 暂无内容"
+                    "USER-PROFILE.md is empty"
                 },
-                viewButtonText = "查看 USER-PROFILE.md",
+                viewButtonText = "View USER-PROFILE.md",
                 memoryDetailLoading = memoryDetailLoading,
                 maintenanceInProgress = maintenanceInProgress,
                 onView = onViewUserProfile,
@@ -2348,12 +2348,12 @@ private fun MemoryStatusCard(
             }
 
             Text(
-                text = "知识类文件：${snapshot.knowledgeFiles.size} 个",
+                text = "Knowledge files: ${snapshot.knowledgeFiles.size}",
                 style = MaterialTheme.typography.bodySmall
             )
             if (snapshot.knowledgeFiles.isEmpty()) {
                 Text(
-                    text = "暂无额外 memory 文件",
+                    text = "No extra memory files",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -2374,7 +2374,7 @@ private fun MemoryStatusCard(
                             onClick = { onViewKnowledgeFile(fileName) },
                             enabled = !memoryDetailLoading
                         ) {
-                            Text("查看")
+                            Text("View")
                         }
                     }
                 }
@@ -2383,12 +2383,12 @@ private fun MemoryStatusCard(
             Divider()
 
             Text(
-                text = "每日日志：${snapshot.dailyLogs.size} 个",
+                text = "Daily logs: ${snapshot.dailyLogs.size}",
                 style = MaterialTheme.typography.bodySmall
             )
             if (snapshot.dailyLogs.isEmpty()) {
                 Text(
-                    text = "暂无 daily log",
+                    text = "No daily logs",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -2409,7 +2409,7 @@ private fun MemoryStatusCard(
                             onClick = { onViewDailyLog(date) },
                             enabled = !memoryDetailLoading
                         ) {
-                            Text("查看")
+                            Text("View")
                         }
                     }
                 }
@@ -2443,13 +2443,13 @@ private fun MemoryFileActionRow(
                 onClick = onView,
                 enabled = !memoryDetailLoading
             ) {
-                Text(if (memoryDetailLoading) "读取中..." else viewButtonText)
+                Text(if (memoryDetailLoading) "Reading…" else viewButtonText)
             }
             TextButton(
                 onClick = onInitialize,
                 enabled = !maintenanceInProgress
             ) {
-                Text(if (maintenanceInProgress) "处理中..." else "初始化")
+                Text(if (maintenanceInProgress) "Processing…" else "Initialize")
             }
         }
     }
@@ -2475,7 +2475,7 @@ private fun ScheduledTaskEditDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text("编辑定时任务")
+            Text("Edit scheduled task")
         },
         text = {
             Column(
@@ -2487,21 +2487,21 @@ private fun ScheduledTaskEditDialog(
                 OutlinedTextField(
                     value = state.name,
                     onValueChange = { onStateChange(state.copy(name = it)) },
-                    label = { Text("任务名称") },
+                    label = { Text("Task name") },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !isSaving
                 )
                 OutlinedTextField(
                     value = state.instruction,
                     onValueChange = { onStateChange(state.copy(instruction = it)) },
-                    label = { Text("执行指令") },
+                    label = { Text("Instruction") },
                     modifier = Modifier.fillMaxWidth(),
                     minLines = 3,
                     enabled = !isSaving
                 )
 
                 ExposedDropdownField(
-                    label = "重复类型",
+                    label = "Repeat type",
                     value = state.repeat,
                     options = repeatOptions,
                     enabled = !isSaving,
@@ -2514,8 +2514,8 @@ private fun ScheduledTaskEditDialog(
                         OutlinedTextField(
                             value = state.runAtText,
                             onValueChange = { onStateChange(state.copy(runAtText = it)) },
-                            label = { Text("执行时间") },
-                            supportingText = { Text("格式：yyyy-MM-dd HH:mm 或 yyyy-MM-dd HH:mm:ss") },
+                            label = { Text("Run time") },
+                            supportingText = { Text("Format: yyyy-MM-dd HH:mm or yyyy-MM-dd HH:mm:ss") },
                             modifier = Modifier.fillMaxWidth(),
                             enabled = !isSaving
                         )
@@ -2526,8 +2526,8 @@ private fun ScheduledTaskEditDialog(
                         OutlinedTextField(
                             value = state.dailyTime,
                             onValueChange = { onStateChange(state.copy(dailyTime = it)) },
-                            label = { Text("每日时间") },
-                            supportingText = { Text("格式：HH:mm，例如 21:30") },
+                            label = { Text("Daily time") },
+                            supportingText = { Text("Format: HH:mm, for example 21:30") },
                             modifier = Modifier.fillMaxWidth(),
                             enabled = !isSaving
                         )
@@ -2537,16 +2537,16 @@ private fun ScheduledTaskEditDialog(
                         OutlinedTextField(
                             value = state.dailyTime,
                             onValueChange = { onStateChange(state.copy(dailyTime = it)) },
-                            label = { Text("每周时间") },
-                            supportingText = { Text("格式：HH:mm，例如 09:00") },
+                            label = { Text("Weekly time") },
+                            supportingText = { Text("Format: HH:mm, for example 09:00") },
                             modifier = Modifier.fillMaxWidth(),
                             enabled = !isSaving
                         )
                         OutlinedTextField(
                             value = state.daysOfWeekText,
                             onValueChange = { onStateChange(state.copy(daysOfWeekText = it)) },
-                            label = { Text("周几") },
-                            supportingText = { Text("支持：周三 / 1,3,5 / mon,wed,fri") },
+                            label = { Text("Days of week") },
+                            supportingText = { Text("Supported: wed / 1,3,5 / mon,wed,fri") },
                             modifier = Modifier.fillMaxWidth(),
                             enabled = !isSaving
                         )
@@ -2556,8 +2556,8 @@ private fun ScheduledTaskEditDialog(
                         OutlinedTextField(
                             value = state.intervalMinutesText,
                             onValueChange = { onStateChange(state.copy(intervalMinutesText = it)) },
-                            label = { Text("间隔分钟数") },
-                            supportingText = { Text("例如：30 表示每隔 30 分钟") },
+                            label = { Text("Interval (minutes)") },
+                            supportingText = { Text("For example: 30 means every 30 minutes") },
                             modifier = Modifier.fillMaxWidth(),
                             enabled = !isSaving
                         )
@@ -2567,8 +2567,8 @@ private fun ScheduledTaskEditDialog(
                 OutlinedTextField(
                     value = state.timezone,
                     onValueChange = { onStateChange(state.copy(timezone = it)) },
-                    label = { Text("时区（可选）") },
-                    supportingText = { Text("留空则使用系统时区，例如 Asia/Shanghai") },
+                    label = { Text("Time zone (optional)") },
+                    supportingText = { Text("Leave blank to use the system time zone, for example Asia/Shanghai") },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !isSaving
                 )
@@ -2578,7 +2578,7 @@ private fun ScheduledTaskEditDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                 ) {
-                    Text("启用任务")
+                    Text("Enable task")
                     Switch(
                         checked = state.enabled,
                         onCheckedChange = { onStateChange(state.copy(enabled = it)) },
@@ -2591,7 +2591,7 @@ private fun ScheduledTaskEditDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                 ) {
-                    Text("精确闹钟")
+                    Text("Exact alarm")
                     Switch(
                         checked = state.exact,
                         onCheckedChange = { onStateChange(state.copy(exact = it)) },
@@ -2604,7 +2604,7 @@ private fun ScheduledTaskEditDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                 ) {
-                    Text("允许息屏空闲时触发")
+                    Text("Allow triggering while the screen is off and idle")
                     Switch(
                         checked = state.allowWhileIdle,
                         onCheckedChange = { onStateChange(state.copy(allowWhileIdle = it)) },
@@ -2626,7 +2626,7 @@ private fun ScheduledTaskEditDialog(
                 onClick = { onSave(state) },
                 enabled = !isSaving
             ) {
-                Text(if (isSaving) "保存中..." else "保存")
+                Text(if (isSaving) "Saving…" else "Save")
             }
         },
         dismissButton = {
@@ -2634,7 +2634,7 @@ private fun ScheduledTaskEditDialog(
                 onClick = onDismiss,
                 enabled = !isSaving
             ) {
-                Text("取消")
+                Text("Cancel")
             }
         }
     )
@@ -2693,29 +2693,29 @@ private fun ExposedDropdownField(
 
 private fun formatTaskScheduleSummary(task: ScheduledTask): String {
     if (!task.enabled) {
-        return "已停用"
+        return "Disabled"
     }
 
     return when (task.repeat) {
-        ScheduledTask.REPEAT_ONCE -> task.runAtMs?.let { formatTimestamp(it) } ?: "未配置"
-        ScheduledTask.REPEAT_DAILY -> "${task.dailyTime ?: "--:--"}，下次 ${task.nextTriggerAtMs?.let { formatTimestamp(it) } ?: "未知"}"
+        ScheduledTask.REPEAT_ONCE -> task.runAtMs?.let { formatTimestamp(it) } ?: "Not configured"
+        ScheduledTask.REPEAT_DAILY -> "${task.dailyTime ?: "--:--"}, next ${task.nextTriggerAtMs?.let { formatTimestamp(it) } ?: "Unknown"}"
         ScheduledTask.REPEAT_WEEKLY -> {
             val days = task.daysOfWeek?.joinToString(",") ?: "-"
-            "周[$days] ${task.dailyTime ?: "--:--"}，下次 ${task.nextTriggerAtMs?.let { formatTimestamp(it) } ?: "未知"}"
+            "[$days] ${task.dailyTime ?: "--:--"}, next ${task.nextTriggerAtMs?.let { formatTimestamp(it) } ?: "Unknown"}"
         }
-        ScheduledTask.REPEAT_WORKDAY -> "${task.dailyTime ?: "--:--"}，下次 ${task.nextTriggerAtMs?.let { formatTimestamp(it) } ?: "未知"}"
-        ScheduledTask.REPEAT_INTERVAL -> "每隔 ${task.intervalMinutes ?: 0} 分钟，下次 ${task.nextTriggerAtMs?.let { formatTimestamp(it) } ?: "未知"}"
-        else -> task.nextTriggerAtMs?.let { formatTimestamp(it) } ?: "未知"
+        ScheduledTask.REPEAT_WORKDAY -> "${task.dailyTime ?: "--:--"}, next ${task.nextTriggerAtMs?.let { formatTimestamp(it) } ?: "Unknown"}"
+        ScheduledTask.REPEAT_INTERVAL -> "Every ${task.intervalMinutes ?: 0} min, next ${task.nextTriggerAtMs?.let { formatTimestamp(it) } ?: "Unknown"}"
+        else -> task.nextTriggerAtMs?.let { formatTimestamp(it) } ?: "Unknown"
     }
 }
 
 fun formatRepeatLabel(repeat: String): String {
     return when (repeat) {
-        ScheduledTask.REPEAT_ONCE -> "一次性"
-        ScheduledTask.REPEAT_DAILY -> "每天"
-        ScheduledTask.REPEAT_WEEKLY -> "每周"
-        ScheduledTask.REPEAT_WORKDAY -> "工作日"
-        ScheduledTask.REPEAT_INTERVAL -> "固定间隔"
+        ScheduledTask.REPEAT_ONCE -> "Once"
+        ScheduledTask.REPEAT_DAILY -> "Daily"
+        ScheduledTask.REPEAT_WEEKLY -> "Weekly"
+        ScheduledTask.REPEAT_WORKDAY -> "Weekdays"
+        ScheduledTask.REPEAT_INTERVAL -> "Fixed interval"
         else -> repeat
     }
 }
@@ -2730,25 +2730,25 @@ fun formatTimestamp(timestampMs: Long): String {
 
 private fun formatGalleryMemoryIntervalLabel(minutes: Int): String {
     return when {
-        minutes % (24 * 60) == 0 -> "每 ${minutes / (24 * 60)} 天"
-        minutes % 60 == 0 -> "每 ${minutes / 60} 小时"
-        else -> "每 $minutes 分钟"
+        minutes % (24 * 60) == 0 -> "Every ${minutes / (24 * 60)} days"
+        minutes % 60 == 0 -> "Every ${minutes / 60} hours"
+        else -> "Every $minutes minutes"
     }
 }
 
 private fun formatGalleryMemoryManualSyncLabel(maxImages: Int): String {
-    return "最多 $maxImages 张"
+    return "Up to $maxImages images"
 }
 
 private fun formatGalleryMemorySyncStage(stage: String): String {
     return when (stage) {
-        "preparing" -> "准备中"
-        "scanning" -> "扫描中"
-        "summarizing" -> "生成记忆中"
-        "writing" -> "写入中"
-        "completed" -> "已完成"
-        "failed" -> "失败"
-        else -> "待命中"
+        "preparing" -> "Preparing"
+        "scanning" -> "Scanning"
+        "summarizing" -> "Summarizing"
+        "writing" -> "Writing"
+        "completed" -> "Completed"
+        "failed" -> "Failed"
+        else -> "Idle"
     }
 }
 
@@ -2949,14 +2949,14 @@ fun PermissionsCard(onClick: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "权限状态（实时）",
+                text = "Permission status (live)",
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
                 text = if (allGranted) {
-                    "全部已授权（$grantedCount/7）"
+                    "All granted ($grantedCount/7)"
                 } else {
-                    "未全部授权（$grantedCount/7）"
+                    "Not all granted ($grantedCount/7)"
                 },
                 style = MaterialTheme.typography.bodySmall,
                 color = if (allGranted) {
@@ -2969,7 +2969,7 @@ fun PermissionsCard(onClick: () -> Unit) {
             @Composable
             fun statusLine(label: String, granted: Boolean) {
                 Text(
-                    text = "$label：${if (granted) "已授权" else "未授权"}",
+                    text = "$label: ${if (granted) "Granted" else "Not granted"}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = if (granted) {
                         MaterialTheme.colorScheme.primary
@@ -2980,16 +2980,16 @@ fun PermissionsCard(onClick: () -> Unit) {
             }
 
             // 显眼展示关键权限，便于用户快速判断是否可用。
-            statusLine("无障碍服务", accessibility)
-            statusLine("悬浮窗", overlay)
-            statusLine("录屏权限", screenCapture)
-            statusLine("相册读取", albumPermission)
-            statusLine("文件管理(全部文件)", allFilesAccess)
-            statusLine("摄像头", cameraPermission)
-            statusLine("麦克风", microphonePermission)
+            statusLine("Accessibility service", accessibility)
+            statusLine("Overlay", overlay)
+            statusLine("Screen capture", screenCapture)
+            statusLine("Gallery access", albumPermission)
+            statusLine("File management (all files)", allFilesAccess)
+            statusLine("Camera", cameraPermission)
+            statusLine("Microphone", microphonePermission)
 
             Text(
-                text = "点击此卡片可进入权限页面",
+                text = "Tap this card to open the permissions page",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -3034,7 +3034,7 @@ fun SettingsTab(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
         Text(
-            text = "设置",
+            text = "Settings",
             style = MaterialTheme.typography.headlineMedium
         )
 
@@ -3057,16 +3057,16 @@ fun SettingsTab(
             ) {
                 Icon(
                     imageVector = Icons.Default.Settings,
-                    contentDescription = "配置"
+                    contentDescription = "Configure"
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     Text(
-                        text = "模型配置",
+                        text = "Model configuration",
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        text = "配置 API Key 和模型参数",
+                        text = "Configure API keys and model parameters",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -3098,7 +3098,7 @@ fun SettingsTab(
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        text = "配置多渠道接入（飞书等）",
+                        text = "Configure multi-channel access (Feishu, etc.)",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -3114,10 +3114,10 @@ fun SettingsTab(
             ) {
                 Text(
                     text = when {
-                        xomniclawJsonSnapshot.value == null -> "xomniclaw.json 读取中…"
+                        xomniclawJsonSnapshot.value == null -> "Reading xomniclaw.json…"
                         xomniclawJsonSnapshot.value!!.first ->
-                            "xomniclaw.json 已存在，长度 ${xomniclawJsonSnapshot.value!!.second} 字符"
-                        else -> "xomniclaw.json 暂无内容（文件尚未生成）"
+                            "xomniclaw.json exists, ${xomniclawJsonSnapshot.value!!.second} characters"
+                        else -> "xomniclaw.json is empty (file not created yet)"
                     },
                     style = MaterialTheme.typography.bodyMedium
                 )
@@ -3135,13 +3135,13 @@ fun SettingsTab(
                                     title = "xomniclaw.json",
                                     content = when {
                                         exists && raw.isNotBlank() -> raw
-                                        exists -> "暂无内容"
+                                        exists -> "Empty"
                                         else ->
-                                            "文件不存在：$xomniclawJsonPath\n\n可在「模型配置」保存后自动生成。"
+                                            "File not found: $xomniclawJsonPath\n\nIt is created automatically after saving in Model Configuration."
                                     }
                                 )
                             } catch (e: Exception) {
-                                Toast.makeText(context, "读取失败：${e.message}", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Read failed: ${e.message}", Toast.LENGTH_SHORT).show()
                             } finally {
                                 xomniclawJsonLoading.value = false
                             }
@@ -3149,7 +3149,7 @@ fun SettingsTab(
                     },
                     enabled = !xomniclawJsonLoading.value
                 ) {
-                    Text(if (xomniclawJsonLoading.value) "读取中..." else "查看 xomniclaw.json")
+                    Text(if (xomniclawJsonLoading.value) "Reading…" else "View xomniclaw.json")
                 }
                 Text(
                     text = xomniclawJsonPath,
@@ -3197,7 +3197,7 @@ fun SettingsTab(
                         scope.launch { refreshXomniclawJsonSnapshot() }
                     }
                 ) {
-                    Text("关闭")
+                    Text("Close")
                 }
             }
         )
@@ -3226,15 +3226,15 @@ private fun VersionInfoCard() {
             ) {
                 Icon(
                     imageVector = Icons.Default.Info,
-                    contentDescription = "版本信息"
+                    contentDescription = "Version information"
                 )
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "版本信息",
+                        text = "Version information",
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        text = "显示当前应用版本与构建类型；可从 GitHub Releases 检查新版本。",
+                        text = "Shows the current app version and build type; check GitHub Releases for new versions.",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -3242,11 +3242,11 @@ private fun VersionInfoCard() {
             }
 
             Text(
-                text = "应用版本：${BuildConfig.VERSION_NAME}（versionCode ${BuildConfig.VERSION_CODE}）",
+                text = "App version: ${BuildConfig.VERSION_NAME} (versionCode ${BuildConfig.VERSION_CODE})",
                 style = MaterialTheme.typography.bodyMedium
             )
             Text(
-                text = "构建类型：${BuildConfig.BUILD_VARIANT}",
+                text = "Build type: ${BuildConfig.BUILD_VARIANT}",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -3260,10 +3260,10 @@ private fun VersionInfoCard() {
                     onClick = {
                         val activity = context as? MainActivityCompose
                         if (activity == null) {
-                            Toast.makeText(context, "当前页面无法执行检查更新", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Update check isn't available from this page", Toast.LENGTH_SHORT).show()
                             return@TextButton
                         }
-                        Toast.makeText(activity, "正在检查更新...", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, "Checking for updates…", Toast.LENGTH_SHORT).show()
                         scope.launch {
                             try {
                                 val updater = com.shijing.xomniclaw.updater.AppUpdater(activity)
@@ -3273,12 +3273,12 @@ private fun VersionInfoCard() {
                                 } else {
                                     Toast.makeText(
                                         activity,
-                                        "已是最新版本 v${info.currentVersion}",
+                                        "Already up to date: v${info.currentVersion}",
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }
                             } catch (_: Exception) {
-                                Toast.makeText(activity, "检查更新失败", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(activity, "Update check failed", Toast.LENGTH_SHORT).show()
                             }
                         }
                     },
@@ -3286,12 +3286,12 @@ private fun VersionInfoCard() {
                 ) {
                     Icon(
                         imageVector = Icons.Default.SystemUpdate,
-                        contentDescription = "检查更新",
+                        contentDescription = "Check for updates",
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = "检查更新",
+                        text = "Check for updates",
                         style = MaterialTheme.typography.labelMedium
                     )
                 }
@@ -3323,11 +3323,11 @@ fun DeviceYoloFusedTreeSwitch() {
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Snapshot 附加 YOLO 结果",
+                        text = "Attach YOLO results to snapshots",
                         style = MaterialTheme.typography.titleMedium
                     )
                     Text(
-                        text = "关闭时仅返回无障碍 snapshot；开启后会并行执行 YOLO，并追加原始检测结果给大模型参考。",
+                        text = "When off, only the accessibility snapshot is returned; when on, YOLO runs in parallel and its raw detections are appended for the model to reference.",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -3346,8 +3346,8 @@ fun DeviceYoloFusedTreeSwitch() {
             Divider()
 
             DeviceYoloThresholdSlider(
-                title = "YOLO 置信度阈值",
-                description = "分数低于该值的检测框会被过滤。",
+                title = "YOLO confidence threshold",
+                description = "Detections scoring below this value are filtered out.",
                 value = settings.yoloConfidenceThreshold,
                 valueRange = DeviceYoloThresholdConfig.MIN_CONFIDENCE..DeviceYoloThresholdConfig.MAX_CONFIDENCE,
                 onValueChange = { value ->
@@ -3358,8 +3358,8 @@ fun DeviceYoloFusedTreeSwitch() {
             )
 
             DeviceYoloThresholdSlider(
-                title = "YOLO IoU 阈值",
-                description = "NMS 去重时使用，越大越容易保留重叠检测框。",
+                title = "YOLO IoU threshold",
+                description = "Used for NMS deduplication; higher values keep more overlapping detections.",
                 value = settings.yoloIouThreshold,
                 valueRange = DeviceYoloThresholdConfig.MIN_IOU..DeviceYoloThresholdConfig.MAX_IOU,
                 onValueChange = { value ->
@@ -3437,7 +3437,7 @@ fun PromptDumpsSwitch() {
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = "将发送给大模型的完整请求落盘到 /sdcard/.xomniclaw/workspace/logs/prompt-dumps/（默认关闭）",
+                    text = "Write the full request sent to the model to /sdcard/.xomniclaw/workspace/logs/prompt-dumps/ (off by default)",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -3473,13 +3473,13 @@ fun LlmFullRequestLogcatSwitch() {
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Logcat 完整 LLM 请求",
+                    text = "Logcat full LLM requests",
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = "将实际上传 wire JSON 分段打 logcat（标签 LLMFullRequest），并写入 " +
-                        "/sdcard/.xomniclaw/workspace/logs/llm-full-request/*.json（与 HTTP 正文一致，另附 .meta.txt）。\n" +
-                        "长 base64 时 logcat 可能丢行，请用 adb pull 或看带 path= 的短行。默认关闭。",
+                    text = "Log the uploaded wire JSON in chunks to logcat (tag LLMFullRequest), and write to " +
+                        "/sdcard/.xomniclaw/workspace/logs/llm-full-request/*.json (identical to the HTTP body, plus .meta.txt).\n" +
+                        "With long base64 payloads logcat may drop lines; use adb pull or look for the short line containing path=. Off by default.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
