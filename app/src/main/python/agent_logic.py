@@ -29,6 +29,10 @@ from utils import (
 
 MAX_CONSECUTIVE_ERRORS = 3
 
+# A first-turn "Sure, let me do that!" is a promise, not an answer, even though nothing has
+# run yet. Long text on turn 1 is treated as a real answer so explanations are not looped.
+FIRST_TURN_PROMISE_MAX_CHARS = 240
+
 _REASONING_TAG_RE = re.compile(
     r"<(think|thinking|reasoning|reflection|inner_thoughts)>.*?</\1>",
     re.DOTALL | re.IGNORECASE,
@@ -603,11 +607,14 @@ def run_agent(
         # --- Branch: no tool calls — possible final answer or premature plan ---
         stripped = _strip_reasoning_tags(content) if content else content
 
+        # `tools_used` used to be required, which made a promise on iteration 1 unfixable: the
+        # run ended with "Sure! Let me open YouTube for you." and no tool call. A short promise
+        # is nudged on its own; a long answer only once real progress proves a multi-step task.
         should_nudge = (
             stripped
-            and tools_used
             and text_only_nudges < MAX_TEXT_ONLY_CONTINUATION_NUDGES
             and is_likely_premature_plan_text(stripped)
+            and (bool(tools_used) or len(stripped) <= FIRST_TURN_PROMISE_MAX_CHARS)
         )
 
         if should_nudge:

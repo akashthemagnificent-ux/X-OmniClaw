@@ -77,9 +77,12 @@ def is_likely_premature_plan_text(content):
     c = content.strip()
     if len(c) > 1200:
         return False
-    if any(hint in c for hint in DONE_HINTS):
+    # Case-insensitive: models open with "let me ..." as often as "Let me ...", and a missed
+    # match here lets a promise end the turn with no tool call at all.
+    lower = c.lower()
+    if any(hint.lower() in lower for hint in DONE_HINTS):
         return False
-    return any(hint in c for hint in PLAN_HINTS)
+    return any(hint.lower() in lower for hint in PLAN_HINTS)
 
 
 def parse_tool_args_json(args_json):

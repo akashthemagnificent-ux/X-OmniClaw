@@ -306,6 +306,27 @@ class DeviceTool(private val context: Context) : Tool {
         return SEND_TARGET_HINTS.any { hint -> t.contains(hint.lowercase()) }
     }
 
+    /**
+     * 模型常给官方包名（com.google.android.youtube），设备上装的却是改版/区服版本
+     * （app.revanced.android.youtube），直接启动会失败。拿包名末段当应用名线索，
+     * 在已安装且可启动的应用里按 label 匹配；取 label 最短的一条，故 "YouTube"
+     * 胜过 "YouTube Music"。仅在直接启动失败后才用，避免误开。
+     */
+    private fun resolvePackageByLabelHint(packageName: String): String? {
+        val hint = packageName.substringAfterLast('.').lowercase()
+        if (hint.length < 3) return null
+        val pm = context.packageManager
+        return pm.getInstalledApplications(0)
+            .asSequence()
+            .filter { pm.getLaunchIntentForPackage(it.packageName) != null }
+            .mapNotNull { info ->
+                val label = runCatching { pm.getApplicationLabel(info).toString() }.getOrNull()
+                if (label != null && label.lowercase().contains(hint)) info.packageName to label else null
+            }
+            .minByOrNull { (_, label) -> label.length }
+            ?.first
+    }
+
     /** 归一化常见包名别名，避免历史错误包名导致开错应用。 */
     private fun normalizeKnownPackageAlias(rawPackageName: String?): Pair<String?, String?> {
         val input = rawPackageName?.trim()?.takeIf { it.isNotEmpty() } ?: return null to null
@@ -1370,7 +1391,7 @@ class DeviceTool(private val context: Context) : Tool {
             }
             val resolvedPackage = launchCandidates.firstOrNull { pkg ->
                 context.packageManager.getLaunchIntentForPackage(pkg) != null
-            }
+            } ?: resolvePackageByLabelHint(normalizedPackageName)
             if (resolvedPackage != null) {
                 val launchIntent = context.packageManager.getLaunchIntentForPackage(resolvedPackage)
                     ?: return ToolResult.error("App not found: $resolvedPackage")

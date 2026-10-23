@@ -25,7 +25,10 @@ object LlmOnDemandToolInclusion {
         "config_set",
 
         // ===== Android / memory tools =====
-        "device",
+        // `device` is deliberately NOT on-demand: it is the only way to touch the screen, so
+        // gating it behind the router/keyword heuristic silently disarmed the agent. On
+        // 2026-10-23 the model logged "there's no device tool actually listed in my available
+        // functions" for "open youtube" and answered with text instead of acting.
         "list_installed_apps",
         "start_activity",
         "stop",
@@ -118,7 +121,6 @@ object LlmOnDemandToolInclusion {
             out.add("config_set")
         }
 
-        if (wantsDeviceOps(u, uLow)) out.add("device")
         if (wantsListInstalledApps(u, uLow)) out.add("list_installed_apps")
         if (wantsStartActivity(u, uLow)) out.add("start_activity")
         if (wantsStopOrLog(u, uLow)) {
@@ -187,22 +189,6 @@ object LlmOnDemandToolInclusion {
         ) return true
         if (low.contains("config_get") || low.contains("config_set")) return true
         if (low.contains("xomniclaw.json") || low.contains("channels.feishu") || low.contains("models.providers")) return true
-        return false
-    }
-
-    private fun wantsDeviceOps(u: String, low: String): Boolean {
-        if (u.contains("点击") || u.contains("滑动") || u.contains("输入") || u.contains("返回") || u.contains("主页")) return true
-        if (u.contains("截图") || u.contains("界面") || u.contains("屏幕") || u.contains("控件")) return true
-        if (u.contains("打开") && (u.contains("app") || u.contains("应用"))) return true
-        if (low.contains("tap") || low.contains("swipe") || low.contains("scroll") ||
-            low.contains("type") || low.contains("press back") || low.contains("home screen")
-        ) return true
-        if (low.contains("screenshot") || low.contains("screen") || low.contains("ui element") ||
-            low.contains("on screen")
-        ) return true
-        if (low.contains("open") && (low.contains("app") || low.contains("application"))) return true
-        if (low.contains("snapshot") || low.contains("screenshot") || low.contains("device")) return true
-        if (low.contains("tap") || low.contains("swipe") || low.contains("scroll")) return true
         return false
     }
 
