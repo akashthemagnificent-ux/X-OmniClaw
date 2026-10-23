@@ -309,8 +309,9 @@ class DeviceTool(private val context: Context) : Tool {
     /**
      * 模型常给官方包名（com.google.android.youtube），设备上装的却是改版/区服版本
      * （app.revanced.android.youtube），直接启动会失败。拿包名末段当应用名线索，
-     * 在已安装且可启动的应用里按 label 匹配；取 label 最短的一条，故 "YouTube"
-     * 胜过 "YouTube Music"。仅在直接启动失败后才用，避免误开。
+     * 在已安装且可启动的应用里按 label 匹配。包名末段相同的优先，否则取 label 最短
+     * 的一条 —— 只比 label 长度会选中 "YouTube Music"（比 "YouTube ReVanced" 短）。
+     * 仅在直接启动失败后才用，避免误开。
      */
     private fun resolvePackageByLabelHint(packageName: String): String? {
         val hint = packageName.substringAfterLast('.').lowercase()
@@ -321,9 +322,12 @@ class DeviceTool(private val context: Context) : Tool {
             .filter { pm.getLaunchIntentForPackage(it.packageName) != null }
             .mapNotNull { info ->
                 val label = runCatching { pm.getApplicationLabel(info).toString() }.getOrNull()
-                if (label != null && label.lowercase().contains(hint)) info.packageName to label else null
+                    ?: return@mapNotNull null
+                if (!label.lowercase().contains(hint)) return@mapNotNull null
+                val segmentMatch = info.packageName.substringAfterLast('.').equals(hint, ignoreCase = true)
+                Triple(info.packageName, label, if (segmentMatch) 0 else 1)
             }
-            .minByOrNull { (_, label) -> label.length }
+            .minWithOrNull(compareBy({ it.third }, { it.second.length }))
             ?.first
     }
 
