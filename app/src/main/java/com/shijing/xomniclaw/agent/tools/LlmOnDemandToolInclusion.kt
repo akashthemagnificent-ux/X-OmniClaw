@@ -8,6 +8,11 @@ package com.shijing.xomniclaw.agent.tools
  */
 object LlmOnDemandToolInclusion {
 
+    // ASCII lookarounds rather than \b: \b is Unicode-aware in some runtimes, so "hello啊"
+    // would fail to match while CJK text is common here.
+    private val EN_GREETING_RE = Regex("""(?<![a-z])(hi|hello|hey|yo)(?![a-z])""")
+    private val EN_GREETING_START_RE = Regex("""^(hi|hello|hey|yo)(?![a-z])""")
+
     val ON_DEMAND_LLM_TOOL_NAMES: Set<String> = setOf(
         // ===== Universal tools =====
         "read_file",
@@ -67,18 +72,20 @@ object LlmOnDemandToolInclusion {
             return true
         }
         // Allow very short greeting tail-particles such as "你好呀" and "hello啊".
-        if ((normalized.startsWith("你好") || normalized.startsWith("hello") || normalized.startsWith("hi")) &&
+        // Whole-word anchored: "his car" must not match via the "hi" prefix.
+        if ((normalized.startsWith("你好") || EN_GREETING_START_RE.containsMatchIn(stripped.lowercase())) &&
             normalized.length <= 6
         ) {
             return true
         }
 
-        // Lenient: a short message that only contains a greeting and no action verb is a greeting.
-        val hasGreeting = normalized.contains("你好") ||
-            normalized.contains("您好") ||
-            normalized.contains("hello") ||
-            normalized.contains("hi") ||
-            normalized.contains("hey")
+        // Lenient: a short message that only contains a standalone greeting and no action verb.
+        // English greetings must match as whole words: "they're" and "this" contain "hey"/"hi" as
+        // substrings, and a false positive here sends tools=[], so the agent cannot act at all.
+        val lower = stripped.lowercase()
+        val hasGreeting = lower.contains("你好") ||
+            lower.contains("您好") ||
+            EN_GREETING_RE.containsMatchIn(lower)
         val hasActionVerb = listOf(
             "打开", "执行", "设置", "发送", "安装", "截图", "点击", "读取", "写入",
             "open", "run", "set", "send", "install", "screenshot", "click", "read", "write"

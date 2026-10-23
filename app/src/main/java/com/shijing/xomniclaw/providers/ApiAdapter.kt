@@ -891,6 +891,13 @@ object ApiAdapter {
         val message = choice.getJSONObject("message")
 
         val content = if (message.isNull("content")) null else message.optString("content")
+        // Some OpenAI-compatible upstreams (bansos/OpenRouter free models) return the whole
+        // reply in `reasoning` with content="" — surface it so the answer is not lost.
+        // optString turns an explicit JSON null into the literal "null", so check isNull first.
+        val reasoning = sequenceOf("reasoning_content", "reasoning")
+            .filter { message.has(it) && !message.isNull(it) }
+            .map { message.optString(it) }
+            .firstOrNull { it.isNotBlank() }
         val toolCallsArray = message.optJSONArray("tool_calls")
         val toolCalls = if (toolCallsArray != null) {
             mutableListOf<ToolCall>().apply {
@@ -919,6 +926,7 @@ object ApiAdapter {
         return ParsedResponse(
             content = content,
             toolCalls = toolCalls,
+            thinkingContent = reasoning,
             usage = usage,
             finishReason = choice.optString("finish_reason")
         )

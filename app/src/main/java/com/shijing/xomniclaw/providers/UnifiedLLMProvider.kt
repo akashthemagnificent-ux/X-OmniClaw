@@ -746,7 +746,7 @@ class UnifiedLLMProvider(private val context: Context) {
                 appendPathIfMissing(baseUrl, "/responses")
             }
             ModelApi.OLLAMA -> {
-                appendPathIfMissing(baseUrl, "/api/chat")
+                ollamaChatEndpoint(baseUrl)
             }
             ModelApi.GITHUB_COPILOT -> {
                 appendPathIfMissing(baseUrl, "/chat/completions")

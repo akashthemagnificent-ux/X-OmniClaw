@@ -307,6 +307,7 @@ def run_agent(
     # --- Loop state ---
     tools_used = []
     final_content = None
+    last_thinking = ""
     text_only_nudges = 0
     runtime_state = {}
     # Token accumulation across LLM rounds (Kotlin bridge attaches usage per round)
@@ -318,6 +319,9 @@ def run_agent(
         iter_start = time.time()
         runtime_state["iteration"] = iteration
         logger.write(f"========== Iteration {iteration} ==========")
+        # Reassigned every round: reasoning from an earlier round must never be shown as the
+        # final answer when the last round returns nothing.
+        last_thinking = ""
 
         # Check stop signal from Kotlin at the top of each iteration
         if bridge.is_stop_requested():
@@ -381,6 +385,7 @@ def run_agent(
         # Reasoning
         thinking = response.get("thinking_content")
         if thinking:
+            last_thinking = thinking
             logger.write(f"🧠 Reasoning ({len(thinking)} chars)")
             logger.write(f"🧠 Reasoning Content: {_format_reasoning_for_log(thinking)}")
             bridge.emit_progress(
@@ -628,8 +633,8 @@ def run_agent(
             )
             continue
 
-        # Final answer
-        final_content = stripped
+        # Final answer. Keep None when empty so the post-loop reasoning fallback still runs.
+        final_content = stripped or None
         messages.append(_msg("assistant", final_content))
         logger.write(f"Final content received")
         logger.write(f"Content: {(final_content or '')[:500]}")
@@ -640,8 +645,11 @@ def run_agent(
         logger.write(f"Max iterations ({max_iterations}) reached")
         final_content = f"Reached the iteration limit ({max_iterations}) before finishing. Split the task into smaller steps."
 
-    if final_content is None:
-        final_content = "No response"
+    # Some free upstream models (e.g. deepseek-v4.1-flash-free via bansos) put the whole
+    # reply in `reasoning` and return content="" — the bubble would render blank.
+    if not (final_content or "").strip():
+        final_content = last_thinking.strip() or "The model returned an empty reply. Try again or pick another model."
+    final_content = final_content or ""
 
     logger.write("========== Agent Loop end (Python) ==========")
     logger.write(f"Iterations: {iteration}")
